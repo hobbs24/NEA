@@ -65,12 +65,12 @@ function mapSelect(){
     console.log(sessionStorage.map)
 // Displays the map choice (used for testing)
     if(sessionStorage.map == "1"){
-        document.getElementById('maps').src=".idea/Maps/ForgottenIslands.PNG"
+        document.getElementById('maps').src="https://github.com/hobbs24/NEA/blob/master/.idea/Maps/ForgottenIslands.PNG"
     }
     else if(sessionStorage.map == "2"){
-        document.getElementById('maps').src=".idea/Maps/DesertStorm.PNG"
+        document.getElementById('maps').src="https://github.com/hobbs24/NEA/blob/master/.idea/Maps/DesertStorm.PNG"
     }
     else if(sessionStorage.map == "3"){
-        document.getElementById('maps').src=".idea/Maps/GreenPlains.PNG"
+        document.getElementById('maps').src="https://github.com/hobbs24/NEA/blob/master/.idea/Maps/GreenPlains.PNG"
     }
 }
