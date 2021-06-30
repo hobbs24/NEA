@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!-- Comments are below what they are talking about -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Scales resolution to screen's resolution -->
+    <title>Lobby</title>
+<!-- Titles the page Lobby -->
+    <script src="../JavaScript/Lobby.js"></script>
+<!-- Adds Lobby.js as the JS source -->
+    <link rel="stylesheet" type="text/css" href="Lobby.css">
+<!-- Adds Lobby.css as the CSS source -->
+</head>
+<body onload="pageLoad()">
+<!-- Upon loading the page, the pageLoad function executes -->
+    <div class="header">
+<!-- Creates a new class that acts as the header -->
+        <h1>Wars of the Rogue</h1>
+<!-- Simply displays Wars of the Rogue as a title -->
+    </div>
+    <form id="settings">
+<!-- Creates a form that'll be used to inpt user settings -->
+        <table class="leftTable" style="float: left;">
+<!-- Creates a table for easier organisation of things -->
+            <tr class="lfirstColumn">
+<!-- Creates the first row -->
+                <td>
+<!-- Creates the first column -->
+                    <h3>Player Colour</h3>
+                    <input type="color" name="colour" id="playerColour">
+<!-- Colour input type, allows user to input a wide range of colours -->
+                </td>
+                <td>
+                    <h3>Enemy Colour</h3>
+                    <input type="color" name="colour" id="enemyColour">
+                </td>
+            </tr>
+            <tr class="lsecondColumn">
+<!-- Creates second row -->
+                <td colspan="2" >
+<!-- Causes the column to span across 2 -->
+                    <button type="submit">PLAY GAME</button>
+<!-- Submit button causes a JS function to operate -->
+                </td>
+            </tr>
+            <tr class="lthirdColumn">
+                <td colspan="2">
+                    <h2>Extra Settings</h2>
+                </td>
+            </tr>
+            <tr class="lfourthColumn">
+                <td>
+                    <h4>Player Metal</h4>
+                    <div>
+                        <input type="number" max="5000" min="50" step="10" placeholder="150" id="playerMetal">
+<!-- Number input type. Allows the user to input certain values within a set range -->
+                    </div>
+                </td>
+                <td>
+                    <h4>Player Power</h4>
+                    <div>
+                        <input type="number" max="7500" min="80" step="10" placeholder="250" id="playerPower">
+                    </div>
+                </td>
+            </tr>
+            <tr class="lfifthColumn">
+                <td>
+                    <h4>Enemy Metal</h4>
+                    <div>
+                        <input type="number" max="5000" min="50" step="10" placeholder="150" id="enemyMetal">
+                    </div>
+                </td>
+                <td>
+                    <h4>Enemy Power</h4>
+                    <div>
+                        <input type="number" max="7500" min="80" step="10" placeholder="250" id="enemyPower">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+<!-- Closes this form -->
+    <table class="rightTable" style="float: right;">
+<!-- Creates a new table on the right side, used for the maps -->
+        <tr>
+        <td class="maps">
+            <maps>hi</maps>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form>
+                <label for="mapSelection">Choose a map:</label>
+<!-- Displays text next to the selection input -->
+                <select name="mapSelection" id="mapSelection" onchange="mapSelect()">
+<!-- Selection input, allows user to select from set options
+     As soon as a change in value is detected, the function mapSelect executes -->
+                    <option>Unselected</option>
+<!-- The default option -->
+                    <optgroup label="Naval Maps">
+<!-- A label for a group of maps of a similar type -->
+                        <option value="1">Forgotten Islands</option>
+<!-- A selectable option -->
+                    </optgroup>
+                    <optgroup label="Land Maps">
+<!-- A second label for a different map type -->
+                        <option value="2">Desert Storm</option>
+<!-- Other selectable option -->
+                        <option value="3">Green Plains</option>
+                    </optgroup>
+                </select>
+            </form>
+<!-- Closes the form -->
+        </td>
+    </tr>
+    </table>
+</body>
+</html>

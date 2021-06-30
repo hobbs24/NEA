@@ -1,0 +1,47 @@
+body{
+    font-family: Arial, serif;
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+.header{
+    padding: 8px;
+}
+.leftTable{
+    width: 30%;
+    background-color: midnightblue;
+}
+.lfirstColumn{
+    padding-bottom: 14%;
+}
+.lsecondColumn{
+    padding-bottom: 14%;
+    background-color: black;
+}
+.lthirdColumn{
+    padding-bottom: 2%;
+}
+.lfourthColumn{
+    padding-bottom: 2%;
+}
+.lfifthColumn{
+    padding-bottom: 2%;
+}
+#playerMetal{
+    width: 4em;
+}
+#playerPower{
+    width: 4em;
+}
+#enemyMetal{
+    width:4em;
+}
+#enemyPower{
+    width: 4em;
+}
+.rightTable{
+    width:65%;
+}
+.maps{
+
+}

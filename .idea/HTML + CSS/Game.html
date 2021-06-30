@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- Comments are below what they are talking about -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Scales the resolution with that of the device's -->
+    <title>Game</title>
+    <script src="../JavaScript/Game.js"></script>
+<!-- Adds Game.js as the JS source -->
+    <link rel="stylesheet" type="text/css" href="Game.css">
+<!-- Adds Game.css as the css source -->
+</head>
+<body onload="initialiser(), display(), updateResources()">
+<!-- Runs these functions upon loading the page. They display certain values and also the map -->
+    <div>
+        <table class="stats">
+<!-- Creates a new table at the top of the page to display certain values -->
+            <tr >
+                <td id="waste"></td>
+<!-- The first column of the table used just to take up space -->
+                <td id="playerMetal">
+<!-- The second column just displays Metal: -->
+                    <p>Metal:</p>
+                </td>
+                <td id="playerMetal">
+<!-- The third column that displays the amount of metal the user has -->
+                    <p id="updatePM"></p>
+                </td>
+                <td id="playerPower">
+<!-- The fourth column that just displays Power: -->
+                    <p>Power:</p>
+                </td>
+                <td id="playerPower">
+<!-- The fifth column that displays the amount of power the user has -->
+                    <p id="updatePP"></p>
+                </td>
+            </tr>
+        </table >
+    </div>
+    <div class="container" id="container"></div>
+<!-- Used by the JS to automatically create a 25x58 grid, rather than typing it all out by hand -->
+</body>
+</html>
