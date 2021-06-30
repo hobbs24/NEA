@@ -483,7 +483,7 @@ function display(){
         for (let x = 0; x < 58; x++) {
 // Used to create 58 rows of divs
             let id1 = y+"-"+x
-// Just assigns an everchanging string to id1 used to set a unique div class
+// Just assigns an ever changing string to id1 used to set a unique div class
 // each time one is made
             let div = document.createElement('div')
 // Creates a new div and assigns it to variable div

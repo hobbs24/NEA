@@ -60,7 +60,7 @@ function prevent(){
 function mapSelect(){
 // This function executes as soon as the player selects a different map option
     sessionStorage.map = document.getElementById("mapSelection").value
-// Stores the map slected into Session Storage
+// Stores the map selected into Session Storage
     console.log(sessionStorage.map)
 // Displays the map choice (used for testing)
     if(sessionStorage.map == "1"){
