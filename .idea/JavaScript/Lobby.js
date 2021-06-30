@@ -64,4 +64,13 @@ function mapSelect(){
 // Stores the map slected into Session Storage
     console.log(sessionStorage.map)
 // Displays the map choice (used for testing)
+    if(sessionStorage.map == "1"){
+        document.getElementById('maps').src=".idea/Maps/ForgottenIslands.PNG"
+    }
+    else if(sessionStorage.map == "2"){
+        document.getElementById('maps').src=".idea/Maps/DesertStorm.PNG"
+    }
+    else if(sessionStorage.map == "3"){
+        document.getElementById('maps').src=".idea/Maps/GreenPlains.PNG"
+    }
 }
