@@ -1,15 +1,27 @@
-body{
+html, body{
     font-family: Arial, serif;
+/* Sets the font and font family for the body of the web page, although in
+   this case, the entire page */
     text-align: center;
+/* Centers the text to make it look slightly nicer */
     background-color: black;
+/* Sets the background colour to be black, less strenuous on the eyes */
     color: white;
+/* Sets the text colour to white for easier contrast with the background */
+    height: 98%;
+/* Sets the height to 98% as anything larger brings up a scroll wheel */
 }
 .header{
     padding: 8px;
+/* Just adds padding to the header to make the title look more important */
 }
 .leftTable{
     width: 30%;
+/* Sets the width of the left table to 30% of the page, allows the map images
+   to take up more space */
     background-color: midnightblue;
+/* Sets the table background colour to midnightblue, brings more attention to
+   the settings */
 }
 .lfirstColumn{
     padding-bottom: 14%;
@@ -29,6 +41,7 @@ body{
 }
 #playerMetal{
     width: 4em;
+/* Sets the width to four times the font size (so four characters will show) */
 }
 #playerPower{
     width: 4em;
@@ -40,11 +53,19 @@ body{
     width: 4em;
 }
 .rightTable{
-    width:65%;
+    width:60%;
+/* Gives the right table 60% of the width of the page */
 }
 .maps1{
-    height: 40vh;
+    height: 50vh;
+/* Allows the image cell to take up 50% of the page */
 }
 .maps2{
     height: 30vh;
+/* Forces the selection cell to take up just 30% of the page */
+}
+#maps{
+    height: 100%;
+    width: 80%;
+/* Gives the map images a decent size and ratio */
 }

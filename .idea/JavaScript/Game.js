@@ -491,9 +491,6 @@ function display(){
 // The div is assigned its unique class
             colourSelector(div, y, x)
 // Executes colourSelector to determine the colour of each div
-            div.innerHTML = map[y][x]
-// The div displays a value from the Forgotten Islands array in
-// correspondence with its position
             container.appendChild(div)
 // Adds the div to the parent div to be displayed
         }

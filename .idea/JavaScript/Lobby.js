@@ -1,4 +1,3 @@
-// Comments are below what they're talking about
 // sessionStorage was used rather than localStorage as it is removed after the user leaves the site
 function pageLoad(){
 // This function executes when as soon as the Lobby web page is loaded
@@ -65,12 +64,13 @@ function mapSelect(){
     console.log(sessionStorage.map)
 // Displays the map choice (used for testing)
     if(sessionStorage.map == "1"){
-        document.getElementById('maps').src="https://github.com/hobbs24/NEA/blob/master/.idea/Maps/ForgottenIslands.PNG"
+        document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/ForgottenIslands.png"
     }
     else if(sessionStorage.map == "2"){
-        document.getElementById('maps').src="https://github.com/hobbs24/NEA/blob/master/.idea/Maps/DesertStorm.PNG"
+        document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/DesertStorm.png"
     }
     else if(sessionStorage.map == "3"){
-        document.getElementById('maps').src="https://github.com/hobbs24/NEA/blob/master/.idea/Maps/GreenPlains.PNG"
+        document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/GreenPlains.png"
     }
+// Changes the source of the img tab and displays the appropriate image, decided by the player
 }

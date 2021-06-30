@@ -1,28 +1,45 @@
 body{
     background-color: white;
+/* Sets the background colour to white */
     font-family: Arial, serif;
+/* Sets the font to Arial in the serif family */
 }
 .container {
+/* This is where all the automatically created divs are put */
     display: grid;
+/* Makes the element a grid container */
     background-color: black;
+/* Sets the background colour to black to see if any divs aren't loaded properly */
     grid-template-columns: repeat(58, 1.724137%);
+/* Lays out the divs in rows of 58 equally sized columns */
     grid-template-rows: repeat(25, 4%);
+/* Lays out the divs in 25 equally sized rows */
     width: 100%;
+/* Makes the grid take up 100% of the possible space */
     height:90vh;
+/* Makes the height of the grid just 90% of the web page height */
     color: white;
+/* Makes the text colour white to contrast with the black background */
     font-size: 8px;
+/* Mkaes the font size relatively small */
 }
 .stats{
     text-align: center;
+/* Aligns the text to the center, looks nicer */
     color: black;
+/* Makes the text colour black to contrast with the body's white background */
     width: 100%;
+/*Makes the width 100% of the possible space */
 }
 #playerMetal{
     width: 5%;
+/* Makes the two columns with this id take up 5% of the width */
 }
 #playerPower{
     width: 5%;
+/* Makes the two columns with this id take up 5% of the width */
 }
 #waste{
     width: 80%;
+/*Takes up the remaining 80% of space with a blank column */
 }
