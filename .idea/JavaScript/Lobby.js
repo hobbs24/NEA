@@ -48,7 +48,7 @@ function prevent(){
 // Ensures the player and enemy start with enough Power to build resource generators
         alert("You and the enemy require at least 80 power at the start.")
     }
-    else if(sessionStorage.map == 0){
+    else if(sessionStorage.map == "0"){
 // Ensures a map is selected by comparing to the default value of 0
         alert("Please select a map.")
     }
