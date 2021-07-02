@@ -63,7 +63,10 @@ function mapSelect(){
 // Stores the map selected into Session Storage
     console.log(sessionStorage.map)
 // Displays the map choice (used for testing)
-    if(sessionStorage.map == "1"){
+    if(sessionStorage.map == "0"){
+        document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/BlackSquare.png"
+    }
+    else if(sessionStorage.map == "1"){
         document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/ForgottenIslands.png"
     }
     else if(sessionStorage.map == "2"){
