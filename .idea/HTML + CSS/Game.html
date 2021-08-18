@@ -11,29 +11,71 @@
     <link rel="stylesheet" type="text/css" href="Game.css">
 <!-- Adds Game.css as the css source -->
 </head>
-<body onload="initialiser(), display(), updateResources()">
+<body onload="initialiser(), display()">
 <!-- Runs these functions upon loading the page. They display certain values and also the map -->
-    <div>
+    <div class="top">
         <table class="stats">
 <!-- Creates a new table at the top of the page to display certain values -->
             <tr >
-                <td id="waste"></td>
+                <td id="buildOptions" rowspan="2"></td>
 <!-- The first column of the table used just to take up space -->
-                <td id="playerMetal">
+                <td id="queuedUnits" rowspan="2"></td>
+                <td title="Player 1's Resources." id="playerMetal">
 <!-- The second column just displays Metal: -->
                     <p>Metal:</p>
                 </td>
-                <td id="playerMetal">
+                <td title="The amount of metal earned from metal zones." id="playerMetal">
 <!-- The third column that displays the amount of metal the user has -->
-                    <p id="updatePM"></p>
+                    <p id="earnedPM"></p>
                 </td>
-                <td id="playerPower">
+                <td title="The amount of metal spent on construction." id="playerMetal">
+                    <p id="spentPM"></p>
+                </td>
+                <td title="The overall consumption of metal (if positive then build more)." id="playerMetal">
+                    <p id="overallPM"></p>
+                </td>
+                <td title="Player 1's Resources" id="playerPower">
 <!-- The fourth column that just displays Power: -->
                     <p>Power:</p>
                 </td>
-                <td id="playerPower">
+                <td title="The amount of power gained from power plants." id="playerPower">
 <!-- The fifth column that displays the amount of power the user has -->
-                    <p id="updatePP"></p>
+                    <p id="earnedPP"></p>
+                </td>
+                <td title="The amount of power spent on construction." id="playerPower">
+                    <p id="spentPP"></p>
+                </td>
+                <td title="The overall consumption of power (if positive then build more)." id="playerPower">
+                    <p id="overallPP"></p>
+                </td>
+                <td id="nextTurn" rowspan="2">
+                    <button onclick="nextTurn()">Next Turn</button>
+                </td>
+            </tr>
+            <tr>
+                <td title="Player 2's Resources" id="enemyMetal">
+                    <p>Metal:</p>
+                </td>
+                <td title="The amount of metal earned from metal zones." id="enemyMetal">
+                    <p id="earnedEM"></p>
+                </td>
+                <td title="The amount of metal spent on construction." id="enemyMetal">
+                    <p id="spentEM"></p>
+                </td>
+                <td title="The overall consumption of metal (if positive then build more)." id="enemyMetal">
+                    <p id="overallEM"></p>
+                </td>
+                <td title="Player 2's Resources" id="enemyPower">
+                    <p>Power:</p>
+                </td>
+                <td title="The amount of power gained from power plants." id="enemyPower">
+                    <p id="earnedEP"></p>
+                </td>
+                <td title="The amount of power spent on construction." id="enemyPower">
+                    <p id="spentEP"></p>
+                </td>
+                <td title="The overall consumption of power (if positive then build more)." id="enemyPower">
+                    <p id="overallEP"></p>
                 </td>
             </tr>
         </table >

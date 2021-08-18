@@ -16,7 +16,7 @@
 <!-- Upon loading the page, the pageLoad function executes -->
     <div class="header">
 <!-- Creates a new class that acts as the header -->
-        <h1>Wars of the Rogue</h1>
+        <h1 title="The name of the strategy game you are about to play.">Wars of the Rogue</h1>
 <!-- Simply displays Wars of the Rogue as a title -->
     </div>
     <form id="settings">
@@ -27,12 +27,12 @@
 <!-- Creates the first row -->
                 <td>
 <!-- Creates the first column -->
-                    <h3>Player Colour</h3>
+                    <h3 title="This allows you to change Player 1's colour.">Player 1's Colour</h3>
                     <input type="color" name="colour" id="playerColour">
 <!-- Colour input type, allows user to input a wide range of colours -->
                 </td>
                 <td>
-                    <h3>Enemy Colour</h3>
+                    <h3 title="This allows you to change Player 2's colour.">Player 2's Colour</h3>
                     <input type="color" name="colour" id="enemyColour">
                 </td>
             </tr>
@@ -40,41 +40,49 @@
 <!-- Creates second row -->
                 <td colspan="2" >
 <!-- Causes the column to span across 2 -->
-                    <button type="submit">PLAY GAME</button>
+                    <button type="submit" title="Click here to start the game.">PLAY GAME</button>
 <!-- Submit button causes a JS function to operate -->
                 </td>
             </tr>
             <tr class="lthirdColumn">
                 <td colspan="2">
-                    <h2>Extra Settings</h2>
+                    <h2 title="These settings allow you to change the difficulty of the game a bit.">Extra Settings</h2>
                 </td>
             </tr>
             <tr class="lfourthColumn">
                 <td>
-                    <h4>Player Metal</h4>
+                    <h4 title="Metal is required to build units and buildings.
+This is the amount of metal Player 1 gains per turn without controlling metal zones.
+A higher value is easier but you need less metal than power.">Player 1 Metal</h4>
                     <div>
-                        <input type="number" max="5000" min="50" step="10" placeholder="150" id="playerMetal">
+                        <input type="number" max="100" min="1" step="1" placeholder="10" id="playerMetal">
 <!-- Number input type. Allows the user to input certain values within a set range -->
                     </div>
                 </td>
                 <td>
-                    <h4>Player Power</h4>
+                    <h4 title="Power is required to build units and buildings.
+This is the amount of power Player 1 gains per turn without building power plants.
+A higher value is easier but you need more power than metal.">Player 1 Power</h4>
                     <div>
-                        <input type="number" max="7500" min="80" step="10" placeholder="250" id="playerPower">
+                        <input type="number" max="120" min="1" step="1" placeholder="15" id="playerPower">
                     </div>
                 </td>
             </tr>
             <tr class="lfifthColumn">
                 <td>
-                    <h4>Enemy Metal</h4>
+                    <h4 title="Metal is required to build units and buildings.
+This is the amount of metal Player 2 gains per turn without controlling metal zones.
+A higher value is easier but you need less metal than power.">Player 2 Metal</h4>
                     <div>
-                        <input type="number" max="5000" min="50" step="10" placeholder="150" id="enemyMetal">
+                        <input type="number" max="100" min="1" step="1" placeholder="10" id="enemyMetal">
                     </div>
                 </td>
                 <td>
-                    <h4>Enemy Power</h4>
+                    <h4 title="Power is required to build units and buildings.
+This is the amount of power Player 2 gains per turn without building power plants.
+A higher value is easier but you need more power than metal.">Player 2 Power</h4>
                     <div>
-                        <input type="number" max="7500" min="80" step="10" placeholder="250" id="enemyPower">
+                        <input type="number" max="100" min="1" step="1" placeholder="15" id="enemyPower">
                     </div>
                 </td>
             </tr>
@@ -86,7 +94,7 @@
         <tr>
         <td class="maps1">
             <picture>
-                <img id="maps" src="http://localhost:63342/NEA/.idea/Maps/BlackSquare.png">
+                <img title="If a map is selected, it'll show here." id="maps" src="http://localhost:63342/NEA/.idea/Maps/BlackSquare.png">
             </picture>
 <!-- This allows the JS file to change the source to change what image gets displayed -->
         </td>
@@ -94,7 +102,8 @@
     <tr>
         <td class="maps2">
             <form>
-                <label for="mapSelection">Choose a map:</label>
+                <label for="mapSelection" title="This allows you to change the map. Different maps have different terrains
+and this affects what units may be best to use.">Choose a map:</label>
 <!-- Displays text next to the selection input -->
                 <select name="mapSelection" id="mapSelection" onchange="mapSelect()">
 <!-- Selection input, allows user to select from set options
@@ -103,14 +112,14 @@
 <!-- The default option -->
                     <optgroup label="Naval Maps">
 <!-- A label for a group of maps of a similar type -->
-                        <option value="1">Forgotten Islands</option>
+                        <option value="1" title="A naval-based map with two mirrored islands.">Forgotten Islands</option>
 <!-- A selectable option -->
                     </optgroup>
                     <optgroup label="Land Maps">
 <!-- A second label for a different map type -->
-                        <option value="2">Desert Storm</option>
+                        <option value="2" title="A land-based map set in the desert with a small oasis.">Desert Storm</option>
 <!-- Other selectable option -->
-                        <option value="3">Green Plains</option>
+                        <option value="3" title="A land-based map set in a grassy plain.">Green Plains</option>
                     </optgroup>
                 </select>
             </form>

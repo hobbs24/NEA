@@ -32,21 +32,21 @@ function prevent(){
         alert("You and the enemy require different colours before playing.")
 // An appropriate message is displayed
     }
-    else if(5000<sessionStorage.playerMetal || 5000<sessionStorage.enemyMetal){
-// Ensures that neither the player or enemy start with too much Metal
-        alert("You and the enemy can have at a maximum 5000 metal at the start.")
+    else if(100<sessionStorage.playerMetal || 100<sessionStorage.enemyMetal){
+// Ensures that neither the player or enemy earn too much Metal from the start
+        alert("You and the enemy can earn a maximum of 100 metal without controlling metal zones.")
     }
-    else if(sessionStorage.playerMetal<50 || sessionStorage.enemyMetal<50){
-// Ensures the player and enemy start with enough Metal to build resource generators
-        alert("You and the enemy require at least 50 metal at the start.")
+    else if(sessionStorage.playerMetal<1 || sessionStorage.enemyMetal<1){
+// Ensures the player and enemy start earning enough Metal to build resource generators
+        alert("You and the enemy must earn at least one metal per turn.")
     }
-    else if(7500<sessionStorage.playerPower || 7500<sessionStorage.enemyPower){
-// Ensures that neither the player or enemy start with too much Power
-        alert("You and the enemy can have at a maximum 7500 power at the start.")
+    else if(1200<sessionStorage.playerPower || 120<sessionStorage.enemyPower){
+// Ensures that neither the player or enemy earn too much Power from the start
+        alert("You and the enemy can earn a maximum of 120 power without building power plants.")
     }
-    else if(sessionStorage.playerPower<50 || sessionStorage.enemyPower<50){
-// Ensures the player and enemy start with enough Power to build resource generators
-        alert("You and the enemy require at least 80 power at the start.")
+    else if(sessionStorage.playerPower<1 || sessionStorage.enemyPower<1){
+// Ensures the player and enemy start earning enough Power to build resource generators
+        alert("You and the enemy must earn at least one power per turn.")
     }
     else if(sessionStorage.map == "0"){
 // Ensures a map is selected by comparing to the default value of 0
@@ -65,15 +65,19 @@ function mapSelect(){
 // Displays the map choice (used for testing)
     if(sessionStorage.map == "0"){
         document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/BlackSquare.png"
+        document.getElementById("maps").title="If a map is selected, it'll show here."
     }
     else if(sessionStorage.map == "1"){
         document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/ForgottenIslands.png"
+        document.getElementById("maps").title="A naval-based map with two mirrored islands."
     }
     else if(sessionStorage.map == "2"){
         document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/DesertStorm.png"
+        document.getElementById("maps").title="A land-based map set in the desert with a small oasis."
     }
     else if(sessionStorage.map == "3"){
         document.getElementById('maps').src="http://localhost:63342/NEA/.idea/Maps/GreenPlains.png"
+        document.getElementById("maps").title="A land-based map set in a grassy plain."
     }
 // Changes the source of the img tab and displays the appropriate image, decided by the player
 }

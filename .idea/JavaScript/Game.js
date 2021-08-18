@@ -8,8 +8,14 @@ function initialiser(){
     console.log(sessionStorage.enemyMetal)
     console.log(sessionStorage.enemyPower)
     console.log(sessionStorage.map)
+
 // Values put into Session Storage are displayed to ensure the data moved successfully
 }
+let turntotal = 0
+let spentPM = 0
+let spentPP = 0
+let spentEM = 0
+let spentEP = 0
 let forgottenIslands = [
 // Creates a 2D array for the Forgotten Islands map
     ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
@@ -513,9 +519,25 @@ function mapMaker(){
 function updateResources(){
 // Executes after display when the Game web page loads
 // Can also be used by many different functions in the future
-    document.getElementById("updatePM").innerHTML = sessionStorage.playerMetal
-    document.getElementById("updatePP").innerHTML = sessionStorage.playerPower
-// Displays the amount of Metal and Power the player has
+    if(turntotal%2==0){
+        document.getElementById("earnedPM").innerHTML = "+"+sessionStorage.playerMetal
+        document.getElementById("earnedPP").innerHTML = "+"+sessionStorage.playerPower
+        document.getElementById("spentPM").innerHTML = "-"+spentPM
+        document.getElementById("spentPP").innerHTML = "-"+spentPP
+        document.getElementById("overallPM").innerHTML = "+"+(sessionStorage.playerMetal - spentPM)
+        document.getElementById("overallPP").innerHTML = "+"+(sessionStorage.playerPower - spentPP)
+// Displays the amount of Metal and Power player 1 earns
+    }
+    else{
+        document.getElementById("earnedEM").innerHTML = "+"+sessionStorage.enemyMetal
+        document.getElementById("earnedEP").innerHTML = "+"+sessionStorage.enemyPower
+        document.getElementById("spentEM").innerHTML = "-"+spentEM
+        document.getElementById("spentEP").innerHTML = "-"+spentEP
+        document.getElementById("overallEM").innerHTML = "+"+(sessionStorage.enemyMetal - spentEM)
+        document.getElementById("overallEP").innerHTML = "+"+(sessionStorage.enemyPower - spentEP)
+// Displays the amount of Metal and Power player 2 earns
+    }
+
 }
 function colourSelector(div, y, x){
 // This function executes when function display tells it to
@@ -545,4 +567,10 @@ function colourSelector(div, y, x){
     }
 // Assigning the correct background colour to a div based of
 // the value in array map
+}
+
+function nextTurn(){
+    updateResources()
+    turntotal++
+    console.log(turntotal)
 }

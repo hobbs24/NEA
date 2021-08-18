@@ -16,7 +16,7 @@ body{
 /* Lays out the divs in 25 equally sized rows */
     width: 100%;
 /* Makes the grid take up 100% of the possible space */
-    height:90vh;
+    height:88vh;
 /* Makes the height of the grid just 90% of the web page height */
     color: white;
 /* Makes the text colour white to contrast with the black background */
@@ -31,15 +31,60 @@ body{
     width: 100%;
 /*Makes the width 100% of the possible space */
 }
+.top{
+    height: 10vh;
+}
 #playerMetal{
     width: 5%;
+    font-size: smaller;
 /* Makes the two columns with this id take up 5% of the width */
 }
 #playerPower{
     width: 5%;
+    font-size: smaller;
 /* Makes the two columns with this id take up 5% of the width */
 }
-#waste{
-    width: 80%;
+#enemyMetal{
+    width: 5%;
+    font-size: smaller;
+/* Makes the two columns with this id take up 5% of the width */
+}
+#enemyPower{
+    width: 5%;
+    font-size: smaller;
+/* Makes the two columns with this id take up 5% of the width */
+}
+#buildOptions{
+    width: 35%;
 /*Takes up the remaining 80% of space with a blank column */
+}
+#queuedUnits{
+    width: 20%;
+}
+#nextTurn{
+    width: 5%;
+}
+#earnedPM{
+    color: #28b308;
+}
+#earnedPP{
+    color: #28b308;
+}
+#earnedEM{
+    color: #28b308;
+}
+#earnedEP{
+    color: #28b308;
+}
+#spentPM{
+    color: firebrick;
+}
+#spentPP{
+    color: firebrick;
+}
+#spentEM{
+    color: firebrick;
+}
+#spentEP{
+    color: firebrick;
 }
