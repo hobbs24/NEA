@@ -17,12 +17,40 @@
         <table class="stats">
 <!-- Creates a new table at the top of the page to display certain values -->
             <tr >
-                <td id="buildOptions" rowspan="2"></td>
+                <td title="The Build Option Menu.
+Click something you want to build and place it on the map.
+Everything except the Naval Factory must be built on land.
+The Naval Factory is the only building that can be built on the sea." id="buildOptions" rowspan="2">
+                    <button title="Metal Extractor
+Earns 8 Metal per turn
+Requires 6 Metal and 8 Power Overall
+Max progress of 3 Metal and 4 Power per turn (2 Turns)" onclick="building1Selected()">ዧ</button>
+                    <button title="Power Plant
+Earns 12 Power per turn
+Requires 5 Metal and 8 Power Overall
+Max progress of 5 Metal and 8 Power per turn (1 Turn)" onclick="building2Selected()">ቸ</button>
+                    <button title="Land Factory
+Constructs land units
+Requires 16 Metal and 28 Power overall
+Max progress of 8 Metal and 14 Power per turn (2 Turns)" onclick="building3Selected()">ጁ</button>
+                    <button title="Naval Factory
+Constructs naval units
+Requires 30 Metal and 48 Power overall
+Max progress of 10 Metal and 18 Power per turn (3 Turns)" onclick="building4Selected()">ᎇ</button>
+                    <button title="Turret
+Attacks units within a small range
+Requires 32 Metal and 44 Power overall
+Max progress of 16 Metal and 22 Power per turn (2 Turns)" onclick="building5Selected()">ኡ</button>
+                    <button title="Heavy Artillery
+Attacks units within a large range
+Requires 120 Metal and 180 Power overall
+Max progress of 30 Metal and 45 Power per turn (4 Turns)" onclick="building6Selected()">ፏ</button>
+                </td>
 <!-- The first column of the table used just to take up space -->
                 <td id="queuedUnits" rowspan="2"></td>
                 <td title="Player 1's Resources." id="playerMetal">
 <!-- The second column just displays Metal: -->
-                    <p>Metal:</p>
+                    <p id="p1Metal">Metal:</p>
                 </td>
                 <td title="The amount of metal earned from metal zones." id="playerMetal">
 <!-- The third column that displays the amount of metal the user has -->
@@ -36,7 +64,7 @@
                 </td>
                 <td title="Player 1's Resources" id="playerPower">
 <!-- The fourth column that just displays Power: -->
-                    <p>Power:</p>
+                    <p id="p1Power">Power:</p>
                 </td>
                 <td title="The amount of power gained from power plants." id="playerPower">
 <!-- The fifth column that displays the amount of power the user has -->
@@ -54,7 +82,7 @@
             </tr>
             <tr>
                 <td title="Player 2's Resources" id="enemyMetal">
-                    <p>Metal:</p>
+                    <p id="p2Metal">Metal:</p>
                 </td>
                 <td title="The amount of metal earned from metal zones." id="enemyMetal">
                     <p id="earnedEM"></p>
@@ -66,7 +94,7 @@
                     <p id="overallEM"></p>
                 </td>
                 <td title="Player 2's Resources" id="enemyPower">
-                    <p>Power:</p>
+                    <p id="p2Power">Power:</p>
                 </td>
                 <td title="The amount of power gained from power plants." id="enemyPower">
                     <p id="earnedEP"></p>

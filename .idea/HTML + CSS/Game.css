@@ -1,5 +1,5 @@
 body{
-    background-color: white;
+    background-color: black;
 /* Sets the background colour to white */
     font-family: Arial, serif;
 /* Sets the font to Arial in the serif family */
@@ -37,21 +37,25 @@ body{
 #playerMetal{
     width: 5%;
     font-size: smaller;
+    color: white;
 /* Makes the two columns with this id take up 5% of the width */
 }
 #playerPower{
     width: 5%;
     font-size: smaller;
+    color: white;
 /* Makes the two columns with this id take up 5% of the width */
 }
 #enemyMetal{
     width: 5%;
     font-size: smaller;
+    color: white;
 /* Makes the two columns with this id take up 5% of the width */
 }
 #enemyPower{
     width: 5%;
     font-size: smaller;
+    color: white;
 /* Makes the two columns with this id take up 5% of the width */
 }
 #buildOptions{
