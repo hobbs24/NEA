@@ -17,7 +17,7 @@ body{
     width: 100%;
 /* Makes the grid take up 100% of the possible space */
     height:88vh;
-/* Makes the height of the grid just 90% of the web page height */
+/* Makes the height of the grid just 88% of the web page height */
     color: white;
 /* Makes the text colour white to contrast with the black background */
     font-size: 8px;
@@ -29,44 +29,47 @@ body{
     color: black;
 /* Makes the text colour black to contrast with the body's white background */
     width: 100%;
-/*Makes the width 100% of the possible space */
+/* Makes the width 100% of the possible space */
 }
 .top{
     height: 10vh;
+/* Makes the table take up 10% of the vertical height of the webpage */
 }
 #playerMetal{
     width: 5%;
     font-size: smaller;
     color: white;
-/* Makes the two columns with this id take up 5% of the width */
+/* Makes the column with this id take up 5% of the width */
 }
 #playerPower{
     width: 5%;
     font-size: smaller;
     color: white;
-/* Makes the two columns with this id take up 5% of the width */
+/* Makes the columns with this id take up 5% of the width */
 }
 #enemyMetal{
     width: 5%;
     font-size: smaller;
     color: white;
-/* Makes the two columns with this id take up 5% of the width */
+/* Makes the columns with this id take up 5% of the width */
 }
 #enemyPower{
     width: 5%;
     font-size: smaller;
     color: white;
-/* Makes the two columns with this id take up 5% of the width */
+/* Makes the columns with this id take up 5% of the width */
 }
 #buildOptions{
     width: 35%;
-/*Takes up the remaining 80% of space with a blank column */
+/* Takes up 35% of the width for displaying the build options */
 }
 #queuedUnits{
     width: 20%;
+/* Leaves 20% of the width to display build queues for future iterations */
 }
 #nextTurn{
     width: 5%;
+/* Allows the Next Turn button to have 5% of the width */
 }
 #earnedPM{
     color: #28b308;
@@ -80,6 +83,7 @@ body{
 #earnedEP{
     color: #28b308;
 }
+/* Colours all earned resources in green */
 #spentPM{
     color: firebrick;
 }
@@ -92,3 +96,4 @@ body{
 #spentEP{
     color: firebrick;
 }
+/* Colours all spent resources in red */

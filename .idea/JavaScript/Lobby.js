@@ -33,19 +33,19 @@ function prevent(){
 // An appropriate message is displayed
     }
     else if(100<sessionStorage.playerMetal || 100<sessionStorage.enemyMetal){
-// Ensures that neither the player or enemy earn too much Metal from the start
+// Ensures that neither players earn too much Metal from the start
         alert("You and the enemy can earn a maximum of 100 metal without controlling metal zones.")
     }
     else if(sessionStorage.playerMetal<1 || sessionStorage.enemyMetal<1){
-// Ensures the player and enemy start earning enough Metal to build resource generators
+// Ensures the players both earn enough Metal to build resource generators
         alert("You and the enemy must earn at least one metal per turn.")
     }
-    else if(1200<sessionStorage.playerPower || 120<sessionStorage.enemyPower){
-// Ensures that neither the player or enemy earn too much Power from the start
+    else if(120<sessionStorage.playerPower || 120<sessionStorage.enemyPower){
+// Ensures that neither player earns too much Power from the start
         alert("You and the enemy can earn a maximum of 120 power without building power plants.")
     }
     else if(sessionStorage.playerPower<1 || sessionStorage.enemyPower<1){
-// Ensures the player and enemy start earning enough Power to build resource generators
+// Ensures the players both earn enough Power to build resource generators
         alert("You and the enemy must earn at least one power per turn.")
     }
     else if(sessionStorage.map == "0"){
