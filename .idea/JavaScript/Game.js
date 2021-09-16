@@ -12,6 +12,8 @@ function initialiser(){
 }
 let turnTotal = 0
 let playerTurn = 0
+let player1Turn = 0
+let player2Turn = 0
 // Used to see how many turns have been taken and determine who's turn it is
 let earnedMetal = 0
 let earnedPower = 0
@@ -35,7 +37,7 @@ let canBuild = 0
 // Used to see if the player can build the selected building in the selected div or not
 let metal = 0
 let power = 0
-// Used to store how much Metal and Powercan be spent on a building per turn at the most
+// Used to store how much Metal and Power can be spent on a building per turn at the most
 let resourceMultiplier = 0
 // Used to store the multiplier that finds how much Metal and Power will actually be spent
 // on a building per turn, as the player may be in a resource deficit
@@ -579,7 +581,7 @@ function startConstruction(id){
     if(playerTurn==0){
         alert("Click the Next Turn button to start a player's turn")
     }
-// Ensures the players have started their turn as a building can't be built by nobobdy
+// Ensures the players have started their turn as a building can't be built by nobody
     else if(selectedBuilding!=0){
 // Checks to see if a building has been selected or not
         countBuildings()
@@ -590,9 +592,14 @@ function startConstruction(id){
             terrainChecker()
 // If they can, function "terrainChecker" executes to ensure the building can be constructed on that terrain
             if(canBuild==true){
+                console.log("Construction Started")
                 firstEmptyBuilding()
+                findEconomy()
+                updateResources()
 // If the building can, function "firstEmptyBuilding" executes to place the building in the first
 // empty spot in the 20-sized array
+// Function "findEconomy" and "updateEconomy" run again to reflect changes
+// in the player's economy
             }
         }
         selectedBuilding = 0
@@ -622,7 +629,6 @@ function mapMaker(){
 function updateResources(){
 // Executes after display when the Game web page loads
 // Can also be used by many different functions in the future
-    let sign = 0
     if(playerTurn==1){
         netIncome()
 // Executes "netIncome" to find out the overall earning of resources and
@@ -669,7 +675,6 @@ function netIncome(){
     }
 // Decides what sign should be displayed ("-" is automatically shown
 // for negative numbers so is not assigned here)
-    return netMetal, netPower, metalSign, powerSign
 }
 
 function colourSelector(div, y, x){
@@ -720,27 +725,20 @@ function colourSelector(div, y, x){
 }
 
 function nextTurn(){
+    selectedBuilding = 0
 // This function executes when the "Next Turn" button gets clicked
-
-    console.log("Player turn "+ playerTurn)
     if(turnTotal%2==0){
 // This checks to see if it's player 2's turn
+        player1Turn++
+        console.log("Player 1 Turn "+player1Turn)
         playerTurn = 1
-        earnedMetal = parseInt(sessionStorage.playerMetal)
-        earnedPower = parseInt(sessionStorage.playerPower)
-        spentMetal = 0
-        spentPower = 0
 // Makes the turn player 1's and resets some data
     }
     else if(turnTotal%2==1){
 // This checks to see if it's player 1's turn
+        player2Turn++
         playerTurn = 2
-        earnedMetal = parseInt(sessionStorage.enemyMetal)
-        earnedPower = parseInt(sessionStorage.enemyPower)
-        spentMetal = 0
-        spentPower = 0
-// Makes the turn player 2's and resets some data
-
+// Makes the turn player 2's
     }
     findEconomy()
 // Executes "findEconomy" to see the total income and expenditure of the player
@@ -755,6 +753,18 @@ function nextTurn(){
 }
 
 function findEconomy(){
+    if(playerTurn==1){
+        earnedMetal = parseInt(sessionStorage.playerMetal)
+        earnedPower = parseInt(sessionStorage.playerPower)
+        spentMetal = 0
+        spentPower = 0
+    }
+    else{
+        earnedMetal = parseInt(sessionStorage.enemyMetal)
+        earnedPower = parseInt(sessionStorage.enemyPower)
+        spentMetal = 0
+        spentPower = 0
+    }
     for(let i=0; i<20; i++){
 // This function must run 20 times to check each entry in the "buildings" array
         if(buildings[i].player==playerTurn && (buildings[i].powerRequired<=0||buildings[i].metalRequired<=0)){
@@ -831,10 +841,16 @@ function spendEconomy(){
 // Subtracts the amount of Metal able to be spent (decided by multiplying "metal" and the
 // multiplier together) from the amount still required
             buildings[i].powerRequired = buildings[i].powerRequired-(power*resourceMultiplier)
-// Subtracts the amoutn of Power able to be spent (decided by multiplying "power" and the
+// Subtracts the amount of Power able to be spent (decided by multiplying "power" and the
 // multiplier together) from the amount still required
+            if(buildings[i].player==playerTurn && (buildings[i].metalRequired<=0||buildings[i].powerRequired<=0)){
+                console.log("Construction Complete")
+
+            }
         }
     }
+    findEconomy()
+    updateResources()
 }
 
 function buildingTypeChecker(i){
@@ -957,6 +973,7 @@ function firstEmptyBuilding(){
             document.getElementById(squareId).innerHTML = selectedBuilding.symbol
             document.getElementById(squareId).style.fontSize = "1.5vw"
             document.getElementById(squareId).style.textAlign = "center"
+            document.getElementById(squareId).value = "occupied"
 // The building is then displayed on the map in the clicked div
             if(playerTurn==1){
                 document.getElementById(squareId).style.color = sessionStorage.playerColour
@@ -974,13 +991,14 @@ function firstEmptyBuilding(){
 function terrainChecker(){
     let terrain = document.getElementById(squareId).value
 // This finds the terrain of the clicked div
-    if(terrain!=selectedBuilding.terrain){
+    if(terrain=="occupied"){
         canBuild = false
-        alert("That is the wrong terrain for the building")
+        alert("That square is already occupied by a building")
+    }
+    else if(terrain!=selectedBuilding.terrain){
+        canBuild = false
+        alert("That is the wrong terrain for building "+selectedBuilding.symbol)
     }
 // If the terrain for the building is wrong, the player is no longer able to build the building there
-    else{
-        alert("You can build on square "+squareId)
-    }
 // If the terrain is suitable, construction goes ahead
 }
