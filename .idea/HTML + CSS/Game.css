@@ -18,74 +18,63 @@ body{
 /* Makes the grid take up 100% of the possible space */
     height:86vh;
 /* Makes the height of the grid just 88% of the web page height */
-    color: white;
-/* Makes the text colour white to contrast with the black background */
-    font-size: 8px;
-/* Makes the font size relatively small */
 }
 .stats1{
-    color: black;
-/* Makes the text colour black to contrast with the body's white background */
+    text-align: center;
+    color: white;
     width: 100%;
 /* Makes the width 100% of the possible space */
 }
 .stats2{
     text-align: center;
 /* Aligns the text to the center, looks nicer */
-    color: black;
-/* Makes the text colour black to contrast with the body's white background */
+    color: white;
     width: 100%;
 /* Makes the width 100% of the possible space */
 }
 .stats3{
     text-align: center;
 /* Aligns the text to the center, looks nicer */
-    color: black;
-/* Makes the text colour black to contrast with the body's white background */
+    color: white;
     width: 100%;
 /* Makes the width 100% of the possible space */
 }
 .stats4{
     text-align: center;
 /* Aligns the text to the center, looks nicer */
-    color: black;
-/* Makes the text colour black to contrast with the body's white background */
+    color: white;
     width: 100%;
-    /* Makes the width 100% of the possible space */
+/* Makes the width 100% of the possible space */
 }
 .top1{
     height: 12vh;
-    width: 45vw;
+    width: 48vw;
     float: left;
 /* Makes the table take up 10% of the vertical height of the webpage */
 }
 .top2{
     height: 12vh;
-    width: 45vw;
+    width: 48vw;
     float: right;
 }
 #playerMetal{
     width: 5%;
     font-size: smaller;
-    color: white;
 /* Makes the column with this id take up 5% of the width */
 }
 #playerPower{
     width: 5%;
     font-size: smaller;
-    color: white;
 /* Makes the columns with this id take up 5% of the width */
 }
 #enemyMetal{
     width: 5%;
     font-size: smaller;
-    color: white;
 /* Makes the columns with this id take up 5% of the width */
 }
 #enemyPower{
     width: 5%;
     font-size: smaller;
-    color: white;
 /* Makes the columns with this id take up 5% of the width */
 }
 #buildOptions{
@@ -128,18 +117,15 @@ body{
 /* Colours all spent resources in red */
 .buildLimits{
     width: 10%;
-    background-color: white;
     font-size: smaller;
 }
 .row{
     height: 50%;
 }
 .unitHealth{
-    background-color: white;
     width: 20%;
 }
 .constructionProgress{
-    background-color: white;
     width: 20%;
 }
 .playerTurn{
@@ -156,6 +142,6 @@ body{
 }
 .buttons{
     align-items: center;
-    background-color: white;
+    background-color: black;
     color: blue;
 }

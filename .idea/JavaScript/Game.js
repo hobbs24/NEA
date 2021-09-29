@@ -578,9 +578,9 @@ function display(){
     document.getElementById("p1UnitLimit").style.color = sessionStorage.playerColour
     document.getElementById("p2BuildLimit").style.color = sessionStorage.enemyColour
     document.getElementById("p2UnitLimit").style.color = sessionStorage.enemyColour
-    document.getElementById("p1BuildLimit").innerHTML = "0"
+    document.getElementById("p1BuildLimit").innerHTML = "0/"+(buildings.length/2)
     document.getElementById("p1UnitLimit").innerHTML = "0"
-    document.getElementById("p2BuildLimit").innerHTML = "0"
+    document.getElementById("p2BuildLimit").innerHTML = "0/"+(buildings.length/2)
     document.getElementById("p2UnitLimit").innerHTML = "0"
 // Makes the "Metal:" and "Power:" text the colours selected by the players earlier
 }
@@ -631,10 +631,11 @@ function clickedDiv(id){
 function unitUIDisplay(check){
     if(check==1){
 // "check" is used to see what the function should be doing
-        alert("You have selected a unit")
+        alert("You have selected a building")
         for(i=0;i<buildings.length;i++){
             if(buildings[i].square==squareId){
-                document.getElementById("unitHealth").innerHTML = buildings[i].health+" Hit Points Remaining"
+                let div=document.getElementById(buildings[i].square)
+                document.getElementById("unitHealth").innerHTML = div.getAttribute("data-health")+" Hit Points Remaining"
             }
         }
     }
@@ -651,10 +652,10 @@ function startConstruction(){
 // If they can, function "terrainChecker" executes to ensure the building can be constructed on that terrain
         if(canBuild==true){
             if(playerTurn==1){
-            document.getElementById("p1BuildLimit").innerHTML = ownedBuildings+1
+            document.getElementById("p1BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
             }
             else if(playerTurn==2){
-            document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1
+            document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
             }
             console.log("Construction Started")
             firstEmptyBuilding()
@@ -795,6 +796,8 @@ function nextTurn(){
     chosenBuilding = 0
     selectedBuilding = 0
 // This function executes when the "Next Turn" button gets clicked
+    buttons = document.getElementsByClassName("buttons")
+    document.getElementById("unitHealth").innerText = ""
     if(turnTotal%2==0){
 // This checks to see if it's player 2's turn, or if nobody has started their turn yet
         player1Turn++
@@ -803,6 +806,9 @@ function nextTurn(){
         playerColour = sessionStorage.playerColour
         document.getElementById("playerTurn").style.color = sessionStorage.playerColour
         document.getElementById("playerTurn").innerHTML = "Player 1's Turn"
+        for(i=0;i<buttons.length;i++){
+            buttons[i].style.color = sessionStorage.playerColour
+        }
 // Makes the turn player 1's and resets some data
     }
     else if(turnTotal%2==1){
@@ -812,6 +818,9 @@ function nextTurn(){
         playerColour = sessionStorage.enemyColour
         document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
         document.getElementById("playerTurn").innerHTML = "Player 2's Turn"
+        for(i=0;i<buttons.length;i++){
+            buttons[i].style.color = sessionStorage.enemyColour
+        }
 // Makes the turn player 2's
     }
     findEconomy()
@@ -827,17 +836,15 @@ function nextTurn(){
 }
 
 function findEconomy(){
+    spentMetal = 0
+    spentPower = 0
     if(playerTurn==1){
         earnedMetal = parseInt(sessionStorage.playerMetal)
         earnedPower = parseInt(sessionStorage.playerPower)
-        spentMetal = 0
-        spentPower = 0
     }
     else{
         earnedMetal = parseInt(sessionStorage.enemyMetal)
         earnedPower = parseInt(sessionStorage.enemyPower)
-        spentMetal = 0
-        spentPower = 0
     }
     for(let i=0; i<20; i++){
 // This function must run 20 times to check each entry in the "buildings" array
