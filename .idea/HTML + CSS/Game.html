@@ -13,86 +13,126 @@
 </head>
 <body onload="initialiser(), display()">
 <!-- Runs these functions upon loading the page. They display certain values and also the map -->
-    <div class="top">
-        <table class="stats">
+    <div class="top1">
+        <table class="stats1">
 <!-- Creates a new table at the top of the page to display certain values -->
-            <tr>
+            <tr class="row">
 <!-- Creates the first of two rows -->
                 <td title="The Build Option Menu.
 Click something you want to build and place it on the map.
 Everything except the Naval Factory must be built on land.
-The Naval Factory is the only building that can be built on the sea." id="buildOptions" rowspan="2">
+The Naval Factory is the only building that can be built on the sea." id="buildOptions">
 <!-- Creates the first column which covers two rows. This is used to display
      the build options and also a little box to say what it is when
      the mouse hovers over it -->
                     <button title="Metal Extractor
 Earns 8 Metal per turn
 Requires 6 Metal and 8 Power Overall
-Max progress of 3 Metal and 4 Power per turn (2 Turns)" onclick="building1Selected()">ዧ</button>
+Max progress of 3 Metal and 4 Power per turn (2 Turns)" onclick="building1Selected()"
+                    class="buttons">ዧ</button>
 <!-- Creates a button to represent the first build option (Metal Extractor).
      Executes function "building1Selected" to determine what building may be constructed.
      The following buttons are all for their own buildings and do the same thing -->
                     <button title="Power Plant
 Earns 12 Power per turn
 Requires 5 Metal and 8 Power Overall
-Max progress of 5 Metal and 8 Power per turn (1 Turn)" onclick="building2Selected()">ቸ</button>
+Max progress of 5 Metal and 8 Power per turn (1 Turn)" onclick="building2Selected()"
+                    class="buttons">ቸ</button>
                     <button title="Land Factory
 Constructs land units
 Requires 16 Metal and 28 Power overall
-Max progress of 8 Metal and 14 Power per turn (2 Turns)" onclick="building3Selected()">ጁ</button>
+Max progress of 8 Metal and 14 Power per turn (2 Turns)" onclick="building3Selected()"
+                    class="buttons">ጁ</button>
                     <button title="Naval Factory
 Constructs naval units
 Requires 30 Metal and 48 Power overall
-Max progress of 10 Metal and 18 Power per turn (3 Turns)" onclick="building4Selected()">ᎇ</button>
+Max progress of 10 Metal and 16 Power per turn (3 Turns)" onclick="building4Selected()"
+                    class="buttons">ᎇ</button>
                     <button title="Turret
 Attacks units within a small range
 Requires 32 Metal and 44 Power overall
-Max progress of 16 Metal and 22 Power per turn (2 Turns)" onclick="building5Selected()">ኡ</button>
+Max progress of 16 Metal and 22 Power per turn (2 Turns)" onclick="building5Selected()"
+                    class="buttons">ኡ</button>
                     <button title="Heavy Artillery
 Attacks units within a large range
 Requires 120 Metal and 180 Power overall
-Max progress of 30 Metal and 45 Power per turn (4 Turns)" onclick="building6Selected()">ፏ</button>
+Max progress of 30 Metal and 45 Power per turn (4 Turns)" onclick="building6Selected()"
+                    class="buttons">ፏ</button>
                 </td>
-                <td id="queuedUnits" rowspan="2"></td>
+                <td id="queuedUnits" title="Units queued for construction.
+Click on a unit to remove it from the queue."></td>
 <!-- Creates a second column that spans across two rows. This will be used in later iterations -->
+                <td class="button">
+                    <button onclick="nextTurn()">Next Turn</button>
+                </td>
+            </tr>
+        </table>
+        <table class="stats3">
+            <tr class="row">
+                <td class="buildLimits" title="Player 1's Building Limit">
+                    <p id="p1BuildLimit"></p>
+                </td>
+                <td class="buildLimits" title="Player 1's Unit Limit">
+                    <p id="p1UnitLimit"></p>
+                </td>
+                <td class="buildLimits" title="Player 2's Building Limit">
+                    <p id="p2BuildLimit"></p>
+                </td>
+                <td class="buildLimits" title="Player 2's Unit Limit">
+                    <p id="p2UnitLimit"></p>
+                </td>
+                <td class="unitHealth" title="The health remaining of the selected unit">
+                    <p id="unitHealth"></p>
+                </td>
+                <td class="constructionProgress" title="The progress of constructing the selected unit
+or first unit of the factory queue">
+                    <p id="constructionProgress"></p>
+                </td>
+                <td class="playerTurn" title="Whose turn it currently is">
+                    <p id="playerTurn"></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="top2">
+        <table class="stats2">
+            <tr class="row">
                 <td title="Player 1's Resources." id="playerMetal">
-<!-- The third column just displays Metal: in player 1's colour -->
+                    <!-- The third column just displays Metal: in player 1's colour -->
                     <p id="p1Metal">Metal:</p>
                 </td>
                 <td title="The amount of metal earned from metal zones." id="playerMetal">
                     <p id="earnedPM"></p>
                 </td>
-<!-- The fourth column displays how much metal player 1 earns per turn in green -->
+                <!-- The fourth column displays how much metal player 1 earns per turn in green -->
                 <td title="The amount of metal spent on construction." id="playerMetal">
                     <p id="spentPM"></p>
                 </td>
-<!-- The fifth column displays how much metal player 1 spends per turn in red -->
+                <!-- The fifth column displays how much metal player 1 spends per turn in red -->
                 <td title="The overall consumption of metal (if positive then build more)." id="playerMetal">
                     <p id="overallPM"></p>
                 </td>
-<!-- The sixth column displays how much metal player 1 earns overall (negative if more gets spent) -->
+                <!-- The sixth column displays how much metal player 1 earns overall (negative if more gets spent) -->
                 <td title="Player 1's Resources" id="playerPower">
                     <p id="p1Power">Power:</p>
                 </td>
-<!-- The seventh column just displays Power: in player 1's colour-->
-                <td title="The amount of power gained from power plants." id="playerPower">
+                <!-- The seventh column just displays Power: in player 1's colour-->
+                <td title="The amount of power gained from power plants." id="playerPower" colspan="2">
                     <p id="earnedPP"></p>
                 </td>
-<!-- The eighth column displays the amount of power player 1 earns per turn in green -->
-                <td title="The amount of power spent on construction." id="playerPower">
+                <!-- The eighth column displays the amount of power player 1 earns per turn in green -->
+                <td title="The amount of power spent on construction." id="playerPower" colspan="2">
                     <p id="spentPP"></p>
                 </td>
-<!-- The ninth column displays the amount of power player 1 spends per turn in red -->
-                <td title="The overall consumption of power (if positive then build more)." id="playerPower">
+                <!-- The ninth column displays the amount of power player 1 spends per turn in red -->
+                <td title="The overall consumption of power (if positive then build more)." colspan="2" id="playerPower">
                     <p id="overallPP"></p>
                 </td>
-<!-- The tenth column displays how much power player 1 earns overall (negative if more is spent) -->
-                <td id="nextTurn" rowspan="2">
-                    <button onclick="nextTurn()">Next Turn</button>
-                </td>
-<!-- The eleventh column displays a button to change the players' turns -->
+                <!-- The tenth column displays how much power player 1 earns overall (negative if more is spent) -->
             </tr>
-            <tr>
+    </table>
+        <table class="stats4">
+            <tr class="row">
                 <td title="Player 2's Resources" id="enemyMetal">
                     <p id="p2Metal">Metal:</p>
                 </td>
@@ -119,7 +159,7 @@ Max progress of 30 Metal and 45 Power per turn (4 Turns)" onclick="building6Sele
                 </td>
             </tr>
             <!-- The above section does the same as before but for player 2 -->
-        </table >
+        </table>
     </div>
     <div class="container" id="container"></div>
 <!-- Used by the JS to automatically create a 25x58 grid, rather than typing it all out by hand -->

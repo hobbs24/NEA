@@ -27,7 +27,8 @@ let netPower = 0
 let metalSign = 0
 let powerSign = 0
 // Used to show whether the player is in a resource surplus or deficit
-let selectedBuilding = 0
+let chosenBuilding = 0
+let chosenUnit = 0
 // Used to show if a building has been selected and which one
 let ownedBuildings = 0
 // Used to show how many buildings the players have built, can't exceed the maximum (currently 10)
@@ -41,28 +42,30 @@ let power = 0
 let resourceMultiplier = 0
 // Used to store the multiplier that finds how much Metal and Power will actually be spent
 // on a building per turn, as the player may be in a resource deficit
-
+let selectedUnit = 0
+let selectedBuilding = 0
+let playerColour = 0
 // Pre-declares a bunch of variables to be used globally
-let buildings = [{type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0},
-    {type: 0, health: 0, metalRequired: 0, powerRequired: 0, player: 0, square: 0}]
+let buildings = [{type: 0, player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0},
+    {player: 0, square: 0}]
 // Pre-declares an array of twenty building slots (meaning each player can have a
 // maximum of 10 buildings). The data specific to each individual building is stored here
 let forgottenIslands = [
@@ -558,7 +561,7 @@ function display(){
 // Creates a new div and assigns it to variable div, easier to use
             div.id = id1
 // Actually assigning the div its unique id
-            div.onclick = function(){startConstruction(this.id)}
+            div.onclick = function(){clickedDiv(this.id)}
 // The div is assigned an onclick function, gives the id of the selected
 // div to function "startConstruction" when starting construction of a building
             colourSelector(div, y, x)
@@ -571,44 +574,100 @@ function display(){
     document.getElementById("p1Power").style.color = sessionStorage.playerColour
     document.getElementById("p2Metal").style.color = sessionStorage.enemyColour
     document.getElementById("p2Power").style.color = sessionStorage.enemyColour
+    document.getElementById("p1BuildLimit").style.color = sessionStorage.playerColour
+    document.getElementById("p1UnitLimit").style.color = sessionStorage.playerColour
+    document.getElementById("p2BuildLimit").style.color = sessionStorage.enemyColour
+    document.getElementById("p2UnitLimit").style.color = sessionStorage.enemyColour
+    document.getElementById("p1BuildLimit").innerHTML = "0"
+    document.getElementById("p1UnitLimit").innerHTML = "0"
+    document.getElementById("p2BuildLimit").innerHTML = "0"
+    document.getElementById("p2UnitLimit").innerHTML = "0"
 // Makes the "Metal:" and "Power:" text the colours selected by the players earlier
 }
 
-function startConstruction(id){
-// This function is given the unique id of the div clicked by the player
+function clickedDiv(id){
     squareId = id
-// The id is assigned to a global variable to be used across numerous functions more easily
+    let div = document.getElementById(squareId)
     if(playerTurn==0){
         alert("Click the Next Turn button to start a player's turn")
     }
 // Ensures the players have started their turn as a building can't be built by nobody
-    else if(selectedBuilding!=0){
+    else if(chosenBuilding==0&&selectedUnit==0){
+        if(div.getAttribute("data-terrain") == "occupied-building") {
+            if((div.innerText=="ጁ" || div.innerText=="ᎇ")&&div.getAttribute("data-playerControl")==playerTurn){
+                selectedBuilding = div.innerText
+                unitUIDisplay(1)
+                unitConstruction()
+            }
+            else if((div.innerText=="ኡ" || div.innerText=="ፏ")&&div.getAttribute("data-playerControl")==playerTurn){
+                selectedBuilding = div.innerText
+                unitUIDisplay(1)
+                unitRange1()
+            }
+            else if((div.innerText=="ዧ" || div.innerText=="ቸ")&&div.getAttribute("data-playerControl")==playerTurn){
+                selectedBuilding = div.innerText
+                unitUIDisplay(1)
+            }
+            else if(div.style.color!=playerColour){
+                alert("That is not your unit and you haven't selected a unit to attack it")
+            }
+        }
+        else if(div.getAttribute("data-terrain") == "occupied-unit"){
+            selectedUnit = squareId
+        }
+        else{
+            alert("You have not selected a building to be built and there's no unit to be selected")
+// If no building was selected, the players are alerted
+        }
+    }
+    else if(chosenBuilding!=0){
 // Checks to see if a building has been selected or not
-        countBuildings()
+        startConstruction()
+    }
+
+// The id is assigned to a global variable to be used across numerous functions more easily
+}
+
+function unitUIDisplay(check){
+    if(check==1){
+// "check" is used to see what the function should be doing
+        alert("You have selected a unit")
+        for(i=0;i<buildings.length;i++){
+            if(buildings[i].square==squareId){
+                document.getElementById("unitHealth").innerHTML = buildings[i].health+" Hit Points Remaining"
+            }
+        }
+    }
+}
+
+function startConstruction(){
+// This function is given the unique id of the div clicked by the player
+    countBuildings()
 // If a building has been selected, function "countBuildings" runs to see if the player
 // has reached their build limit
-        if(canBuild==true){
+    if(canBuild==true){
 // Checks to see if the player is able to still construct buildings
-            terrainChecker()
+        terrainChecker()
 // If they can, function "terrainChecker" executes to ensure the building can be constructed on that terrain
-            if(canBuild==true){
-                console.log("Construction Started")
-                firstEmptyBuilding()
-                findEconomy()
-                updateResources()
+        if(canBuild==true){
+            if(playerTurn==1){
+            document.getElementById("p1BuildLimit").innerHTML = ownedBuildings+1
+            }
+            else if(playerTurn==2){
+            document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1
+            }
+            console.log("Construction Started")
+            firstEmptyBuilding()
+            findEconomy()
+            updateResources()
 // If the building can, function "firstEmptyBuilding" executes to place the building in the first
 // empty spot in the 20-sized array
 // Function "findEconomy" and "updateEconomy" run again to reflect changes
 // in the player's economy
-            }
         }
-        selectedBuilding = 0
-// "selectedBuilding" is then reassigned back to 0 so that another building has to be selected again
     }
-    else{
-        alert("You have not selected a building to be built")
-// If no building was selected, the players are alerted
-    }
+    chosenBuilding = 0
+// "chosenBuilding" is then reassigned back to 0 so that another building has to be selected again
 }
 
 function mapMaker(){
@@ -681,42 +740,50 @@ function colourSelector(div, y, x){
 // This function executes when function "display" tells it to
     if(map[y][x] == 'w'){
         div.style.backgroundColor = '#0be0cd'
-        div.value = "sea"
+        div.setAttribute("data-terrain", "sea")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Shallow Water, only traversable by the commander and naval units"
     }
     else if(map[y][x] == 's'){
         div.style.backgroundColor = '#e2f075'
-        div.value = "land"
+        div.setAttribute("data-terrain", "land")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Sand, only traversable by land units"
     }
     else if(map[y][x] == 'g'){
         div.style.backgroundColor = '#00c45c'
-        div.value = "land"
+        div.setAttribute("data-terrain", "land")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Grass, only traversable by land units"
     }
     else if(map[y][x] == 'm'){
         div.style.backgroundColor = '#939993'
-        div.value = "metal"
+        div.setAttribute("data-terrain", "metal")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Exposed Metal, Impassable"
     }
     else if(map[y][x] == 'f'){
         div.style.backgroundColor = '#184807'
-        div.value = "land"
+        div.setAttribute("data-terrain", "land")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Forest, only traversable by land units"
     }
     else if(map[y][x] == 'd'){
         div.style.backgroundColor = '#062480'
-        div.value = "sea"
+        div.setAttribute("data-terrain", "sea")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Deep Water, only traversable by naval units"
     }
     else if(map[y][x] == 'r'){
         div.style.backgroundColor = '#ac6011'
-        div.value = "impassable"
+        div.setAttribute("data-terrain", "impassable")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Desert Rock, Impassable"
     }
     else if(map[y][x] == 'c'){
         div.style.backgroundColor = '#3b3a3a'
-        div.value = "impassable"
+        div.setAttribute("data-terrain", "impassable")
+        div.setAttribute("data-playerControl", playerTurn)
         div.title = "Terrain: Cliff, Impassable"
     }
 // Assigning the correct background colour to a div based of
@@ -725,19 +792,26 @@ function colourSelector(div, y, x){
 }
 
 function nextTurn(){
+    chosenBuilding = 0
     selectedBuilding = 0
 // This function executes when the "Next Turn" button gets clicked
     if(turnTotal%2==0){
-// This checks to see if it's player 2's turn
+// This checks to see if it's player 2's turn, or if nobody has started their turn yet
         player1Turn++
         console.log("Player 1 Turn "+player1Turn)
         playerTurn = 1
+        playerColour = sessionStorage.playerColour
+        document.getElementById("playerTurn").style.color = sessionStorage.playerColour
+        document.getElementById("playerTurn").innerHTML = "Player 1's Turn"
 // Makes the turn player 1's and resets some data
     }
     else if(turnTotal%2==1){
 // This checks to see if it's player 1's turn
         player2Turn++
         playerTurn = 2
+        playerColour = sessionStorage.enemyColour
+        document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
+        document.getElementById("playerTurn").innerHTML = "Player 2's Turn"
 // Makes the turn player 2's
     }
     findEconomy()
@@ -767,49 +841,30 @@ function findEconomy(){
     }
     for(let i=0; i<20; i++){
 // This function must run 20 times to check each entry in the "buildings" array
-        if(buildings[i].player==playerTurn && (buildings[i].powerRequired<=0||buildings[i].metalRequired<=0)){
+        if(buildings[i].player!=0){
+            let div=document.getElementById(buildings[i].square)
+            if(div.getAttribute("data-playerControl")==playerTurn && (parseInt(div.getAttribute("data-powerRequired"))<=0||parseInt(div.getAttribute("data=metalRequired"))<=0)){
 // Checks to see if the current buildings belongs to the player and if it has finished construction
 // This is where resources will be earned
-            if(buildings[i].type==1){
-                earnedMetal+=parseInt(metalExtractor.metalIncome)
+                if(div.getAttribute("data-buildingType")==1){
+                    earnedMetal+=parseInt(metalExtractor.metalIncome)
 // If the constructed building is a Metal Extractor, its income is added to "earnedMetal"
 // To determine the total earned Metal
-            }
-            else if(buildings[i].type==2){
-                earnedPower+=parseInt(powerPlant.powerIncome)
+                }
+                else if(div.getAttribute("data-buildingType")==2){
+                    earnedPower+=parseInt(powerPlant.powerIncome)
 // If the constructed building is a Power Plant, its income is added to "earnedPower"
 // to determine the total earned power
+                }
             }
-        }
-        else if(buildings[i].player==playerTurn && (buildings[i].powerRequired>0||buildings[i].metalRequired>0)){
+            else if(div.getAttribute("data-playerControl")==playerTurn && (parseInt(div.getAttribute("data-powerRequired"))>0||parseInt(div.getAttribute("data-metalRequired"))>0)){
 // Checks to see if the current building belongs to the player and it it's still under construction
 // This is where resources will be spent
-            if(buildings[i].type==1){
-                spentMetal+=metalExtractor.maxMetalSpend
-                spentPower+=metalExtractor.maxPowerSpend
-            }
-            else if(buildings[i].type==2) {
-                spentMetal += powerPlant.maxMetalSpend
-                spentPower += powerPlant.maxPowerSpend
-            }
-            else if(buildings[i].type==3) {
-                spentMetal += landFactory.maxMetalSpend
-                spentPower += landFactory.maxPowerSpend
-            }
-            else if(buildings[i].type==4) {
-                spentMetal += navalFactory.maxMetalSpend
-                spentPower += navalFactory.maxPowerSpend
-            }
-            else if(buildings[i].type==5) {
-                spentMetal += turret.maxMetalSpend
-                spentPower += turret.maxPowerSpend
-            }
-            else if(buildings[i].type==6) {
-                spentMetal += heavyArtillery.maxMetalSpend
-                spentPower += heavyArtillery.maxPowerSpend
-            }
+                spentMetal+=parseInt(div.getAttribute("data-maxMetalSpend"))
+                spentPower+=parseInt(div.getAttribute("data-maxPowerSpend"))
 // Different values will be assigned to "spentMetal" and "spentPower" depending on
 // the building type as different buildings can spend different amounts per turn
+            }
         }
     }
 }
@@ -832,20 +887,23 @@ function spendEconomy(){
 // If either of the multipliers aren't >= 1, then the lowest is assigned to "resourceMultiplier"
 // as only the lowest multiplier can be assigned to spend the correct amount of resources
     for(let i=0;i<20;i++){
+        if(buildings[i].player!=0){
+            let div=document.getElementById(buildings[i].square)
 // This part runs 20 times, once for each entry in the "buildings" array
-        if(buildings[i].player==playerTurn && (buildings[i].metalRequired>0||buildings[i].powerRequired>0)){
+            if(div.getAttribute("data-playerControl")==playerTurn && (parseInt(div.getAttribute("data-metalRequired"))>0||parseInt(div.getAttribute("data-powerRequired"))>0)){
 // Checks to see if the building belongs to the player and hasn't finished construction
-            buildingTypeChecker(i)
-// Executes "buildingTypeChecker" to get some specific data that'll be used next
-            buildings[i].metalRequired = buildings[i].metalRequired-(metal*resourceMultiplier)
+                metal = parseInt(div.getAttribute("data-maxMetalSpend"))
+                power = parseInt(div.getAttribute("data-maxPowerSpend"))
+                div.setAttribute("data-metalRequired", parseInt(div.getAttribute("data-metalRequired"))-(metal*resourceMultiplier))
 // Subtracts the amount of Metal able to be spent (decided by multiplying "metal" and the
 // multiplier together) from the amount still required
-            buildings[i].powerRequired = buildings[i].powerRequired-(power*resourceMultiplier)
+                div.setAttribute("data-powerRequired", parseInt(div.getAttribute("data-powerRequired"))-(power*resourceMultiplier))
 // Subtracts the amount of Power able to be spent (decided by multiplying "power" and the
 // multiplier together) from the amount still required
-            if(buildings[i].player==playerTurn && (buildings[i].metalRequired<=0||buildings[i].powerRequired<=0)){
-                console.log("Construction Complete")
+                if(div.getAttribute("data-playerControl") && (parseInt(div.getAttribute("data-metalRequired"))<=0&&parseInt(div.getAttribute("data-powerRequired"))<=0)){
+                    console.log("Construction Complete")
 
+                }
             }
         }
     }
@@ -853,43 +911,12 @@ function spendEconomy(){
     updateResources()
 }
 
-function buildingTypeChecker(i){
-// i is the building currently being looked at by function "spendEconomy"
-    if(buildings[i].type==1){
-        metal = metalExtractor.maxMetalSpend
-        power = metalExtractor.maxPowerSpend
-    }
-    else if(buildings[i].type==2){
-        metal = powerPlant.maxMetalSpend
-        power = powerPlant.maxPowerSpend
-    }
-    else if(buildings[i].type==3){
-        metal = landFactory.maxMetalSpend
-        power = landFactory.maxPowerSpend
-    }
-    else if(buildings[i].type==4){
-        metal = navalFactory.maxMetalSpend
-        power = navalFactory.maxPowerSpend
-    }
-    else if(buildings[i].type==5){
-        metal = turret.maxMetalSpend
-        power = turret.maxPowerSpend
-    }
-    else{
-        metal = heavyArtillery.maxMetalSpend
-        power = heavyArtillery.maxPowerSpend
-    }
-// This function just checks to see what the maximum amount of Metal and Power is for the
-// building from function "spendEconomy" able to be spent per turn is
-// and assigns it to variables "metal" and "power"
-}
-
 function building1Selected(){
     if(playerTurn==0){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        selectedBuilding = metalExtractor
+        chosenBuilding = metalExtractor
     }
 }
 function building2Selected(){
@@ -897,7 +924,7 @@ function building2Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        selectedBuilding = powerPlant
+        chosenBuilding = powerPlant
     }
 }
 function building3Selected(){
@@ -905,7 +932,7 @@ function building3Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        selectedBuilding = landFactory
+        chosenBuilding = landFactory
     }
 }
 function building4Selected(){
@@ -913,7 +940,7 @@ function building4Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        selectedBuilding = navalFactory
+        chosenBuilding = navalFactory
     }
 }
 function building5Selected(){
@@ -921,7 +948,7 @@ function building5Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        selectedBuilding = turret
+        chosenBuilding = turret
     }
 }
 function building6Selected(){
@@ -929,12 +956,12 @@ function building6Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        selectedBuilding = heavyArtillery
+        chosenBuilding = heavyArtillery
 
     }
 }
 // These functions just ensures it's a player's turn and assigns the selected building to
-// variable "selectedBuilding" to be used later
+// variable "chosenBuilding" to be used later
 function countBuildings(id){
 // This function uses the clicked div's id from function "startConstruction"
     canBuild = false
@@ -963,17 +990,22 @@ function firstEmptyBuilding(){
 // Runs 20 times to check each entry in the "buildings" array
         if(buildings[i].player==0){
  // This runs if the entry doesn't belong to a player yet
-            buildings[i].type = selectedBuilding.type
-            buildings[i].health = selectedBuilding.health
-            buildings[i].metalRequired = selectedBuilding.metalRequired
-            buildings[i].powerRequired =  selectedBuilding.powerRequired
+            let div=document.getElementById(squareId)
+            div.setAttribute("data-buildingType", chosenBuilding.type)
+            div.setAttribute("data-health", chosenBuilding.health)
+            div.setAttribute("data-metalRequired", chosenBuilding.metalRequired)
+            div.setAttribute("data-maxMetalSpend", chosenBuilding.maxMetalSpend)
+            div.setAttribute("data-powerRequired", chosenBuilding.powerRequired)
+            div.setAttribute("data-maxPowerSpend", chosenBuilding.maxPowerSpend)
+            div.setAttribute("data-playerControl", playerTurn)
+            console.log(div.getAttribute("data-metalRequired"))
             buildings[i].player = playerTurn
             buildings[i].square = squareId
 // The stats specific to each building get assigned values
-            document.getElementById(squareId).innerHTML = selectedBuilding.symbol
+            document.getElementById(squareId).innerHTML = chosenBuilding.symbol
             document.getElementById(squareId).style.fontSize = "1.5vw"
             document.getElementById(squareId).style.textAlign = "center"
-            document.getElementById(squareId).value = "occupied"
+            document.getElementById(squareId).setAttribute("data-terrain", "occupied-building")
 // The building is then displayed on the map in the clicked div
             if(playerTurn==1){
                 document.getElementById(squareId).style.color = sessionStorage.playerColour
@@ -989,15 +1021,15 @@ function firstEmptyBuilding(){
 }
 
 function terrainChecker(){
-    let terrain = document.getElementById(squareId).value
+    let terrain = document.getElementById(squareId).getAttribute("data-terrain")
 // This finds the terrain of the clicked div
-    if(terrain=="occupied"){
+    if(terrain=="occupied-building"){
         canBuild = false
         alert("That square is already occupied by a building")
     }
-    else if(terrain!=selectedBuilding.terrain){
+    else if(terrain!=chosenBuilding.terrain){
         canBuild = false
-        alert("That is the wrong terrain for building "+selectedBuilding.symbol)
+        alert("That is the wrong terrain for building "+chosenBuilding.symbol)
     }
 // If the terrain for the building is wrong, the player is no longer able to build the building there
 // If the terrain is suitable, construction goes ahead
