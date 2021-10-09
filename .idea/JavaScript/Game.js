@@ -37,9 +37,6 @@ let previousSquareId
 // Used to store the id of the div the player clicks on, gets used for construction
 let canBuild = 0
 // Used to see if the player can build the selected building in the selected div or not
-let metal = 0
-let power = 0
-// Used to store how much Metal and Power can be spent on a building per turn at the most
 let resourceMultiplier = 0
 // Used to store the multiplier that finds how much Metal and Power will actually be spent
 // on a building per turn, as the player may be in a resource deficit
@@ -54,70 +51,70 @@ let playerUnitTotal = 0
 let enemyUnitTotal = 0
 let globalI = 0
 // Pre-declares a bunch of variables to be used globally
-let buildings = [{player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0},
-    {player: 0, square: 0}]
+let buildings = [{player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false}]
 // Pre-declares an array of twenty building slots (meaning each player can have a
 // maximum of 10 buildings).
-let units = [{player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0},
-    {player: 0, square: 0, alreadyMoved: false, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0}]
+let units = [{player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0}]
 // Pre-declares an array of fourty unit slots (meaning each player can have a maximum
 // of 20 units).
 let forgottenIslands = [
@@ -601,32 +598,34 @@ let landFactory = {symbol: "ጁ", type: 3, health: 16, metalRequired: 16, powerR
 let navalFactory = {symbol: "ᎇ", type: 4, health: 24, metalRequired: 30, powerRequired: 48,
     maxMetalSpend: 10, maxPowerSpend: 16, terrain1: "shallowSea", terrain2: "deepSea", name: "navalFactory"}
 let turret = {symbol: "ኡ", type: 5, health: 18, metalRequired: 32, powerRequired: 44,
-    maxMetalSpend: 16, maxPowerSpend: 22, terrain1: "land", aRange: 6, damage: 8, name: "turret"}
+    maxMetalSpend: 16, maxPowerSpend: 22, terrain1: "land", aRange: 6, damage: 8, name: "turret", attackCooldown: 1}
 let heavyArtillery = {symbol: "ፏ", type: 6, health: 28, metalRequired: 120, powerRequired: 180,
-    maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", cooldown: 1, damage: 20, name: "heavyArtillery"}
+    maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", attackCooldown: 2, damage: 20, name: "heavyArtillery"}
 // Declares 6 building types and the general data specific to each type
 let commandUnit = {symbol: "ደ", type: 7, health: 32, metalrequired: 0, powerRequired: 0,
     maxMetalSpend: 0, maxPowerSpend: 0, terrain1: "land", terrain2: "shallowSea",
-    aRange: 7, mRange: 5, damage: 6, name:"commandUnit"}
+    aRange: 18, mRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
 let tank = {symbol: "Ⱝ", type: 8, health: 10, metalRequired: 10, powerRequired: 14,
     maxMetalSpend: 5, maxPowerSpend: 7, terrain1: "land", aRange: 7, mRange: 5,
-    damage: 7, name: "tank"}
+    damage: 7, name: "tank", attackCooldown: 1}
 let labDroid = {symbol: "Ѫ", type: 9, health: 14, metalRequired: 12, powerRequired: 18,
     maxMetalSpend: 4, maxPowerSpend: 6, terrain1: "land", terrain2: "metal",
-    aRange: 8, mRange: 6, damage: 8, name: "labDroid"}
+    aRange: 8, mRange: 6, damage: 8, name: "labDroid", attackCooldown: 1}
 let missileCarrier = {symbol: "ᛣ ", type: 10, health: 8, metalRequired: 36, powerRequired: 60,
-    maxMetalSpend: 12, maxPowerSpend: 20, terrain1: "land", aRange: 18, mRange: 6, damage: 9, name: "missileCarrier"}
+    maxMetalSpend: 12, maxPowerSpend: 20, terrain1: "land", aRange: 18, mRange: 6, damage: 12,
+    name: "missileCarrier", attackCooldown: 2}
 let detonatingSphere = {symbol: "ᵹ", type: 11, health: 80, metalRequired: 44, powerRequired: 84,
-    maxMetalSpend: 11, maxPowerSpend: 21, terrain1: "land", aRange: 1, mRange: 1, damage: 28, name:"detonatingSphere"}
+    maxMetalSpend: 11, maxPowerSpend: 21, terrain1: "land", aRange: 1, mRange: 1, damage: 28,
+    name:"detonatingSphere", attackCooldown: 1}
 let destroyer = {symbol: "₣", type: 12, health: 16, metalRequired: 16, powerRequired: 22,
     maxMetalSpend: 8, maxPowerSpend: 11, terrain1: "shallowSea", terrain2: "deepSea",
-    aRange: 8, mRange: 7, damage: 10, name: "destroyer"}
+    aRange: 8, mRange: 7, damage: 10, name: "destroyer", attackCooldown: 1}
 let cruiser = {symbol: "₸", type: 13, health: 20, metalRequired: 24, powerRequired: 39,
     maxMetalSpend: 8, maxPowerSpend: 13, terrain1: "shallowSea", terrain2: "deepSea",
-    aRange: 20, mRange: 6, damage: 12, name: "cruiser"}
+    aRange: 20, mRange: 6, damage: 12, name: "cruiser", attackCooldown: 1}
 let battleship = {symbol: "₮", type: 14, health: 32, metalRequired: 48, powerRequired: 72,
     maxMetalSpend: 12, maxPowerSpend: 18, terrain1: "shallowSea", terrain2: "deepSea",
-    aRange: 16, mRange: 5, damage: 16, name: "battleship"}
+    aRange: 16, mRange: 5, damage: 22, name: "battleship", attackCooldown: 2}
 // Declares 8 unit types and the general data specific to each type    
 
 function display(){
@@ -652,14 +651,12 @@ function display(){
             mapY = y
             mapX = x
             mapDiv = div
-            colourSelector(1)
+            colourSelector()
 // Executes colourSelector to determine the colour of each div, based of its terrain
             container.appendChild(div)
 // Adds the div to the parent div to be displayed in a grid
         }
     }
-    unitPlacement(commandUnit, commander1, sessionStorage.playerColour, 1)
-    unitPlacement(commandUnit, commander2, sessionStorage.enemyColour, 2)
     document.getElementById("p1Metal").style.color = sessionStorage.playerColour
     document.getElementById("p1Power").style.color = sessionStorage.playerColour
     document.getElementById("p2Metal").style.color = sessionStorage.enemyColour
@@ -674,130 +671,184 @@ function display(){
     document.getElementById("p2UnitLimit").innerHTML = "0/"+((units.length/2)-1)
     units[0].player = 1
     units[0].square = commander1
-    units[0].alreadyMoved = false
+    units[0].health = commandUnit.health
+    squareId = commander1
+    selectedUnit = commandUnit
+    colour = sessionStorage.playerColour
+    playerTurn = 1
+    unitPlacement()
     units[1].player = 2
     units[1].square = commander2
-    units[1].alreadyMoved = false
+    units[1].health = commandUnit.health
+    squareId = commander2
+    selectedUnit = commandUnit
+    colour = sessionStorage.enemyColour
+    playerTurn = 2
+    unitPlacement()
+    playerTurn = 0
 // Makes the "Metal:" and "Power:" text the colours selected by the players earlier
 }
 
-function unitPlacement(unit, id, colour, player){
-    if(playerTurn!=0){
-        mapDiv = document.getElementById(previousSquareId)
-        mapDiv.setAttribute("data-playerControl", 0)
-        mapDiv.setAttribute("data-type", 0)
-        mapDiv.setAttribute("data-name", 0)
-        mapDiv.setAttribute("data-health", 0)
-        mapDiv.setAttribute("data-metalRequired", 0)
-        mapDiv.setAttribute("data-powerRequired", 0)
-        mapDiv.setAttribute("data-maxMetalSpend", 0)
-        mapDiv.setAttribute("data-maxPowerSpend", 0)
-        mapDiv.setAttribute("data-terrain1", 0)
-        mapDiv.setAttribute("data-terrain2", 0)
-        mapDiv.setAttribute("data-aRange", 0)
-        mapDiv.setAttribute("data-mRange", 0)
-        mapDiv.setAttribute("data-damage", 0)
-        mapDiv.innerHTML = ""
-        for(let i=0;i<squares.length;i+=2){
-            globalColour = squares[i+1]
-            globalI = squares[i]
-            colourSelector(2)
-        }
-        units[searchUnits(2)].square = id
-        console.log(units[0].square)
-        searchUnits(2)
-        console.log(globalI)
-        units[globalI].alreadyMoved = true
-    }
-    mapDiv = document.getElementById(id)
-    mapDiv.style.color = colour
-    mapDiv.setAttribute("data-playerControl", player)
-    mapDiv.innerHTML = unit.symbol
-    mapDiv.setAttribute("data-type", unit.type)
-    mapDiv.setAttribute("data-name", unit.name)
-    mapDiv.setAttribute("data-health", unit.health)
-    mapDiv.setAttribute("data-terrain1", unit.terrain1)
-    mapDiv.setAttribute("data-terrain2", unit.terrain2)
-    mapDiv.setAttribute("data-aRange", unit.aRange)
-    mapDiv.setAttribute("data-mRange", unit.mRange)
-    mapDiv.setAttribute("data-damage", unit.damage)
-    mapDiv.removeAttribute("data-terrian")
-    mapDiv.setAttribute("data-terrain", "occupied-unit")
-    console.log(mapDiv.getAttribute("data-terrain"))
+function unitRemoval(query){
+    mapDiv = document.getElementById(previousSquareId)
+    mapDiv.setAttribute("data-playerControl", 0)
+    mapDiv.setAttribute("data-name", 0)
+    mapDiv.innerHTML = ""
+    deselectUnit(query)
     squares = []
+}
+function unitMoved(){
+    searchUnits(2)
+    units[globalI].square = squareId
+    units[globalI].alreadyMoved = true
+}
+function unitPlacement(){
+    mapDiv = document.getElementById(squareId)
+    mapDiv.style.color = colour
+    mapDiv.setAttribute("data-playerControl", playerTurn)
+    mapDiv.innerHTML = selectedUnit.symbol
+    mapDiv.setAttribute("data-name", selectedUnit.name)
+    mapDiv.setAttribute("data-terrain", "occupied-unit")
     selectedUnit = 0
     document.getElementById("unitHealth").innerHTML = ""
     console.log(units)
+    console.log(selectedUnit)
+}
+function deselectUnit(query){
+    buttonRemoval()
+    if(squares.length>1){
+        for(let i=0;i<squares.length;i+=2){
+            globalColour = squares[i+1]
+            mapY = parseInt(squares[i].slice(0, squares[i].indexOf("-")))
+            mapX = parseInt(squares[i].slice(squares[i].indexOf("-")+1))
+            mapDiv = document.getElementById(squares[i])
+            colourSelector()
+        }
+    }
+    if(query==2){
+        if(selectedUnit!=0){
+            selectedUnit = 0
+        }
+        else if(selectedBuilding!=0){
+            selectedBuilding = 0
+        }
+    }
 }
 
 function searchUnits(check){
+    let position = false
     for(let i=0;i<units.length;i++){
         if(check==1||check==4){
             if(units[i].player==playerTurn && units[i].square==squareId){
                 if(check==4){
                     if(units[i].alreadyMoved==true){
-                        return true
-                    }
-                    else{
-                        return false
+                        position = true
+                        break
                     }
                 }
-                else{
-                    return true
+                else if(check==1){
+                    position = true
+                    break
                 }
             }
         }
-        else if(check==2||check==5){
+        else if(check==2||check==5||check==6){
             if(units[i].player==playerTurn && units[i].square==previousSquareId){
-                console.log(units[i].square)
                 if(check==5){
                     if(units[i].alreadyMoved==true){
-                        return true
-                    }
-                    else{
-                        return false
+                        position = true
+                        break
                     }
                 }
-                else{
-                    console.log(i)
+                else if(check==6){
+                    if(units[i].attackCooldown>0){
+                        position = true
+                        break
+                    }
+                }
+                else if(check==2){
                     globalI = i
-                    return globalI
+                    break
                 }
             }
         }
         else if(check==3){
             if(units[i].player!=playerTurn && units[i].square==squareId){
-                return true
+                position = true
+                break
             }
         }
     }
+    return position
+}
+
+function searchBuildings(check){
+    let position = false
+    for(let i=0;i<buildings.length;i++){
+        if(check==1){
+            if(buildings[i].player!=0&&buildings[i].square==squareId){
+                position = true
+                break
+            }
+        }
+        else if(check==2||check==3){
+            if(buildings[i].player==playerTurn&&buildings[i].square==squareId){
+                if(check==2){
+                    position = true
+                    break
+                }
+                else if(check==3){
+                    globalI = i
+                    break
+                }
+            }
+        }
+    }
+    return position
 }
 
 function clickedDiv(id){
     squareId = id
     console.log(squareId)
     let div = document.getElementById(squareId)
-    console.log(div.getAttribute("data-terrain"))
-    console.log(div.getAttribute("data-playerControl"))
     if(playerTurn==0){
         alert("Click the Next Turn button to start a player's turn")
     }
 // Ensures the players have started their turn as a building can't be built by nobody
     else if(chosenBuilding==0&&selectedUnit==0){
-        if(div.getAttribute("data-terrain") == "occupied-building") {
-            if((div.innerText=="ጁ" || div.innerText=="ᎇ")&&div.getAttribute("data-playerControl")==playerTurn){
+        if(searchBuildings(2)) {
+            if((div.innerText=="ጁ" || div.innerText=="ᎇ")&&searchBuildings(2)){
                 selectedBuilding = div.getAttribute("data-name")
+                searchBuildings(3)
                 unitUIDisplay(1)
-                unitConstruction()
+                if(buildings[globalI].operational){
+                    unitConstruction()
+                }
+                else{
+                    alert("This building hasn't finished construction so you cannot start constructing units")
+                }
             }
-            else if((div.innerText=="ኡ" || div.innerText=="ፏ")&&div.getAttribute("data-playerControl")==playerTurn){
+            else if((div.innerText=="ኡ" || div.innerText=="ፏ")&&searchBuildings(2)){
                 selectedBuilding = div.getAttribute("data-name")
+                searchBuildings(2)
                 unitUIDisplay(1)
-                unitRange1()
+                if(buildings[globalI].operational){
+                    unitRange1()
+                }
+                else{
+                    alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
+                }
             }
-            else if((div.innerText=="ዧ" || div.innerText=="ቸ")&&div.getAttribute("data-playerControl")==playerTurn){
+            else if((div.innerText=="ዧ" || div.innerText=="ቸ")&&searchBuildings(2)){
                 selectedBuilding = div.getAttribute("data-name")
+                searchBuildings(2)
                 unitUIDisplay(1)
+                if(buildings[globalI].operational){
+                    alert("This building is providing resources to you. Protect it from the enemy")
+                }
+                else{
+                    alert("This building hasn't finished construction so it doesn't provide you with resources")
+                }
             }
             else{
                 alert("That is not your building and you haven't selected a unit to attack it")
@@ -805,11 +856,14 @@ function clickedDiv(id){
         }
         else if(searchUnits(1)) {
             selectedUnit = div.getAttribute("data-name")
-            console.log(units[2].alreadyMoved)
+            selectUnit(selectedUnit)
             unitUIDisplay(2)
         }
         else if(searchUnits(3)){
-                alert("That is not your unit and you haven't selected a unit to attack it")
+            alert("That is not your unit and you haven't selected a unit to attack it")
+        }
+        else if(searchBuildings(1)){
+            alert("That is not your building and you haven't selected a building to attack it")
         }
         else{
             alert("You have not selected a building to be built and there's no unit to be selected")
@@ -847,30 +901,36 @@ function clickedDiv(id){
 // The id is assigned to a global variable to be used across numerous functions more easily
 }
 
-function unitUIDisplay(check){
+function unitConstruction(){
+
+}
+
+function unitUIDisplay(check, health){
     let div=document.getElementById(squareId)
     if(check==1){
 // "check" is used to see what the function should be doing
         alert("You have selected a building")
-        document.getElementById("unitHealth").innerHTML = div.getAttribute("data-health")+" HP"
+        document.getElementById("unitHealth").innerHTML = buildings[globalI].health
     }
     else if(check==2){
         alert("You have selected a unit")
-        document.getElementById("unitHealth").innerHTML = div.getAttribute("data-health")+" HP"
+        document.getElementById("unitHealth").innerHTML = units[globalI].health
             previousSquareId = squareId
             unitRange1()
 
     }
     else if(check==3){
-        alert("You are attacking a unit")
-        units[searchUnits(5)].alreadyMoved = true
-        selectedUnit = 0
-        document.getElementById("unitHealth").innerHTML = ""
-        for(let i=0;i<squares.length;i+=2){
-            globalColour = squares[i+1]
-            globalI = i
-            colourSelector(2)
+        if(searchUnits(6)){
+            alert("You have already attacked with that unit")
         }
+        else{
+            alert("You are attacking a unit")
+            searchUnits(2)
+            units[globalI].attackCooldown = selectedUnit.attackCooldown
+            selectedUnit = 0
+            document.getElementById("unitHealth").innerHTML = ""
+        }
+        deselectUnit()
     }
     else if(check==4){
         alert("You are moving a unit")
@@ -878,14 +938,20 @@ function unitUIDisplay(check){
             if(!searchUnits(5)){
                 alert("Correct terrain")
                 if(playerTurn==1){
-                    unitPlacement(selectedUnit, squareId, sessionStorage.playerColour, playerTurn)
+                    unitRemoval()
+                    unitMoved()
+                    colour = sessionStorage.playerColour
+                    unitPlacement()
                 }
                 else{
-                    unitPlacement(selectedUnit, squareId, sessionStorage.enemyColour, playerTurn)
+                    unitRemoval()
+                    unitMoved()
+                    colour = sessionStorage.enemyColour
+                    unitPlacement()
                 }
             }
             else{
-                alert("You have already moved or attacked with that unit")
+                alert("You have already moved with that unit")
             }
         }
         else{
@@ -894,30 +960,113 @@ function unitUIDisplay(check){
     }
 }
 
-function selectUnit(name){
-    if(name=="commandUnit"){
-        selectedUnit=commandUnit
+function selectBuilding(name){
+    console.log(name)
+    if(name=="metalExtractor"||name==1){
+        selectedBuilding = metalExtractor
     }
-    else if(name=="tank"){
+    else if(name="powerPlant"||name==2){
+        selectedBuilding = powerPlant
+    }
+    else if(name="landFactory"||name==3){
+        selectedBuilding = landFactory
+    }
+    else if(name="navalFactory"||name==4){
+        selectedBuilding = navalFactory
+    }
+    else if(name="turret"||name==5){
+        selectedBuilding = turret
+    }
+    else if(name="heavilyArtillery"||name==6){
+        selectedBuilding = heavyArtillery
+    }
+}
+function selectUnit(name){
+    if(name=="commandUnit"||name==7){
+        selectedUnit=commandUnit
+        console.log(selectedUnit)
+        buttonCreation(1)
+    }
+    else if(name=="tank"||name==8){
         selectedUnit=tank
     }
-    else if(name=="labDroid"){
+    else if(name=="labDroid"||name==9){
         selectedUnit=labDroid
     }
-    else if(name=="missileCarrier"){
+    else if(name=="missileCarrier"||name==10){
         selectedUnit=missileCarrier
     }
-    else if(name=="detonatingSphere"){
+    else if(name=="detonatingSphere"||name==11){
         selectedUnit=detonatingSphere
     }
-    else if(name=="destroyer"){
+    else if(name=="destroyer"||name==12){
         selectedUnit=destroyer
     }
-    else if(name=="cruiser"){
+    else if(name=="cruiser"||name==13){
         selectedUnit=cruiser
     }
-    else if(name=="battleship"){
+    else if(name=="battleship"||name==14){
         selectedUnit=battleship
+    }
+}
+
+function buttonRemoval(){
+    for(let i=1;i<7;i++){
+        let btn = document.getElementById("button"+i)
+        btn.onclick = ""
+        btn.innerHTML = ""
+        btn.title = ""
+    }
+}
+function buttonCreation(check){
+    let container = document.getElementById("buildOptions")
+    if(check==1){
+        selectedBuilding = metalExtractor
+        let btn = document.getElementById("button1")
+        btn.innerHTML = selectedBuilding.symbol
+        btn.onclick = function(){building1Selected()}
+        btn.title = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
+        selectedBuilding = powerPlant
+        btn = document.getElementById("button2")
+        btn.innerHTML = selectedBuilding.symbol
+        btn.onclick = function(){building2Selected()}
+        btn.title = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
+        selectedBuilding = landFactory
+        btn = document.getElementById("button3")
+        btn.innerHTML = selectedBuilding.symbol
+        btn.onclick = function(){building3Selected()}
+        btn.title = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
+        selectedBuilding = navalFactory
+        btn = document.getElementById("button4")
+        btn.innerHTML = selectedBuilding.symbol
+        btn.onclick = function(){building4Selected()}
+        btn.title = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
+        selectedBuilding = turret
+        btn = document.getElementById("button5")
+        btn.innerHTML = selectedBuilding.symbol
+        btn.onclick = function(){building5Selected()}
+        btn.title = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
+        selectedBuilding = heavyArtillery
+        btn = document.getElementById("button6")
+        btn.innerHTML = selectedBuilding.symbol
+        btn.onclick = function(){building6Selected()}
+        btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
+    }
+    else if(check==2){
+        for(let i=8;i<12;i++){
+            selectUnit(i)
+            console.log(selectedUnit)
+            let btn = document.getElementById("button"+i)
+            btn.innerHTML = selectedUnit.symbol
+        }
+    }
+    else if(check==3){
+        for(let i=12;i<15;i++){
+            selectUnit(i)
+            console.log(selectedUnit)
+            let btn = document.getElementById("button"+i)
+            btn.innerHTML = selectedUnit.symbol
+        }
     }
 }
 
@@ -937,7 +1086,6 @@ function unitRange1(){
 function unitRange2(range, i, xId, yId, id){
     for(let z=range-i;z>=0;z--){
         yId=parseInt(squareId.slice(0, squareId.indexOf("-")))+z
-        console.log(yId)
         if((yId>=0&&yId<25)&&(xId>=0&&xId<58)){
             id = yId.toString()+"-"+xId.toString()
             rangeColouring(i, z, id)
@@ -1078,15 +1226,9 @@ function netIncome(){
 // for negative numbers so is not assigned here)
 }
 
-function colourSelector(check){
+function colourSelector(){
     let checked = 0
-    if(check==1){
-        checked = map[mapY][mapX]
-    }
-    else if(check==2){
-        mapDiv = document.getElementById(globalI)
-        checked = mapDiv.getAttribute("data-terrainLetter")
-    }
+    checked = map[mapY][mapX]
 // This function executes when function "display" tells it to
     if(checked=='w'){
         if(globalColour != "#ff0000"){
@@ -1166,25 +1308,27 @@ function colourSelector(check){
 }
 
 function nextTurn(){
-    if(squares.length>1){
-        for(let i=0;i<squares.length;i+=2){
-            globalI = squares[i]
-            globalColour = squares[i+1]
-            colourSelector(2)
-        }
-    }
+    buttonRemoval()
+    deselectUnit(2)
     for(let i=0;i<buildings.length;i++){
         if(buildings[i].square!=0){
             if(buildings[i].player!=0){
-                document.getElementById(building[i].square).setAttribute("data-terrain", "occupied-building")
+                document.getElementById(buildings[i].square).setAttribute("data-terrain", "occupied-building")
+                document.getElementById(buildings[i].square).setAttribute("data-playerControl", buildings[i].player)
             }
         }
     }
     for(let i = 0;i<units.length;i++){
-        units[i].alreadyMoved = false
+        if(units[i].player==playerTurn){
+            units[i].alreadyMoved = false
+            if(units[i].attackCooldown>0){
+                units[i].attackCooldown--
+            }
+        }
         if(units[i].square!=0){
             if(units[i].player!=0){
                 document.getElementById(units[i].square).setAttribute("data-terrain", "occupied-unit")
+                document.getElementById(units[i].square).setAttribute("data-playerControl", units[i].player)
             }
         }
     }
@@ -1244,29 +1388,28 @@ function findEconomy(){
         earnedMetal = parseInt(sessionStorage.enemyMetal)
         earnedPower = parseInt(sessionStorage.enemyPower)
     }
-    for(let i=0; i<20; i++){
+    for(let i=0;i<buildings.length;i++){
 // This function must run 20 times to check each entry in the "buildings" array
         if(buildings[i].player==playerTurn){
-            let div=document.getElementById(buildings[i].square)
-            if(div.getAttribute("data-operational")=="true"){
+            if(buildings[i].operational){
 // Checks to see if the current buildings belongs to the player and if it has finished construction
 // This is where resources will be earned
-                if(div.getAttribute("data-name")==metalExtractor.name){
-                    earnedMetal+=parseInt(div.getAttribute("data-metalIncome"))
+                if(buildings[i].name==metalExtractor.name){
+                    earnedMetal+=metalExtractor.metalIncome
 // If the constructed building is a Metal Extractor, its income is added to "earnedMetal"
 // to determine the total earned Metal
                 }
-                else if(div.getAttribute("data-name")==powerPlant.name){
-                    earnedPower+=parseInt(div.getAttribute("data-powerIncome"))
+                else if(buildings[i].name==powerPlant.name){
+                    earnedPower+=powerPlant.powerIncome
 // If the constructed building is a Power Plant, its income is added to "earnedPower"
 // to determine the total earned power
                 }
             }
-            else if(div.getAttribute("data-playerControl")==playerTurn && (parseFloat(div.getAttribute("data-powerRequired"))>0||parseFloat(div.getAttribute("data-metalRequired"))>0)){
+            else if(buildings[i].player==playerTurn && (!buildings[i].operational)){
 // Checks to see if the current building belongs to the player and it it's still under construction
 // This is where resources will be spent
-                spentMetal+=parseInt(div.getAttribute("data-maxMetalSpend"))
-                spentPower+=parseInt(div.getAttribute("data-maxPowerSpend"))
+                spentMetal+=buildings[i].maxMetalSpend
+                spentPower+=buildings[i].maxPowerSpend
 // Different values will be assigned to "spentMetal" and "spentPower" depending on
 // the building type as different buildings can spend different amounts per turn
             }
@@ -1296,19 +1439,17 @@ function spendEconomy(){
         if(buildings[i].player==playerTurn){
             let div=document.getElementById(buildings[i].square)
 // This part runs 20 times, once for each entry in the "buildings" array
-            if(div.getAttribute("data-playerControl")==playerTurn && div.getAttribute("data-operational")=="false"){
+            if(buildings[i].player==playerTurn && (buildings[i].metalRequired>0||buildings[i].powerRequired>0)){
 // Checks to see if the building belongs to the player and hasn't finished construction
-                metal = parseInt(div.getAttribute("data-maxMetalSpend"))
-                power = parseInt(div.getAttribute("data-maxPowerSpend"))
-                div.setAttribute("data-metalRequired", parseFloat(div.getAttribute("data-metalRequired"))-(metal*resourceMultiplier))
+                buildings[i].metalRequired-=(buildings[i].maxMetalSpend*resourceMultiplier)
 // Subtracts the amount of Metal able to be spent (decided by multiplying "metal" and the
 // multiplier together) from the amount still required
-                div.setAttribute("data-powerRequired", parseFloat(div.getAttribute("data-powerRequired"))-(power*resourceMultiplier))
+                buildings[i].powerRequired-=(buildings[i].maxPowerSpend*resourceMultiplier)
 // Subtracts the amount of Power able to be spent (decided by multiplying "power" and the
 // multiplier together) from the amount still required
-                if(div.getAttribute("data-playerControl") && (parseFloat(div.getAttribute("data-metalRequired"))<=0&&parseFloat(div.getAttribute("data-powerRequired"))<=0)){
+                if(buildings[i].metalRequired<=0&&buildings[i].powerRequired<=0){
                     console.log("Construction Complete")
-                    div.setAttribute("data-operational", "true")
+                    buildings[i].operational = true
                 }
             }
         }
@@ -1325,6 +1466,7 @@ function building1Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
+        console.log("Building building")
         chosenBuilding = metalExtractor
     }
 }
@@ -1415,30 +1557,29 @@ function firstEmptyBuilding(){
         if(buildings[i].player==0){
  // This runs if the entry doesn't belong to a player yet
             let div=document.getElementById(squareId)
-            div.setAttribute("data-name", chosenBuilding.name)
-            div.setAttribute("data-typeype", chosenBuilding.type)
-            div.setAttribute("data-health", chosenBuilding.health)
-            div.setAttribute("data-metalRequired", chosenBuilding.metalRequired)
-            div.setAttribute("data-maxMetalSpend", chosenBuilding.maxMetalSpend)
-            div.setAttribute("data-powerRequired", chosenBuilding.powerRequired)
-            div.setAttribute("data-maxPowerSpend", chosenBuilding.maxPowerSpend)
-            div.setAttribute("data-playerControl", playerTurn)
-            div.setAttribute("data-metalIncome", chosenBuilding.metalIncome)
-            div.setAttribute("data-powerIncome", chosenBuilding.powerIncome)
-            div.setAttribute("data-operational", "false")
             buildings[i].player = playerTurn
             buildings[i].square = squareId
+            buildings[i].metalRequired = chosenBuilding.metalRequired
+            buildings[i].powerRequired = chosenBuilding.powerRequired
+            buildings[i].maxMetalSpend = chosenBuilding.maxMetalSpend
+            buildings[i].maxPowerSpend = chosenBuilding.maxPowerSpend
+            buildings[i].metalIncome = chosenBuilding.metalIncome
+            buildings[i].powerIncome = chosenBuilding.powerIncome
+            buildings[i].health = chosenBuilding.health
+            buildings[i].name = chosenBuilding.name
+            buildings[i].operational = false
 // The stats specific to each building get assigned values
-            document.getElementById(squareId).innerHTML = chosenBuilding.symbol
-            document.getElementById(squareId).style.fontSize = "1.5vw"
-            document.getElementById(squareId).style.textAlign = "center"
-            document.getElementById(squareId).setAttribute("data-terrain", "occupied-building")
+            div.innerHTML = chosenBuilding.symbol
+            div.style.fontSize = "1.5vw"
+            div.style.textAlign = "center"
+            div.setAttribute("data-terrain", "occupied-building")
+            div.setAttribute("data-name", chosenBuilding.name)
 // The building is then displayed on the map in the clicked div
             if(playerTurn==1){
-                document.getElementById(squareId).style.color = sessionStorage.playerColour
+                div.style.color = sessionStorage.playerColour
             }
             else{
-                document.getElementById(squareId).style.color = sessionStorage.enemyColour
+                div.style.color = sessionStorage.enemyColour
             }
 // The correct colour for the building is then selected
             break

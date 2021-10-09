@@ -19,6 +19,11 @@ body{
     height:86vh;
 /* Makes the height of the grid just 88% of the web page height */
 }
+#buildOptions{
+     width: 55%;
+     display: flex;
+     /* Takes up 35% of the width for displaying the build options */
+ }
 .stats1{
     text-align: center;
     color: white;
@@ -77,17 +82,9 @@ body{
     font-size: smaller;
 /* Makes the columns with this id take up 5% of the width */
 }
-#buildOptions{
-    width: 55%;
-/* Takes up 35% of the width for displaying the build options */
-}
 #queuedUnits{
     width: 45%;
 /* Leaves 20% of the width to display build queues for future iterations */
-}
-#nextTurn{
-    width: 10%;
-/* Allows the Next Turn button to have 5% of the width */
 }
 #earnedPM{
     color: #28b308;
@@ -134,8 +131,6 @@ body{
 }
 .button{
     align-items: center;
-    float: left;
-    display: flex;
     justify-content: center;
     border-color: rgb(118,118,188);
     border-width: 2px;
@@ -143,5 +138,4 @@ body{
 .buttons{
     align-items: center;
     background-color: black;
-    color: blue;
 }

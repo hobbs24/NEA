@@ -21,46 +21,19 @@
                 <td title="The Build Option Menu.
 Click something you want to build and place it on the map.
 Everything except the Naval Factory must be built on land.
-The Naval Factory is the only building that can be built on the sea." id="buildOptions">
-<!-- Creates the first column which covers two rows. This is used to display
-     the build options and also a little box to say what it is when
-     the mouse hovers over it -->
-                    <button title="Metal Extractor
-Earns 8 Metal per turn
-Requires 6 Metal and 8 Power Overall
-Max progress of 3 Metal and 4 Power per turn (2 Turns)" onclick="building1Selected()"
-                    class="buttons">ዧ</button>
-<!-- Creates a button to represent the first build option (Metal Extractor).
-     Executes function "building1Selected" to determine what building may be constructed.
-     The following buttons are all for their own buildings and do the same thing -->
-                    <button title="Power Plant
-Earns 12 Power per turn
-Requires 5 Metal and 8 Power Overall
-Max progress of 5 Metal and 8 Power per turn (1 Turn)" onclick="building2Selected()"
-                    class="buttons">ቸ</button>
-                    <button title="Land Factory
-Constructs land units
-Requires 16 Metal and 28 Power overall
-Max progress of 8 Metal and 14 Power per turn (2 Turns)" onclick="building3Selected()"
-                    class="buttons">ጁ</button>
-                    <button title="Naval Factory
-Constructs naval units
-Requires 30 Metal and 48 Power overall
-Max progress of 10 Metal and 16 Power per turn (3 Turns)" onclick="building4Selected()"
-                    class="buttons">ᎇ</button>
-                    <button title="Turret
-Attacks units within a small range
-Requires 32 Metal and 44 Power overall
-Max progress of 16 Metal and 22 Power per turn (2 Turns)" onclick="building5Selected()"
-                    class="buttons">ኡ</button>
-                    <button title="Heavy Artillery
-Attacks units within a large range
-Requires 120 Metal and 180 Power overall
-Max progress of 30 Metal and 45 Power per turn (4 Turns)" onclick="building6Selected()"
-                    class="buttons">ፏ</button>
+The Naval Factory is the only building that can be built on the sea." id="buildOptions" class="buildOptions">
+                    <button class="buttons" id="button1"></button>
+                    <button class="buttons" id="button2"></button>
+                    <button class="buttons" id="button3"></button>
+                    <button class="buttons" id="button4"></button>
+                    <button class="buttons" id="button5"></button>
+                    <button class="buttons" id="button6"></button>
                 </td>
                 <td id="queuedUnits" title="Units queued for construction.
 Click on a unit to remove it from the queue."></td>
+                <td class="button" title="Click here to deselect a unit/building to select another one">
+                    <button onclick="deselectUnit(2)">Deselect Unit</button>
+                </td>
 <!-- Creates a second column that spans across two rows. This will be used in later iterations -->
                 <td class="button" title="Click this to start the next player's turn">
                     <button onclick="nextTurn()">Next Turn</button>
