@@ -34,8 +34,9 @@ let ownedBuildings = 0
 let ownedUnits = 0
 // Used to show how many buildings the players have built, can't exceed the maximum (currently 10)
 let squareId = 0
+// Used to store the currently being focused on div id
 let previousSquareId
-// Used to store the id of the div the player clicks on, gets used for construction
+// Used to store the id of the div the player previously clicked on, used for movement and attacking
 let canBuild = 0
 // Used to see if the player can build the selected building in the selected div or not
 let resourceMultiplier = 0
@@ -43,16 +44,16 @@ let resourceMultiplier = 0
 // on a building per turn, as the player may be in a resource deficit
 let selectedUnit = 0
 let selectedBuilding = 0
-let playerColour = 0
+// Store which unit or building is selected for easier manipualtion
 let commander1 = 0
 let commander2 = 0
+// Used to store what div the command units should be placed in when the game starts
 let colour = 0
-let globalColour = 0
-let playerUnitTotal = 0
-let enemyUnitTotal = 0
+// Used to store what colour a div should be
 let globalI = 0
+// Used to move the values from for loops around to other functions easily
 let placingConstructedUnit = false
-// Pre-declares a bunch of variables to be used globally
+// Used to decide whether the current unit being moved has just been constructed or not
 let buildings = [{player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
     {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
     {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
@@ -117,8 +118,8 @@ let units = [{player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, meta
     {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
     {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
     {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0}]
-// Pre-declares an array of fourty unit slots (meaning each player can have a maximum
-// of 20 units).
+// Pre-declares an array of fourty-two unit slots (meaning each player can have a maximum
+// of 20 units as the first two get taken up by their command units).
 let forgottenIslands = [
 // Creates a 2D array for the Forgotten Islands map
     [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
@@ -579,18 +580,21 @@ let greenPlains = [
         {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}],
     ["4-11", "20-46"]
 ]
-// Creates 2D arrays for each map, each letter represents a terrain type
-// that affects the colour and what units can traverse it.
-// The two pairs of numbers at the end represent where the command units
-// should spawn.
+// Creates 2D arrays for each map
+// TrrainLetter represents a terrain type that affects the colour and what units can traverse it.
+// Terrain represents the terrain of the square and whether there's a unit or building there
+// PlayerControl represents what player has a unit or building in that square
+// Name stores the name of the building or unit in that square
+// The two pairs of numbers at the end represent where the command units should spawn.
 let map = [25][58]
+// Array map is declared to be the same size as the maps, gets assigned the user's choice of map later on
 let mapDiv = 0
 let mapX = 0
 let mapY = 0
-// Array map is declared to be the same size as the maps, gets assigned the
-// user's choice of map later on
+// mapDiv is used to store the div currently being worked on
+// mapX and mapY store the x and y values for the grid
 let squares = []
-
+// An array to store div ids and the colour they should be, used when selecting a unit
 let metalExtractor = {symbol: "ዧ", type: 1, health: 8, metalRequired: 6, powerRequired: 8,
     maxMetalSpend: 3, maxPowerSpend: 4, terrain1: "metal", metalIncome: 8, name: "metalExtractor"}
 let powerPlant = {symbol: "ቸ", type: 2, health: 7, metalRequired: 5, powerRequired: 8,
@@ -653,8 +657,10 @@ function display(){
             mapY = y
             mapX = x
             mapDiv = div
+// Sets these values for use in "colourSelector"
             colourSelector(0, false)
-// Executes colourSelector to determine the colour of each div, based of its terrain
+// Executes colourSelector to determine the colour of each div, based of its terrainLetter
+// False means it doesn't have to replace data in the array "map"
             container.appendChild(div)
 // Adds the div to the parent div to be displayed in a grid
         }
@@ -667,10 +673,12 @@ function display(){
     document.getElementById("p1UnitLimit").style.color = sessionStorage.playerColour
     document.getElementById("p2BuildLimit").style.color = sessionStorage.enemyColour
     document.getElementById("p2UnitLimit").style.color = sessionStorage.enemyColour
+    // Sets the colours of certain parts of the webpage to the appropriate player's colour
     document.getElementById("p1BuildLimit").innerHTML = "0/"+(buildings.length/2)
     document.getElementById("p1UnitLimit").innerHTML = "0/"+((units.length/2)-1)
     document.getElementById("p2BuildLimit").innerHTML = "0/"+(buildings.length/2)
     document.getElementById("p2UnitLimit").innerHTML = "0/"+((units.length/2)-1)
+// Displays the unit and building limits for each player as 0/20 and 0/10 respectively
     units[0].player = 1
     units[0].square = commander1
     units[0].health = commandUnit.health
@@ -679,6 +687,8 @@ function display(){
     colour = sessionStorage.playerColour
     playerTurn = 1
     unitPlacement()
+// Stores the first player's commander in the "units" array and places it on the
+// map using the function "unitPlacement"
     units[1].player = 2
     units[1].square = commander2
     units[1].health = commandUnit.health
@@ -688,72 +698,91 @@ function display(){
     playerTurn = 2
     unitPlacement()
     playerTurn = 0
-// Makes the "Metal:" and "Power:" text the colours selected by the players earlier
+// Does the same for the second player
 }
 
 function unitRemoval(query){
+// Called when moving a unit on the map
     mapDiv = document.getElementById(previousSquareId)
-    splitId(previousSquareId)
+// Uses "previousSquareId" to do work on the unit's old location
     mapDiv.innerHTML = ""
-    map[mapY][mapX].name = 0
-    map[mapY][mapX].playerControl = 0
+// Removes the unit's symbol from the map
+    splitId(previousSquareId)
+// Findsthe y and x values from "previousSquareId"
     colourSelector(previousSquareId, true)
     deselectUnit(1)
+// Removes the red, black and pink from the map to reveal the terrain colours
     squares = []
 }
 function unitMoved(){
+// Called when moving a unit on the map
     searchUnits(2)
+// Searches to find where the moving unit is in the "units" array
     units[globalI].square = squareId
     units[globalI].alreadyMoved = true
-    console.log(units)
+// Uses the value from "searchUnits" to set certain data in the array
+// Sets the unit's new div id and that it's already moved on this turn
 }
 function unitPlacement(){
+// Called when moving a unit on the map or when placing a newly constructed unit
     mapDiv = document.getElementById(squareId)
-    mapDiv.style.color = colour
+// Uses "squareId" t ostart doing work on the new unit location
     splitId(squareId)
     map[mapY][mapX].playerControl = playerTurn
     map[mapY][mapX].name = selectedUnit.name
-    map[mapY][mapX].terrain = "occupied-unit"
+    map[mapY][mapX].terrain = "occupiedUnit"
+// Sets data to show a square of the map is occupied and by what
+    mapDiv.style.color = colour
     mapDiv.innerText = selectedUnit.symbol
+// Displays the unit in its new location in the appropriate colour
     selectedUnit = 0
     placingConstructedUnit = false
+// Deselects the unit and sets "placingConstructedUnit" to false as this
+// function is called when it's true
 }
 function deselectUnit(query){
+// Called whenever a unit/building needs to be deselected or when the
+// non-terrain-coloured divs need to revert to their original colour
     buttonRemoval()
+// Removes the attributes assigned to the buttons at the top left of the screen
     document.getElementById("unitHealth").innerHTML = ""
+// Removes the unit health being dislayed
     if(squares.length>1){
         for(let i=0;i<squares.length;i+=2){
-            globalColour = squares[i+1]
             splitId(squares[i])
             mapDiv = document.getElementById(squares[i])
             colourSelector(squares[i], false)
         }
     }
+// Goes through each non-terrain-coloured div and reverts them to their original colour
     if(query==2){
         selectedUnit = 0
         selectedBuilding = 0
     }
+// If necessary, it sets these values to 0 to prevent further actions
 }
 
 function searchUnits(check){
+// A function called for several purposes, focuses on the "units" array
     let position = false
+// "position" gets returned most times so it always needs to be reset
     for(let i=0;i<units.length;i++){
+// Goes through every unit in the array
         if(check==1||check==4){
             if(units[i].player==playerTurn && units[i].square==squareId){
-                console.log(units[0].player)
-                console.log(units[i].player)
-                console.log(units[i].square)
                 if(check==4){
                     if(units[i].alreadyMoved==true){
                         position = true
                         break
                     }
+// Sets "position" to true if the unit belongs to the player and is in the selected div
+// and if it has already moved
                 }
                 else if(check==1){
-                    alert("TRUE")
                     position = true
                     break
                 }
+// Same as above but doesn't need to have already moved
             }
         }
         else if(check==2||check==5||check==6){
@@ -764,34 +793,56 @@ function searchUnits(check){
                         break
                     }
                 }
+// Checks to see if the unit in the previous div belongs to the player and has already moved
                 else if(check==6){
                     if(units[i].attackCooldown>0){
                         position = true
                         break
                     }
                 }
+// Same as above but checks to see if the unit needs to wait before attacking instead of moving
                 else if(check==2){
                     globalI = i
                     break
                 }
+// Sets "globalI" to the index the current unit is at if it belongs to the player and is in the previous div
             }
         }
-        else if(check==3){
+        else if(check==3||check==7){
             if(units[i].player!=playerTurn && units[i].square==squareId){
-                position = true
-                break
+                if(check==3){
+                    position = true
+                    break
+                }
+// Sets "position" to true if the unit belongs to the enemy and is in the current div
+                else if(check==7){
+                    globalI = i
+                    break
+                }
+// Sets "globalI" to the index the above unit is at in the array
             }
         }
     }
     return position
 }
 function searchBuildings(check){
+// A multi-purpose function that focuses on the buildings
     let position = false
+// Sets "position" to false in order to be used
     for(let i=0;i<buildings.length;i++){
-        if(check==1){
+// Goes through every building in the array
+        if(check==1||check==4){
             if(buildings[i].player!=0&&buildings[i].square==squareId){
-                position = true
-                break
+                if(check==1){
+                    position = true
+                    break
+                }
+// Checks to see if the building belongs to the enemy and is in the current div
+                else if(check==4){
+                    globalI = i
+                    break
+                }
+// Sets "globalI" to the index the above building is at in the array
             }
         }
         else if(check==2||check==3){
@@ -800,10 +851,12 @@ function searchBuildings(check){
                     position = true
                     break
                 }
+// Checks to see if the building belongs to the player and is in the current div
                 else if(check==3){
                     globalI = i
                     break
                 }
+// Sets "globalI" to the index of the above building
             }
         }
     }
@@ -811,35 +864,43 @@ function searchBuildings(check){
 }
 
 function clickedDiv(id){
+// This function is called every time a div is clicked (if it makes up the map)
+// It sorts through all the possibilities to see what the player is trying to do
+// Like whether they're trying to construct a building or attack an enemy
     squareId = id
+// Sets the id of the clicked div to "squareId"
     splitId(squareId)
+// Splits the id into its x and y components
     console.log(map[mapY][mapX].terrain)
     console.log("squareId "+squareId)
-    console.log("globalI "+globalI)
     let div = document.getElementById(squareId)
     if(playerTurn==0){
         alert("Click the Next Turn button to start a player's turn")
     }
-// Ensures the players have started their turn as a building can't be built by nobody
+// Ensures the players have started their turn so the game can begin
     else if(chosenBuilding==0&&selectedUnit==0&&selectedBuilding==0){
+// Checks to see if no unit or building is selected and that nothing is going to be constructed
         if(searchBuildings(2)) {
+// Checks to see if there's a building belonging to the player and in the current div
             if(div.innerHTML=="ጁ"){
+// Checks to see if a land factory is being selected
                 selectedBuilding = landFactory
                 unitUIDisplay(1)
-                searchBuildings(3)
-                console.log(globalI)
+// Displays the building's health and finds the position in the array the building is at
                 if(buildings[globalI].operational){
                     unitConstruction(1)
                 }
+// If the building is found to be operational, the buttons at the top right of the screen
+// change to the land units and the player is able to start building land units
                 else{
                     alert("This building hasn't finished construction so you cannot start constructing units")
                     deselectUnit(2)
                 }
+// If the building hasn't finished construction, the player is alerted and the building is deselected
             }
             else if(div.innerHTML=="ᎇ"){
                 selectedBuilding = navalFactory
                 unitUIDisplay(1)
-                searchBuildings(3)
                 if(buildings[globalI].operational){
                     unitConstruction(1)
                 }
@@ -848,12 +909,11 @@ function clickedDiv(id){
                     deselectUnit(2)
                 }
             }
+// Does the same as above but for the naval factory and naval units
             else if(div.innerHTML=="ኡ"){
                 selectedBuilding = turret
                 unitUIDisplay(1)
-                searchBuildings(3)
                 if(buildings[globalI].operational){
-                    alert("Selected a turret")
                     unitRange1(0, "land", "land", selectedBuilding.aRange, 0)
                 }
                 else{
@@ -861,27 +921,23 @@ function clickedDiv(id){
                     deselectUnit(2)
                 }
             }
+// Does the same as above but for the turret and instead of allowing for the construction of units,
+// the player is able to attack with this building
             else if(div.innerHTML=="ፏ"){
                 selectedBuilding = heavyArtillery
                 unitUIDisplay(1)
-                searchBuildings(3)
                 if(buildings[globalI].operational){
-                    if(buildings[globalI].attackCooldown>0){
-                        alert("You have already attacked with that building")
-                        deselectUnit(2)
-                    }
-                    else{
-                        unitRange1(0, land, land, selectedBuilding.aRange, 0)
-                    }
-
+                    unitRange1(0, land, land, selectedBuilding.aRange, 0)
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
                     deselectUnit(2)
                 }
             }
+// The same as above but for the heavy artillery
             else if(div.innerHTML=="ዧ"){
                 selectedBuilding = metalExtractor
+                unitUIDisplay(1)
                 searchBuildings(3)
                 if(buildings[globalI].operational){
                     alert("This building is providing resources to you. Protect it from the enemy")
@@ -891,8 +947,10 @@ function clickedDiv(id){
                     deselectUnit(2)
                 }
             }
+// The same as above but for the metal extractor but it can't attack
             else if(div.innerHTML=="ቸ"){
                 selectedBuilding = powerPlant
+                unitUIDisplay(1)
                 searchBuildings(3)
                 if(buildings[globalI].operational){
                     alert("This building is providing resources to you. Protect it from the enemy")
@@ -902,149 +960,163 @@ function clickedDiv(id){
                     deselectUnit(2)
                 }
             }
+// The same as above
             else{
                 alert("That is not your building and you haven't selected a unit to attack it")
             }
         }
+// If there is a building belonging to the enemy, the player is alerted they haven't selected anyting
+// to attack it
         else if(searchUnits(1)) {
             selectedUnit = map[mapY][mapX].name
             selectUnit(selectedUnit)
             unitUIDisplay(2)
         }
+// If there's a unit belonging to the player in the div, it is selected. Its health is displayed and the
+// regions it can attack and move in are found
         else if(searchUnits(3)){
             alert("That is not your unit and you haven't selected a unit to attack it")
         }
+// If there's a unit belonging to the enemy, the player is alerted they haven't selected anything
+// to attack it
         else if(searchBuildings(1)){
             alert("That is not your building and you haven't selected a building to attack it")
         }
+// The player is alerted if the building doesn't belong to them
         else{
             alert("You have not selected a building to be built and there's no unit to be selected")
-// If no building was selected, the players are alerted
+// If no building was selected, the player is alerted
         }
     }
     else if(chosenBuilding!=0){
-// Checks to see if a building has been selected or not
+// Checks to see if a building has been selected to be constructed
         if(document.getElementById(squareId).getAttribute("data-withinRange")=="true"){
             startConstruction()
         }
+// If a div close enough to the command unit is selected, the building begins construction
         else if(document.getElementById(squareId).style.backgroundColor=="rgb(0, 0, 0)"){
             alert("You cannot build on the square occupied by your commander")
         }
+// If the player tres to build where the command unit is, they're alerted
         else{
             alert("You can only start construction of a building within the command unit's movement range")
         }
+// If the player tries to build outside the movement range of the command unit, they're alerted
     }
     else if(selectedBuilding!=0){
+// Checks to see if a building on the map has already been selected
         if(selectedBuilding.name=="turret"||selectedBuilding.name=="heavyArtillery"){
+// Checks to see if the building is able to attack
             if(div.style.backgroundColor=="rgb(255, 0, 0)"&&
                 (map[mapY][mapX].playerControl!=playerTurn&& map[mapY][mapX].playerControl!=0)){
+// Checks to see if the clicked div is within the building's attack range and has an enemy unit in it
                 alert("Your building is attacking an enemy")
                 attack()
+// The player is alerted that they're attacking and the building then attacks the enemy
+                deselectUnit(2)
+// The unit is then deselected
             }
             else if(div.style.backgroundColor=="rgb(255, 0, 0)"){
                 if(map[mapY][mapX].playerControl==playerTurn){
                     alert("You cannot attack your own units")
                 }
+// If the clicked div has units belonging to the player, they're alerted
                 else if(map[mapY][mapX].playerControl==0){
                     alert("There is nothing to attack")
                 }
+// If the clicked div has no units in, the player is alerted
             }
             else if(div.style.backgroundColor!="rgb(255, 0, 0)"){
                 alert("You cannot attack that far away")
             }
-            else if(map[mapY][mapX].playerControl==playerTurn){
-                alert("You cannot attack your own units")
-            }
+// If the clicked div is outside the attack range, the player is alerted
         }
     }
     else if(selectedUnit!=0){
-        if(map[mapY][mapX].terrain=="occupied-unit"||map[mapY][mapX].terrain=="occupied-building"){
-            if(placingConstructedUnit==true&&map[mapY][mapX].playerControl!=0){
+// Checks to see if a unit has previously been selected
+        if(map[mapY][mapX].terrain=="occupiedUnit"||map[mapY][mapX].terrain=="occupiedBuilding"){
+// Checks to see if the div clicked is occupied
+            if(placingConstructedUnit==true){
                 alert("You cannot place a unit on a square already occupied")
             }
+// If the player is placing a newly constructed unit and tries to place it on an occupied square,
+// the player is alerted
             else if(map[mapY][mapX].playerControl!=playerTurn){
                 unitUIDisplay(3)
             }
+// If the player clicks on a div occupied by the enemy, they're able to attack it
             else{
                 alert("You cannot attack your own units or buildings")
             }
+// If the occupying unit or building belongs to the player, they're alerted
         }
         else if(map[mapY][mapX].terrain==selectedUnit.terrain1||map[mapY][mapX].terrain==selectedUnit.terrain2){
             unitUIDisplay(4)
         }
+// If the clicked div is unoccupied and is the appropriate terrain, the unit can move there
         else{
             alert("Your unit has nothing to attack and can't move there")
         }
-    }
-// The id is assigned to a global variable to be used across numerous functions more easily
-}
-
-function unitConstruction(option){
-    if(option==1){
-        if(selectedBuilding.name=="landFactory"){
-            buttonCreation(2)
-        }
-        else if(selectedBuilding.name=="navalFactory"){
-            buttonCreation(3)
-        }
-    }
-    else if(option==2){
-        countUnits()
-        if(canBuild){
-            firstEmptyUnit()
-            console.log("Unit has been queued")
-            findEconomy()
-            updateResources()
-            if(playerTurn==1){
-                document.getElementById("p1UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
-            }
-            else if(playerTurn==2){
-                document.getElementById("p2UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
-            }
-        }
+// If there's nothing to attack and the unit can't move there, the player is alerted
     }
 }
 
 function unitUIDisplay(check){
+// Called whenever a unit is selected and tries to attack or move
     let div=document.getElementById(squareId)
     if(check==1){
-// "check" is used to see what the function should be doing
+// Checks to see if the player is trying to select a building
         alert("You have selected a building")
+        searchBuildings(3)
         document.getElementById("unitHealth").innerHTML = buildings[globalI].health
     }
     else if(check==2){
+// Checks to see if the player is trying to select a unit
         alert("You have selected a unit")
-        document.getElementById("unitHealth").innerHTML = units[globalI].health
         previousSquareId = squareId
+// The "previousSquareId" is assigned "squareId" so it can be used for when a unit tries to move or attack
+        searchUnits(2)
+// Finds the position in the array the unit is in
+        document.getElementById("unitHealth").innerHTML = units[globalI].health
         unitRange1(0, selectedUnit.terrain1, selectedUnit.terrain2, selectedUnit.aRange, selectedUnit.mRange)
+// The health of the unit is displayed and their attack and movement ranges are worked out
     }
     else if(check==3){
+// Checks to see if the player is trying to attack an enemy
         if(searchUnits(6)){
             alert("You have already attacked with that unit")
         }
+// If the unit has already attacked an enemy, the player is alerted
         else{
-            alert("You are attacking a unit")
+            alert("You are attacking")
             searchUnits(2)
+            attack()
+// Otherwise, the unit is searched for in the array and attacks the enemy
             units[globalI].attackCooldown = selectedUnit.attackCooldown
             selectedUnit = 0
-            document.getElementById("unitHealth").innerHTML = ""
             deselectUnit()
+// The unit then has an attack cooldown applied and is deselected
         }
     }
     else if(check==4){
+// Checks to see if the player is trying to move the unit
         alert("You are moving a unit")
         if(div.style.backgroundColor=="rgb(255, 0, 255)"){
+// Checks to see if the clicked div is within the movement range
             if(!searchUnits(5)){
+// Checks to see if the unit hasn't already moved
                 alert("Correct terrain")
                 if(playerTurn==1){
+// Checks which player is taking their turn
                     if(!placingConstructedUnit){
                         unitRemoval()
                     }
+// If the player isn't placing down a newly constructed unit, it is removed from its previous spot
                     unitMoved()
                     colour = sessionStorage.playerColour
                     unitPlacement()
                     deselectUnit()
-                    console.log(units)
+// The unit is then moved, placed and deselected
                 }
                 else{
                     if(!placingConstructedUnit){
@@ -1055,18 +1127,101 @@ function unitUIDisplay(check){
                     unitPlacement()
                     deselectUnit()
                 }
+// The same as above but for player two
             }
             else{
-                alert("You have already moved with that unit")
+                alert("You have already moved that unit")
             }
+// The player is alerted if they've already moved the unit
         }
         else{
             alert("You cannot move units outside their movement range")
         }
+// The player is alerted if they try to move outside their movement range
     }
 }
 
+function attack(){
+// Called when a unit or building is attacking an enemy
+    let selected = 0
+    if(selectedUnit!=0){
+        selected = selectedUnit
+    }
+    else if(selectedBuilding!=0){
+        selected = selectedBuilding
+    }
+// Assigns the selected building or unit to "selected"
+    splitId(squareId)
+// Finds the x and y values of the clicked div
+    if(map[mapY][mapX].terrain=="occupiedBuilding"){
+// Checks to see if a building is being attacked
+        alert("You are attacking a building")
+        searchBuildings(4)
+// Finds the attacked building's position in the array
+        buildings[globalI].health = buildings[globalI].health - selected.damage
+// Damage is dealt to the building
+        if(buildings[globalI].health<=0){
+            alert("You have killed a unit")
+            document.getElementById(squareId).innerHTML = ""
+            colourSelector(squareId, true)
+            kill(1, globalI)
+        }
+// If the building's health drops to or below 0, the unit is wiped off te map and from the array
+    }
+    else if(map[mapY][mapX].terrain=="occupiedUnit"){
+        alert("You are attacking a unit")
+        searchUnits(7)
+        units[globalI].health = units[globalI].health - selected.damage
+        if(units[globalI].health<=0){
+            alert("You have killed a unit")
+            document.getElementById(squareId).innerHTML = ""
+            colourSelector(squareId, true)
+            kill(2, globalI)
+        }
+// The same as above but for units
+    }
+}
+function kill(recipient, i){
+// Called when a unit's health drops to or below 0
+    if(recipient==1){
+// Chekcs to see if a building is being attacked
+        if(buildings[i].queuedUnit==0){
+            kill(2, buildings[i].queuedUnit)
+        }
+// If the building is currently constructing a unit, the unit is also killed
+        buildings[i].player = 0
+        buildings[i].queuedUnit = 0
+        buildings[i].square = 0
+        buildings[i].metalRequired = 0
+        buildings[i].powerRequired = 0
+        buildings[i].maxMetalSpend = 0
+        buildings[i].maxPowerSpend = 0
+        buildings[i].name = 0
+        buildings[i].attackCooldown = 0
+        buildings[i].health = 0
+        buildings[i].operational = false
+        buildings[i].metalIncome = 0
+        buildings[i].powerIncome = 0
+    }
+// All data belonging to the building is wiped
+    else if(recipient==2){
+        units[i].player = 0
+        units[i].queuedFactory = 0
+        units[i].square = 0
+        units[i].metalRequired = 0
+        units[i].powerRequired = 0
+        units[i].maxMetalSpend = 0
+        units[i].maxPowerSpend = 0
+        units[i].name = 0
+        units[i].attackCooldown = 0
+        units[i].health = 0
+        units[i].alreadyMoved = 0
+    }
+// The same as above but for units
+}
+
 function selectBuilding(name){
+// Called when selecting a building to assign the general data to the variable
     if(name=="metalExtractor"||name==1){
         selectedBuilding = metalExtractor
     }
@@ -1087,10 +1242,13 @@ function selectBuilding(name){
     }
 }
 function selectUnit(name){
+// Called when selecting a unit to assign the general data to the variable
     if(name=="commandUnit"||name==7){
         selectedUnit=commandUnit
         buttonCreation(1)
     }
+// If the command unit is selected, the buttons at the top left of the page change to the
+// buildings it can construct
     else if(name=="tank"||name==8){
         selectedUnit=tank
     }
@@ -1115,14 +1273,18 @@ function selectUnit(name){
 }
 
 function buttonRemoval(){
+// Called when the buttons at the top lef tof the screen need to be changed
     for(let i=1;i<7;i++){
         let btn = document.getElementById("button"+i)
         btn.onclick = ""
         btn.innerHTML = ""
         btn.title = ""
     }
+// All data belonging to them is wiped
 }
 function buttonCreation(check){
+// Called when the buttons at the top lef tof the screen need to be changed
+// Using for loops didn't work for some reason so it's a long list of actions to do
     let container = document.getElementById("buildOptions")
     if(check==1){
         let btn = document.getElementById("button1")
@@ -1150,6 +1312,7 @@ function buttonCreation(check){
         btn.onclick = function(){building6Selected()}
         btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
     }
+// Assigns the buttons the buildings the command unit can construct
     else if(check==2){
         let btn = document.getElementById("button1")
         btn.innerHTML = tank.symbol
@@ -1168,6 +1331,7 @@ function buttonCreation(check){
         btn.title = "Detonationg Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
         btn.onclick = function(){unitSelected(11)}
     }
+// Assigns the buttons the units a land factory can construct
     else if(check==3){
         let btn = document.getElementById("button1")
         btn.innerHTML = destroyer.symbol
@@ -1182,12 +1346,15 @@ function buttonCreation(check){
         btn.title = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
         btn.onclick = function(){unitSelected(14)}
     }
+// Assigns the buttons the units a naval factory can construct
 }
 
 function unitRange1(constructed, terrain1, terrain2, aRange, mRange){
+// Called when a building or unit needs to have its movement and attack ranges worked out
     let xId = 0
     let yId = 0
-    let id = ""
+    let id = 0
+// Sets the x and y values of the ids and "id" to 0
     let range = 0
     if(aRange>mRange){
         range = aRange
@@ -1195,71 +1362,100 @@ function unitRange1(constructed, terrain1, terrain2, aRange, mRange){
     else{
         range = mRange
     }
+// Sets the larger two of the attack and movement range to "range"
     for(let i=0;i<=range;i++){
         xId=parseInt(squareId.slice(squareId.indexOf("-")+1))+i
+// The x value starts from the right
         unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2)
         xId = xId - 2*i
+// and then flips to the left
         unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2)
     }
+// Finds the x values of left and right of the selected unit/building
+// and uses "unitRange" for the y parts
+// The x values start where the unit/building is an gradually move out to the peak
+// of the range
 }
 function unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2){
     for(let z=range-i;z>=0;z--){
         yId=parseInt(squareId.slice(0, squareId.indexOf("-")))+z
+// The y value starts from the above
         if((yId>=0&&yId<25)&&(xId>=0&&xId<58)){
+// Makes sure only the y and x values on the map get used, not something like -3 or 61
             id = yId.toString()+"-"+xId.toString()
+// Creates the whole id to edit the colours
             rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2)
             document.getElementById(id).style.backgroundColor = colour
+// Changes the background colour to what's appropriate
             squares.push(id)
             squares.push(colour)
+// Pushes the div id and its colour into the "squares" array
         }
         yId = yId - 2*z
+// The y value flips to below
         if((yId>=0&&yId<25)&&(xId>=0&&xId<58)){
             id = yId.toString()+"-"+xId.toString()
             rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2)
             document.getElementById(id).style.backgroundColor = colour
             squares.push(id)
             squares.push(colour)
+// Same as the above (minus the y flipping)
         }
+// Finds the y values above and below where the selected unit/building is
+// and uses "rangeColouring" to determine what colour each div should be set.
+// The y values start at the peak of the range and decrease down to 0 while the
+// x value increases to the peak.
     }
 }
 function rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2){
     if(constructed==1){
-        console.log("constructed placement")
+// Checks to see if the unit being checked is newly constructed
         document.getElementById(id).setAttribute("data-withinRange", "true")
         splitId(id)
-        console.log(terrain1, terrain2)
+// Finds the x and y values from the id of where the factory is
         if(map[mapY][mapX].terrain==terrain1||map[mapY][mapX].terrain==terrain2){
             colour = "#ff00ff"
         }
+// If the square is of the appropriate terrain and is unoccupied, the div will become pink
         else{
             colour = "#000000"
         }
+// Otherwise, the square will go black, it won't go red as newly constructed units can't attack
     }
-    else if(id==previousSquareId){
+    else if(id==previousSquareId&&map[mapY][mapX].playerControl==playerTurn){
         colour = "#000000"
     }
+// If the div from where the unit having the range found is from, the square will go black
     else if(id!=previousSquareId){
         if((i+z)<=mRange){
             document.getElementById(id).setAttribute("data-withinRange", "true")
         }
+// If the i and z values add up to less than or equal to the movement range, the div is assigned "true" to
+// being in range. This allows the unit to move there.
         splitId(id)
         if(map[mapY][mapX].playerControl==playerTurn){
             colour = "#000000"
         }
+// If the div is occupied by a friendly unit, the square will go black
         else if(map[mapY][mapX].playerControl!=playerTurn&&map[mapY][mapX].playerControl!=0){
-            colour = "#000000"
+            colour = "#ff0000"
         }
+// If the div is controlled by the enemy, it'll go red
         else if(map[mapY][mapX].terrain==terrain1||map[mapY][mapX].terrain==terrain2){
             if((i+z)<=mRange){
                 colour = "#ff00ff"
             }
+// If the divis unoccupied and of the appropriate terrain, while being within the movement range
+// , it'll go pink
             else{
                 colour = "#ff0000"
             }
+// If outside the movement range, it'll go red
         }
         else{
             colour = "#ff0000"
         }
+// If the div is of the wrong terrain, it'll go red to show the unit can only attack there
     }
 }
 
@@ -1279,6 +1475,7 @@ function startConstruction(){
             else if(playerTurn==2){
                 document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
             }
+// The appropriate player's build limit is updated
             console.log("Construction Started "+chosenBuilding.name)
             firstEmptyBuilding()
             findEconomy()
@@ -1292,6 +1489,40 @@ function startConstruction(){
     chosenBuilding = 0
     deselectUnit(2)
 // "chosenBuilding" is then reassigned back to 0 so that another building has to be selected again
+// and the unit is deselected
+}
+function unitConstruction(option){
+// Called when a factory is selected or when trying to queue a unit for constructio
+    if(option==1){
+// Checks to see if the buttons at the top lef tof the screen require changing
+        if(selectedBuilding.name=="landFactory"){
+            buttonCreation(2)
+        }
+        else if(selectedBuilding.name=="navalFactory"){
+            buttonCreation(3)
+        }
+    }
+// The buttons are assigned the appropriate units
+    else if(option==2){
+// Checks to see if the player is trying to queue a unit for construction
+        countUnits()
+// The player's owned and queued units are counted to see if they can queue more
+        if(canBuild){
+            firstEmptyUnit()
+// If the player can queue another one, the first empty slot in the array is filled
+            console.log("Unit has been queued")
+            findEconomy()
+            updateResources()
+// The economy is then recalculated and displayed
+            if(playerTurn==1){
+                document.getElementById("p1UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
+            }
+            else if(playerTurn==2){
+                document.getElementById("p2UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
+            }
+// The appropriate player's unit limit is then updated
+        }
+    }
 }
 
 function mapMaker(){
@@ -1345,7 +1576,6 @@ function updateResources(){
 // and earns overall (negative if more is spent) per turn
     }
 }
-
 function netIncome(){
     netMetal = earnedMetal - spentMetal
     netPower = earnedPower - spentPower
@@ -1367,23 +1597,32 @@ function netIncome(){
 }
 
 function colourSelector(id, replace){
+// This functions executes whenever part of the map needs to e displayed
     if(playerTurn!=0){
         splitId(id)
     }
+// If it's someone's turn, the function finds the x and y values for the divs
+// This is automatically done by a different function upon page load
     checked = map[mapY][mapX].terrainLetter
-// This function executes when function "display" tells it to
+// Finds the "terrainLetter" for each div to know what to assign
     if(checked=='w'){
         if(replace){
             map[mapY][mapX].terrain = "shallowSea"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
+// If the function is rewriting old data, it assigns the appropriate data to the "map" array
+// This isn't done at the start as it's all pre-written
         mapDiv.style.backgroundColor = '#0be0cd'
         mapDiv.title = "Terrain: Shallow Water, only traversable by the command unit and naval units"
+// The title and background colour are changed to reflect the terrain
     }
+// The above happens for each letter
     else if(checked=='s'){
         if(replace){
             map[mapY][mapX].terrain = "land"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#e2f075'
         mapDiv.title = "Terrain: Sand, only traversable by land units"
@@ -1392,6 +1631,7 @@ function colourSelector(id, replace){
         if(replace){
             map[mapY][mapX].terrain = "land"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#00c45c'
         mapDiv.title = "Terrain: Grass, only traversable by land units"
@@ -1400,6 +1640,7 @@ function colourSelector(id, replace){
         if(replace){
             map[mapY][mapX].terrain = "metal"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#939993'
         mapDiv.title = "Terrain: Exposed Metal, Impassable"
@@ -1408,6 +1649,7 @@ function colourSelector(id, replace){
         if(replace){
             map[mapY][mapX].terrain = "land"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#184807'
         mapDiv.title = "Terrain: Forest, only traversable by land units"
@@ -1416,6 +1658,7 @@ function colourSelector(id, replace){
         if(replace){
             map[mapY][mapX].terrain = "deepSea"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#062480'
         mapDiv.title = "Terrain: Deep Water, only traversable by naval units"
@@ -1424,6 +1667,7 @@ function colourSelector(id, replace){
         if(replace){
             map[mapY][mapX].terrain = "impassable"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#ac6011'
         mapDiv.title = "Terrain: Desert Rock, Impassable"
@@ -1432,6 +1676,7 @@ function colourSelector(id, replace){
         if(replace){
             map[mapY][mapX].terrain = "impassable"
             map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#3b3a3a'
         mapDiv.title = "Terrain: Cliff, Impassable"
@@ -1442,8 +1687,11 @@ function colourSelector(id, replace){
 }
 
 function nextTurn(){
+// This function is called whenever the "Next Turn" button is clicked
     buttonRemoval()
+// If the buttons haven't previously been wiped, they are again
     deselectUnit(2)
+// If a building or unit hasn't been deselected, it is again
     for(let i = 0;i<units.length;i++){
         if(units[i].player==playerTurn){
             units[i].alreadyMoved = false
@@ -1452,40 +1700,38 @@ function nextTurn(){
             }
         }
     }
+// Each turn, the cooldown of the player's units decreases by 1 and are allowed to move again
     chosenBuilding = 0
     selectedBuilding = 0
     chosenUnit = 0
     selectedUnit = 0
     previousSquareId = 0
     squareId = 0
-// This function executes when the "Next Turn" button gets clicked
+// Certain variables are reset to prevent errors
     let buttons = document.getElementsByClassName("buttons")
-    document.getElementById("unitHealth").innerText = ""
     if(turnTotal%2==0){
 // This checks to see if it's player 2's turn, or if nobody has started their turn yet
         player1Turn++
         console.log("Player 1 Turn "+player1Turn)
         playerTurn = 1
-        playerColour = sessionStorage.playerColour
         document.getElementById("playerTurn").style.color = sessionStorage.playerColour
         document.getElementById("playerTurn").innerHTML = "Player 1's Turn"
         for(i=0;i<buttons.length;i++){
             buttons[i].style.color = sessionStorage.playerColour
         }
-// Makes the turn player 1's and resets some data
+// Makes the turn player 1's and resets some data, the buttons also change to match the player's colour
     }
     else if(turnTotal%2==1){
 // This checks to see if it's player 1's turn
         player2Turn++
         console.log("Player 2 Turn "+player2Turn)
         playerTurn = 2
-        playerColour = sessionStorage.enemyColour
         document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
         document.getElementById("playerTurn").innerHTML = "Player 2's Turn"
         for(i=0;i<buttons.length;i++){
             buttons[i].style.color = sessionStorage.enemyColour
         }
-// Makes the turn player 2's
+// Does the same as above but for player 2
     }
     findEconomy()
 // Executes "findEconomy" to see the total income and expenditure of the player
@@ -1544,6 +1790,7 @@ function findEconomy(){
             spentPower+=units[i].maxPowerSpend
         }
     }
+// Goes through each unit to see if they're still being constructed and adds to the spent resources
 }
 function spendEconomy(){
     metalMultiplier = earnedMetal/spentMetal
@@ -1583,8 +1830,10 @@ function spendEconomy(){
     }
     for(let i=2;i<units.length;i++){
         if(units[i].player==playerTurn&&(units[i].metalRequired>0||units[i].powerRequired>0)){
+// Checks to see if any of the player's units are still constructing
             units[i].metalRequired=units[i].metalRequired-(units[i].maxMetalSpend*resourceMultiplier)
             units[i].powerRequired=units[i].powerRequired-(units[i].maxPowerSpend*resourceMultiplier)
+// Resources are spent on the units
             if(units[i].metalRequired<=0&&units[i].powerRequired<=0){
                 units[i].square = buildings[units[i].queuedFactory].square
                 buildings[units[i].queuedFactory].queuedUnit = 0
@@ -1600,13 +1849,17 @@ function spendEconomy(){
                 squareId = previousSquareId
                 unitRange1(1, selectedUnit.terrain1, selectedUnit.terrain2, 2, 2)
             }
+// If a unit finishes construction, it can then be placed and certain bits of data gets changed to allow
+// for more units to be built and the finished unit to operate properly
         }
     }
     findEconomy()
     updateResources()
+// The economy is then worked out again
 }
 
 function unitSelected(unit){
+// Is called by the buttons at the top left of the screen if they have been written to
     if(unit==8){
         chosenUnit = tank
         unitConstruction(2)
@@ -1635,6 +1888,7 @@ function unitSelected(unit){
         chosenUnit = battleship
         unitConstruction(2)
     }
+// Determines what unit has been chosen to be built and starts construction
 }
 function building1Selected(){
     if(selectedUnit!=commandUnit){
@@ -1708,8 +1962,8 @@ function building6Selected(){
         chosenBuilding = heavyArtillery
     }
 }
-// These functions just ensures it's a player's turn and assigns the selected building to
-// variable "chosenBuilding" to be used later
+// These functions just ensures it's a player's turn and the command unit has been selected.
+// It then assigns the selected building to variable "chosenBuilding" to be used later
 
 function countBuildings(id){
 // This function uses the clicked div's id from function "startConstruction"
@@ -1734,6 +1988,8 @@ function countBuildings(id){
 // If the amount of owned buildings is < 10, "canBuild" is set to true to let them build more
 }
 function countUnits(){
+// Called by the "unitConstruction" function
+// This is basically the same as "countBuildings" but for units
     canBuild = false
     ownedUnits = 0
     for(let i=2;i<units.length;i++){
@@ -1778,8 +2034,8 @@ function firstEmptyBuilding(){
             div.innerHTML = chosenBuilding.symbol
             div.style.fontSize = "1.5vw"
             div.style.textAlign = "center"
-            splitId(buildings[i].square)
-            map[mapY][mapX].terrain = "occupied-building"
+            splitId(squareId)
+            map[mapY][mapX].terrain = "occupiedBuilding"
             map[mapY][mapX].name = chosenBuilding.name
             map[mapY][mapX].playerControl = playerTurn
 // The building is then displayed on the map in the clicked div
@@ -1796,6 +2052,7 @@ function firstEmptyBuilding(){
     }
 }
 function firstEmptyUnit(){
+// This function is the same as "firstEmptyBuilding" but for units
     let queuedUnits = 0
     for(let i=2;i<units.length;i++){
         if(units[i].player==0){
@@ -1806,7 +2063,7 @@ function firstEmptyUnit(){
             units[i].maxMetalSpend = chosenUnit.maxMetalSpend
             units[i].maxPowerSpend = chosenUnit.maxPowerSpend
             units[i].health = chosenUnit.health
-            units[i].attackCooldown = 0
+            units[i].attackCooldown = 1
             units[i].alreadyMoved = false
             units[i].name = chosenUnit.name
             units[i].queuedFactory = globalI
@@ -1819,11 +2076,11 @@ function terrainChecker(){
     splitId(squareId)
     let terrain = map[mapY][mapX].terrain
 // This finds the terrain of the clicked div
-    if(terrain=="occupied-building"){
+    if(terrain=="occupiedBuilding"){
         canBuild = false
         alert("That square is already occupied by a building")
     }
-    else if(terrain=="occupied-unit"){
+    else if(terrain=="occupiedUnit"){
         canBuild = false
         alert("That square is already occupied by a unit")
     }
@@ -1838,4 +2095,5 @@ function terrainChecker(){
 function splitId(id){
     mapX=parseInt(id.slice(id.indexOf("-")+1))
     mapY=parseInt(id.slice(0, id.indexOf("-")))
+// This just finds the x and y values from the given div id
 }
