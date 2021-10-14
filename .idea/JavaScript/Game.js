@@ -31,6 +31,7 @@ let chosenBuilding = 0
 let chosenUnit = 0
 // Used to show if a building has been selected and which one
 let ownedBuildings = 0
+let ownedUnits = 0
 // Used to show how many buildings the players have built, can't exceed the maximum (currently 10)
 let squareId = 0
 let previousSquareId
@@ -50,531 +51,532 @@ let globalColour = 0
 let playerUnitTotal = 0
 let enemyUnitTotal = 0
 let globalI = 0
+let placingConstructedUnit = false
 // Pre-declares a bunch of variables to be used globally
-let buildings = [{player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false},
-    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false}]
+let buildings = [{player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
+    {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0}]
 // Pre-declares an array of twenty building slots (meaning each player can have a
 // maximum of 10 buildings).
-let units = [{player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0}]
+let units = [{player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0}]
 // Pre-declares an array of fourty unit slots (meaning each player can have a maximum
 // of 20 units).
 let forgottenIslands = [
 // Creates a 2D array for the Forgotten Islands map
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 's', 's', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 's', 's', 'w', 'w', 'w'],
-    ['w', 'w', 's', 's', 's', 's', 's', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 's', 's', 's', 's', 's', 'w', 'w'],
-    ['w', 's', 's', 's', 'g', 'g', 's', 's', 's', 's',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'd', 'd', 'd',
-        'd', 'd', 'd', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        's', 's', 's', 's', 'g', 'g', 's', 's', 's', 'w'],
-    ['w', 's', 'g', 'g', 'm', 'g', 'g', 'g', 's', 's',
-        's', 's', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 's', 's',
-        's', 's', 'g', 'g', 'g', 'm', 'g', 'g', 's', 'w'],
-    ['w', 'w', 's', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 's', 's', 's', 's', 's', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 's', 's', 's', 's', 's', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 's', 'w', 'w'],
-    ['w', 's', 's', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'm', 's', 's', 's', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 's', 's', 's', 'm', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 's', 's', 'w'],
-    ['w', 'w', 's', 's', 'g', 'g', 'g', 'g', 'g', 'g',
-        'f', 'f', 'g', 'g', 'g', 'g', 's', 's', 's', 's',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        's', 's', 's', 's', 'g', 'g', 'g', 'g', 'f', 'f',
-        'g', 'g', 'g', 'g', 'g', 'g', 's', 's', 'w', 'w'],
-    ['w', 'w', 'w', 's', 's', 's', 'g', 'g', 'g', 'g',
-        'g', 'f', 'f', 'g', 'g', 'g', 'g', 'g', 'g', 's',
-        's', 's', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 's', 's',
-        's', 'g', 'g', 'g', 'g', 'g', 'g', 'f', 'f', 'g',
-        'g', 'g', 'g', 'g', 's', 's', 's', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 's', 's', 'g', 'g', 'g',
-        'g', 'g', 'f', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        's', 's', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 's', 's',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'f', 'g', 'g',
-        'g', 'g', 'g', 's', 's', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 's', 's', 'g', 'g',
-        'g', 'g', 'w', 'w', 'g', 'g', 'm', 'g', 'g', 's',
-        's', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 's',
-        's', 'g', 'g', 'm', 'g', 'g', 'w', 'w', 'g', 'g',
-        'g', 'g', 's', 's', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 's', 's', 'g',
-        'g', 'g', 's', 'w', 'g', 'g', 'g', 'g', 's', 's',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        's', 's', 'g', 'g', 'g', 'g', 'w', 's', 'g', 'g',
-        'g', 's', 's', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 's', 's',
-        'g', 'g', 'g', 's', 'g', 'g', 'g', 's', 's', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 's', 's', 'g', 'g', 'g', 's', 'g', 'g', 'g',
-        's', 's', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 's', 's',
-        's', 'g', 'g', 'g', 'g', 'g', 'g', 's', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 's', 'g', 'g', 'g', 'g', 'g', 'g', 's',
-        's', 's', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 's',
-        's', 's', 'g', 'g', 'g', 'g', 's', 's', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 's', 's', 'g', 'g', 'g', 'g', 's', 's',
-        's', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        's', 's', 'g', 'g', 'm', 'g', 's', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 's', 'g', 'm', 'g', 'g', 's', 's',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 's', 's', 's', 'g', 's', 's', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 's', 's', 'g', 's', 's', 's', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 's', 's', 's', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 's', 's', 's', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['d', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'd'],
-    ['d', 'd', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'd', 'd', 'd'],
-    ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'd', 'd', 'd', 'd', 'd', 'd', 'd'],
-    ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'],
-    ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'],
-    ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'],
-    ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd',
-        'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
+    [{terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0},
+        {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}, {terrainLetter: 'd', terrain: "deepSea", playerControl: 0, name: 0}],
     ["6-6", "6-51"]
 ]
 let desertStorm = [
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 'r', 'r', 'r', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 'r', 'r', 'r', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 'r', 'r', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 'r', 'r', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 'r', 's', 's', 's', 'm',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        'm', 's', 's', 's', 'r', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 'm', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 'r', 'r', 'r', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 'r', 'r', 'r', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 'm', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 'r', 'r', 'r',
-        'r', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 'r',
-        'r', 'r', 'r', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 'r',
-        'r', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 'r',
-        'r', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        'r', 'r', 'r', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 'r', 'r', 'r',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 'm', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 'm', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 'g', 'g',
-        'g', 'g', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 'g', 'w', 'w',
-        'w', 'w', 'g', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 'g', 'w', 'w', 'w', 'w',
-        'w', 'w', 'w', 'w', 'g', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 'g', 'f', 'w',
-        'w', 'f', 'g', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 'g', 'g',
-        'g', 'g', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 'r', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 'r', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 'r', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 'r', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 'r', 'r', 'r', 's', 's', 's', 'm', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 'm', 's', 's', 's', 'r', 'r', 'r', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 'r', 'r', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 'r', 'r', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 'm', 's', 'r', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 'r', 's', 'm', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 'r', 'r', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 'r', 'r', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
-    ['s', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's',
-        's', 's', 's', 's', 's', 's', 's', 's', 's', 's'],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0},
+        {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0},
+        {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0},
+        {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0},
+        {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0},
+        {terrainLetter: 'w', terrain: "shallowSea", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'r', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 's', terrain: "land", playerControl: 0, name: 0}],
     ["3-6", "3-51"]
 ]
 let greenPlains = [
-    ['c', 'c', 'c', 'c', 'c', 'c', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['c', 'c', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'm', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['c', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'm', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'f', 'f', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'f', 'f',
-        'f', 'f', 'f', 'f', 'f', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'f',
-        'f', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'm', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'm', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'm', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'm', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'f',
-        'f', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'f', 'f', 'f', 'f', 'f',
-        'f', 'f', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'f', 'f', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'm',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'c'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'm', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'c', 'c'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g',
-        'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'c', 'c'],
+    [{terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'f', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'm', terrain: "metal", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}],
+    [{terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0},
+        {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'g', terrain: "land", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}, {terrainLetter: 'c', terrain: "impassable", playerControl: 0, name: 0}],
     ["4-11", "20-46"]
 ]
 // Creates 2D arrays for each map, each letter represents a terrain type
@@ -610,7 +612,7 @@ let tank = {symbol: "Ⱝ", type: 8, health: 10, metalRequired: 10, powerRequired
     damage: 7, name: "tank", attackCooldown: 1}
 let labDroid = {symbol: "Ѫ", type: 9, health: 14, metalRequired: 12, powerRequired: 18,
     maxMetalSpend: 4, maxPowerSpend: 6, terrain1: "land", terrain2: "metal",
-    aRange: 8, mRange: 6, damage: 8, name: "labDroid", attackCooldown: 1}
+    aRange: 9, mRange: 6, damage: 9, name: "labDroid", attackCooldown: 1}
 let missileCarrier = {symbol: "ᛣ ", type: 10, health: 8, metalRequired: 36, powerRequired: 60,
     maxMetalSpend: 12, maxPowerSpend: 20, terrain1: "land", aRange: 18, mRange: 6, damage: 12,
     name: "missileCarrier", attackCooldown: 2}
@@ -651,7 +653,7 @@ function display(){
             mapY = y
             mapX = x
             mapDiv = div
-            colourSelector()
+            colourSelector(0, false)
 // Executes colourSelector to determine the colour of each div, based of its terrain
             container.appendChild(div)
 // Adds the div to the parent div to be displayed in a grid
@@ -691,47 +693,45 @@ function display(){
 
 function unitRemoval(query){
     mapDiv = document.getElementById(previousSquareId)
-    mapDiv.setAttribute("data-playerControl", 0)
-    mapDiv.setAttribute("data-name", 0)
+    splitId(previousSquareId)
     mapDiv.innerHTML = ""
-    deselectUnit(query)
+    map[mapY][mapX].name = 0
+    map[mapY][mapX].playerControl = 0
+    colourSelector(previousSquareId, true)
+    deselectUnit(1)
     squares = []
 }
 function unitMoved(){
     searchUnits(2)
     units[globalI].square = squareId
     units[globalI].alreadyMoved = true
+    console.log(units)
 }
 function unitPlacement(){
     mapDiv = document.getElementById(squareId)
     mapDiv.style.color = colour
-    mapDiv.setAttribute("data-playerControl", playerTurn)
-    mapDiv.innerHTML = selectedUnit.symbol
-    mapDiv.setAttribute("data-name", selectedUnit.name)
-    mapDiv.setAttribute("data-terrain", "occupied-unit")
+    splitId(squareId)
+    map[mapY][mapX].playerControl = playerTurn
+    map[mapY][mapX].name = selectedUnit.name
+    map[mapY][mapX].terrain = "occupied-unit"
+    mapDiv.innerText = selectedUnit.symbol
     selectedUnit = 0
-    document.getElementById("unitHealth").innerHTML = ""
-    console.log(units)
-    console.log(selectedUnit)
+    placingConstructedUnit = false
 }
 function deselectUnit(query){
     buttonRemoval()
+    document.getElementById("unitHealth").innerHTML = ""
     if(squares.length>1){
         for(let i=0;i<squares.length;i+=2){
             globalColour = squares[i+1]
-            mapY = parseInt(squares[i].slice(0, squares[i].indexOf("-")))
-            mapX = parseInt(squares[i].slice(squares[i].indexOf("-")+1))
+            splitId(squares[i])
             mapDiv = document.getElementById(squares[i])
-            colourSelector()
+            colourSelector(squares[i], false)
         }
     }
     if(query==2){
-        if(selectedUnit!=0){
-            selectedUnit = 0
-        }
-        else if(selectedBuilding!=0){
-            selectedBuilding = 0
-        }
+        selectedUnit = 0
+        selectedBuilding = 0
     }
 }
 
@@ -740,6 +740,9 @@ function searchUnits(check){
     for(let i=0;i<units.length;i++){
         if(check==1||check==4){
             if(units[i].player==playerTurn && units[i].square==squareId){
+                console.log(units[0].player)
+                console.log(units[i].player)
+                console.log(units[i].square)
                 if(check==4){
                     if(units[i].alreadyMoved==true){
                         position = true
@@ -747,6 +750,7 @@ function searchUnits(check){
                     }
                 }
                 else if(check==1){
+                    alert("TRUE")
                     position = true
                     break
                 }
@@ -781,7 +785,6 @@ function searchUnits(check){
     }
     return position
 }
-
 function searchBuildings(check){
     let position = false
     for(let i=0;i<buildings.length;i++){
@@ -809,45 +812,94 @@ function searchBuildings(check){
 
 function clickedDiv(id){
     squareId = id
-    console.log(squareId)
+    splitId(squareId)
+    console.log(map[mapY][mapX].terrain)
+    console.log("squareId "+squareId)
+    console.log("globalI "+globalI)
     let div = document.getElementById(squareId)
     if(playerTurn==0){
         alert("Click the Next Turn button to start a player's turn")
     }
 // Ensures the players have started their turn as a building can't be built by nobody
-    else if(chosenBuilding==0&&selectedUnit==0){
+    else if(chosenBuilding==0&&selectedUnit==0&&selectedBuilding==0){
         if(searchBuildings(2)) {
-            if((div.innerText=="ጁ" || div.innerText=="ᎇ")&&searchBuildings(2)){
-                selectedBuilding = div.getAttribute("data-name")
-                searchBuildings(3)
+            if(div.innerHTML=="ጁ"){
+                selectedBuilding = landFactory
                 unitUIDisplay(1)
+                searchBuildings(3)
+                console.log(globalI)
                 if(buildings[globalI].operational){
-                    unitConstruction()
+                    unitConstruction(1)
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start constructing units")
+                    deselectUnit(2)
                 }
             }
-            else if((div.innerText=="ኡ" || div.innerText=="ፏ")&&searchBuildings(2)){
-                selectedBuilding = div.getAttribute("data-name")
-                searchBuildings(2)
+            else if(div.innerHTML=="ᎇ"){
+                selectedBuilding = navalFactory
                 unitUIDisplay(1)
+                searchBuildings(3)
                 if(buildings[globalI].operational){
-                    unitRange1()
+                    unitConstruction(1)
+                }
+                else{
+                    alert("This building hasn't finished construction so you cannot start constructing units")
+                    deselectUnit(2)
+                }
+            }
+            else if(div.innerHTML=="ኡ"){
+                selectedBuilding = turret
+                unitUIDisplay(1)
+                searchBuildings(3)
+                if(buildings[globalI].operational){
+                    alert("Selected a turret")
+                    unitRange1(0, "land", "land", selectedBuilding.aRange, 0)
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
+                    deselectUnit(2)
                 }
             }
-            else if((div.innerText=="ዧ" || div.innerText=="ቸ")&&searchBuildings(2)){
-                selectedBuilding = div.getAttribute("data-name")
-                searchBuildings(2)
+            else if(div.innerHTML=="ፏ"){
+                selectedBuilding = heavyArtillery
                 unitUIDisplay(1)
+                searchBuildings(3)
+                if(buildings[globalI].operational){
+                    if(buildings[globalI].attackCooldown>0){
+                        alert("You have already attacked with that building")
+                        deselectUnit(2)
+                    }
+                    else{
+                        unitRange1(0, land, land, selectedBuilding.aRange, 0)
+                    }
+
+                }
+                else{
+                    alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
+                    deselectUnit(2)
+                }
+            }
+            else if(div.innerHTML=="ዧ"){
+                selectedBuilding = metalExtractor
+                searchBuildings(3)
                 if(buildings[globalI].operational){
                     alert("This building is providing resources to you. Protect it from the enemy")
                 }
                 else{
                     alert("This building hasn't finished construction so it doesn't provide you with resources")
+                    deselectUnit(2)
+                }
+            }
+            else if(div.innerHTML=="ቸ"){
+                selectedBuilding = powerPlant
+                searchBuildings(3)
+                if(buildings[globalI].operational){
+                    alert("This building is providing resources to you. Protect it from the enemy")
+                }
+                else{
+                    alert("This building hasn't finished construction so it doesn't provide you with resources")
+                    deselectUnit(2)
                 }
             }
             else{
@@ -855,7 +907,7 @@ function clickedDiv(id){
             }
         }
         else if(searchUnits(1)) {
-            selectedUnit = div.getAttribute("data-name")
+            selectedUnit = map[mapY][mapX].name
             selectUnit(selectedUnit)
             unitUIDisplay(2)
         }
@@ -882,16 +934,42 @@ function clickedDiv(id){
             alert("You can only start construction of a building within the command unit's movement range")
         }
     }
+    else if(selectedBuilding!=0){
+        if(selectedBuilding.name=="turret"||selectedBuilding.name=="heavyArtillery"){
+            if(div.style.backgroundColor=="rgb(255, 0, 0)"&&
+                (map[mapY][mapX].playerControl!=playerTurn&& map[mapY][mapX].playerControl!=0)){
+                alert("Your building is attacking an enemy")
+                attack()
+            }
+            else if(div.style.backgroundColor=="rgb(255, 0, 0)"){
+                if(map[mapY][mapX].playerControl==playerTurn){
+                    alert("You cannot attack your own units")
+                }
+                else if(map[mapY][mapX].playerControl==0){
+                    alert("There is nothing to attack")
+                }
+            }
+            else if(div.style.backgroundColor!="rgb(255, 0, 0)"){
+                alert("You cannot attack that far away")
+            }
+            else if(map[mapY][mapX].playerControl==playerTurn){
+                alert("You cannot attack your own units")
+            }
+        }
+    }
     else if(selectedUnit!=0){
-        if(div.getAttribute("data-terrain")=="occupied-unit"||div.getAttribute("data-terrain")=="occupied-building"){
-            if(div.getAttribute("data-playerControl")!=playerTurn){
+        if(map[mapY][mapX].terrain=="occupied-unit"||map[mapY][mapX].terrain=="occupied-building"){
+            if(placingConstructedUnit==true&&map[mapY][mapX].playerControl!=0){
+                alert("You cannot place a unit on a square already occupied")
+            }
+            else if(map[mapY][mapX].playerControl!=playerTurn){
                 unitUIDisplay(3)
             }
             else{
                 alert("You cannot attack your own units or buildings")
             }
         }
-        else if(div.getAttribute("data-terrain")==selectedUnit.terrain1||div.getAttribute("data-terrain")==selectedUnit.terrain2){
+        else if(map[mapY][mapX].terrain==selectedUnit.terrain1||map[mapY][mapX].terrain==selectedUnit.terrain2){
             unitUIDisplay(4)
         }
         else{
@@ -901,11 +979,33 @@ function clickedDiv(id){
 // The id is assigned to a global variable to be used across numerous functions more easily
 }
 
-function unitConstruction(){
-
+function unitConstruction(option){
+    if(option==1){
+        if(selectedBuilding.name=="landFactory"){
+            buttonCreation(2)
+        }
+        else if(selectedBuilding.name=="navalFactory"){
+            buttonCreation(3)
+        }
+    }
+    else if(option==2){
+        countUnits()
+        if(canBuild){
+            firstEmptyUnit()
+            console.log("Unit has been queued")
+            findEconomy()
+            updateResources()
+            if(playerTurn==1){
+                document.getElementById("p1UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
+            }
+            else if(playerTurn==2){
+                document.getElementById("p2UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
+            }
+        }
+    }
 }
 
-function unitUIDisplay(check, health){
+function unitUIDisplay(check){
     let div=document.getElementById(squareId)
     if(check==1){
 // "check" is used to see what the function should be doing
@@ -915,9 +1015,8 @@ function unitUIDisplay(check, health){
     else if(check==2){
         alert("You have selected a unit")
         document.getElementById("unitHealth").innerHTML = units[globalI].health
-            previousSquareId = squareId
-            unitRange1()
-
+        previousSquareId = squareId
+        unitRange1(0, selectedUnit.terrain1, selectedUnit.terrain2, selectedUnit.aRange, selectedUnit.mRange)
     }
     else if(check==3){
         if(searchUnits(6)){
@@ -929,8 +1028,8 @@ function unitUIDisplay(check, health){
             units[globalI].attackCooldown = selectedUnit.attackCooldown
             selectedUnit = 0
             document.getElementById("unitHealth").innerHTML = ""
+            deselectUnit()
         }
-        deselectUnit()
     }
     else if(check==4){
         alert("You are moving a unit")
@@ -938,16 +1037,23 @@ function unitUIDisplay(check, health){
             if(!searchUnits(5)){
                 alert("Correct terrain")
                 if(playerTurn==1){
-                    unitRemoval()
+                    if(!placingConstructedUnit){
+                        unitRemoval()
+                    }
                     unitMoved()
                     colour = sessionStorage.playerColour
                     unitPlacement()
+                    deselectUnit()
+                    console.log(units)
                 }
                 else{
-                    unitRemoval()
+                    if(!placingConstructedUnit){
+                        unitRemoval()
+                    }
                     unitMoved()
                     colour = sessionStorage.enemyColour
                     unitPlacement()
+                    deselectUnit()
                 }
             }
             else{
@@ -961,7 +1067,6 @@ function unitUIDisplay(check, health){
 }
 
 function selectBuilding(name){
-    console.log(name)
     if(name=="metalExtractor"||name==1){
         selectedBuilding = metalExtractor
     }
@@ -984,7 +1089,6 @@ function selectBuilding(name){
 function selectUnit(name){
     if(name=="commandUnit"||name==7){
         selectedUnit=commandUnit
-        console.log(selectedUnit)
         buttonCreation(1)
     }
     else if(name=="tank"||name==8){
@@ -1021,74 +1125,89 @@ function buttonRemoval(){
 function buttonCreation(check){
     let container = document.getElementById("buildOptions")
     if(check==1){
-        selectedBuilding = metalExtractor
         let btn = document.getElementById("button1")
-        btn.innerHTML = selectedBuilding.symbol
+        btn.innerHTML = metalExtractor.symbol
         btn.onclick = function(){building1Selected()}
         btn.title = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
-        selectedBuilding = powerPlant
         btn = document.getElementById("button2")
-        btn.innerHTML = selectedBuilding.symbol
+        btn.innerHTML = powerPlant.symbol
         btn.onclick = function(){building2Selected()}
         btn.title = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
-        selectedBuilding = landFactory
         btn = document.getElementById("button3")
-        btn.innerHTML = selectedBuilding.symbol
+        btn.innerHTML = landFactory.symbol
         btn.onclick = function(){building3Selected()}
         btn.title = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
-        selectedBuilding = navalFactory
         btn = document.getElementById("button4")
-        btn.innerHTML = selectedBuilding.symbol
+        btn.innerHTML = navalFactory.symbol
         btn.onclick = function(){building4Selected()}
         btn.title = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
-        selectedBuilding = turret
         btn = document.getElementById("button5")
-        btn.innerHTML = selectedBuilding.symbol
+        btn.innerHTML = turret.symbol
         btn.onclick = function(){building5Selected()}
         btn.title = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
-        selectedBuilding = heavyArtillery
         btn = document.getElementById("button6")
-        btn.innerHTML = selectedBuilding.symbol
+        btn.innerHTML = heavyArtillery.symbol
         btn.onclick = function(){building6Selected()}
         btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
     }
     else if(check==2){
-        for(let i=8;i<12;i++){
-            selectUnit(i)
-            console.log(selectedUnit)
-            let btn = document.getElementById("button"+i)
-            btn.innerHTML = selectedUnit.symbol
-        }
+        let btn = document.getElementById("button1")
+        btn.innerHTML = tank.symbol
+        btn.title = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
+        btn.onclick = function(){unitSelected(8)}
+        btn = document.getElementById("button2")
+        btn.innerHTML = labDroid.symbol
+        btn.title = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
+        btn.onclick = function(){unitSelected(9)}
+        btn = document.getElementById("button3")
+        btn.innerHTML = missileCarrier.symbol
+        btn.title = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"
+        btn.onclick = function(){unitSelected(10)}
+        btn = document.getElementById("button4")
+        btn.innerHTML = detonatingSphere.symbol
+        btn.title = "Detonationg Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
+        btn.onclick = function(){unitSelected(11)}
     }
     else if(check==3){
-        for(let i=12;i<15;i++){
-            selectUnit(i)
-            console.log(selectedUnit)
-            let btn = document.getElementById("button"+i)
-            btn.innerHTML = selectedUnit.symbol
-        }
+        let btn = document.getElementById("button1")
+        btn.innerHTML = destroyer.symbol
+        btn.title = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
+        btn.onclick = function(){unitSelected(12)}
+        btn = document.getElementById("button2")
+        btn.innerHTML = cruiser.symbol
+        btn.title = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
+        btn.onclick = function(){unitSelected(13)}
+        btn = document.getElementById("button3")
+        btn.innerHTML = battleship.symbol
+        btn.title = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
+        btn.onclick = function(){unitSelected(14)}
     }
 }
 
-function unitRange1(){
+function unitRange1(constructed, terrain1, terrain2, aRange, mRange){
     let xId = 0
     let yId = 0
     let id = ""
-    selectUnit(selectedUnit)
-    let range = selectedUnit.aRange
+    let range = 0
+    if(aRange>mRange){
+        range = aRange
+    }
+    else{
+        range = mRange
+    }
     for(let i=0;i<=range;i++){
         xId=parseInt(squareId.slice(squareId.indexOf("-")+1))+i
-        unitRange2(range, i, xId, yId, id)
+        unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2)
         xId = xId - 2*i
-        unitRange2(range, i, xId, yId, id)
+        unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2)
     }
 }
-function unitRange2(range, i, xId, yId, id){
+function unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2){
     for(let z=range-i;z>=0;z--){
         yId=parseInt(squareId.slice(0, squareId.indexOf("-")))+z
         if((yId>=0&&yId<25)&&(xId>=0&&xId<58)){
             id = yId.toString()+"-"+xId.toString()
-            rangeColouring(i, z, id)
+            rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2)
             document.getElementById(id).style.backgroundColor = colour
             squares.push(id)
             squares.push(colour)
@@ -1096,22 +1215,42 @@ function unitRange2(range, i, xId, yId, id){
         yId = yId - 2*z
         if((yId>=0&&yId<25)&&(xId>=0&&xId<58)){
             id = yId.toString()+"-"+xId.toString()
-            rangeColouring(i, z, id)
+            rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2)
             document.getElementById(id).style.backgroundColor = colour
             squares.push(id)
             squares.push(colour)
         }
     }
-    document.getElementById(squareId).style.backgroundColor = "#000000"
 }
-function rangeColouring(i, z, id){
-    if(id!=previousSquareId){
-        if((i+z)<=selectedUnit.mRange){
+function rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2){
+    if(constructed==1){
+        console.log("constructed placement")
+        document.getElementById(id).setAttribute("data-withinRange", "true")
+        splitId(id)
+        console.log(terrain1, terrain2)
+        if(map[mapY][mapX].terrain==terrain1||map[mapY][mapX].terrain==terrain2){
+            colour = "#ff00ff"
+        }
+        else{
+            colour = "#000000"
+        }
+    }
+    else if(id==previousSquareId){
+        colour = "#000000"
+    }
+    else if(id!=previousSquareId){
+        if((i+z)<=mRange){
             document.getElementById(id).setAttribute("data-withinRange", "true")
         }
-        if(document.getElementById(id).getAttribute("data-terrain")==selectedUnit.terrain1||
-            document.getElementById(id).getAttribute("data-terrain")==selectedUnit.terrain2){
-            if((i+z)<=selectedUnit.mRange){
+        splitId(id)
+        if(map[mapY][mapX].playerControl==playerTurn){
+            colour = "#000000"
+        }
+        else if(map[mapY][mapX].playerControl!=playerTurn&&map[mapY][mapX].playerControl!=0){
+            colour = "#000000"
+        }
+        else if(map[mapY][mapX].terrain==terrain1||map[mapY][mapX].terrain==terrain2){
+            if((i+z)<=mRange){
                 colour = "#ff00ff"
             }
             else{
@@ -1135,12 +1274,12 @@ function startConstruction(){
 // If they can, function "terrainChecker" executes to ensure the building can be constructed on that terrain
         if(canBuild==true){
             if(playerTurn==1){
-            document.getElementById("p1BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
+                document.getElementById("p1BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
             }
             else if(playerTurn==2){
-            document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
+                document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
             }
-            console.log("Construction Started")
+            console.log("Construction Started "+chosenBuilding.name)
             firstEmptyBuilding()
             findEconomy()
             updateResources()
@@ -1151,6 +1290,7 @@ function startConstruction(){
         }
     }
     chosenBuilding = 0
+    deselectUnit(2)
 // "chosenBuilding" is then reassigned back to 0 so that another building has to be selected again
 }
 
@@ -1226,81 +1366,75 @@ function netIncome(){
 // for negative numbers so is not assigned here)
 }
 
-function colourSelector(){
-    let checked = 0
-    checked = map[mapY][mapX]
+function colourSelector(id, replace){
+    if(playerTurn!=0){
+        splitId(id)
+    }
+    checked = map[mapY][mapX].terrainLetter
 // This function executes when function "display" tells it to
     if(checked=='w'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "shallowSea")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "shallowSea"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#0be0cd'
         mapDiv.title = "Terrain: Shallow Water, only traversable by the command unit and naval units"
-        mapDiv.setAttribute("data-terrainLetter", 'w')
     }
     else if(checked=='s'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "land")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "land"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#e2f075'
         mapDiv.title = "Terrain: Sand, only traversable by land units"
-        mapDiv.setAttribute("data-terrainLetter", 's')
     }
     else if(checked=='g'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "land")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "land"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#00c45c'
         mapDiv.title = "Terrain: Grass, only traversable by land units"
-        mapDiv.setAttribute("data-terrainLetter", 'g')
     }
     else if(checked=='m'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "metal")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "metal"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#939993'
         mapDiv.title = "Terrain: Exposed Metal, Impassable"
-        mapDiv.setAttribute("data-terrainLetter", 'm')
     }
     else if(checked=='f'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "land")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "land"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#184807'
         mapDiv.title = "Terrain: Forest, only traversable by land units"
-        mapDiv.setAttribute("data-terrainLetter", 'f')
     }
     else if(checked=='d'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "deepSea")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "deepSea"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#062480'
         mapDiv.title = "Terrain: Deep Water, only traversable by naval units"
-        mapDiv.setAttribute("data-terrainLetter", 'd')
     }
     else if(checked=='r'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "impassable")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "impassable"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#ac6011'
         mapDiv.title = "Terrain: Desert Rock, Impassable"
-        mapDiv.setAttribute("data-terrainLetter", 'r')
     }
     else if(checked=='c'){
-        if(globalColour != "#ff0000"){
-            mapDiv.setAttribute("data-terrain", "impassable")
-            mapDiv.setAttribute("data-playerControl", 0)
+        if(replace){
+            map[mapY][mapX].terrain = "impassable"
+            map[mapY][mapX].playerControl = 0
         }
         mapDiv.style.backgroundColor = '#3b3a3a'
         mapDiv.title = "Terrain: Cliff, Impassable"
-        mapDiv.setAttribute("data-terrainLetter", 'c')
     }
 // Assigning the correct background colour to a div based of
 // the value in array map
@@ -1310,14 +1444,6 @@ function colourSelector(){
 function nextTurn(){
     buttonRemoval()
     deselectUnit(2)
-    for(let i=0;i<buildings.length;i++){
-        if(buildings[i].square!=0){
-            if(buildings[i].player!=0){
-                document.getElementById(buildings[i].square).setAttribute("data-terrain", "occupied-building")
-                document.getElementById(buildings[i].square).setAttribute("data-playerControl", buildings[i].player)
-            }
-        }
-    }
     for(let i = 0;i<units.length;i++){
         if(units[i].player==playerTurn){
             units[i].alreadyMoved = false
@@ -1325,17 +1451,13 @@ function nextTurn(){
                 units[i].attackCooldown--
             }
         }
-        if(units[i].square!=0){
-            if(units[i].player!=0){
-                document.getElementById(units[i].square).setAttribute("data-terrain", "occupied-unit")
-                document.getElementById(units[i].square).setAttribute("data-playerControl", units[i].player)
-            }
-        }
     }
     chosenBuilding = 0
     selectedBuilding = 0
     chosenUnit = 0
     selectedUnit = 0
+    previousSquareId = 0
+    squareId = 0
 // This function executes when the "Next Turn" button gets clicked
     let buttons = document.getElementsByClassName("buttons")
     document.getElementById("unitHealth").innerText = ""
@@ -1415,8 +1537,14 @@ function findEconomy(){
             }
         }
     }
+    for(let i=2;i<units.length;i++){
+        if(units[i].player==playerTurn&&
+            (units[i].metalRequired>0||units[i].powerRequired>0)){
+            spentMetal+=units[i].maxMetalSpend
+            spentPower+=units[i].maxPowerSpend
+        }
+    }
 }
-
 function spendEconomy(){
     metalMultiplier = earnedMetal/spentMetal
     powerMultiplier = earnedPower/spentPower
@@ -1437,7 +1565,6 @@ function spendEconomy(){
 // as only the lowest multiplier can be assigned to spend the correct amount of resources
     for(let i=0;i<20;i++){
         if(buildings[i].player==playerTurn){
-            let div=document.getElementById(buildings[i].square)
 // This part runs 20 times, once for each entry in the "buildings" array
             if(buildings[i].player==playerTurn && (buildings[i].metalRequired>0||buildings[i].powerRequired>0)){
 // Checks to see if the building belongs to the player and hasn't finished construction
@@ -1454,10 +1581,61 @@ function spendEconomy(){
             }
         }
     }
+    for(let i=2;i<units.length;i++){
+        if(units[i].player==playerTurn&&(units[i].metalRequired>0||units[i].powerRequired>0)){
+            units[i].metalRequired=units[i].metalRequired-(units[i].maxMetalSpend*resourceMultiplier)
+            units[i].powerRequired=units[i].powerRequired-(units[i].maxPowerSpend*resourceMultiplier)
+            if(units[i].metalRequired<=0&&units[i].powerRequired<=0){
+                units[i].square = buildings[units[i].queuedFactory].square
+                buildings[units[i].queuedFactory].queuedUnit = 0
+                units[i].queuedFactory = 0
+                alert("Place your unit")
+                selectedBuilding = 0
+                selectedUnit = units[i].name
+                console.log(selectedUnit)
+                selectUnit(selectedUnit)
+                console.log(selectedUnit)
+                placingConstructedUnit = true
+                previousSquareId = units[i].square
+                squareId = previousSquareId
+                unitRange1(1, selectedUnit.terrain1, selectedUnit.terrain2, 2, 2)
+            }
+        }
+    }
     findEconomy()
     updateResources()
 }
 
+function unitSelected(unit){
+    if(unit==8){
+        chosenUnit = tank
+        unitConstruction(2)
+    }
+    else if(unit==9){
+        chosenUnit = labDroid
+        unitConstruction(2)
+    }
+    else if(unit==10){
+        chosenUnit = missileCarrier
+        unitConstruction(2)
+    }
+    else if(unit==11){
+        chosenUnit = detonatingSphere
+        unitConstruction(2)
+    }
+    else if(unit==12){
+        chosenUnit = destroyer
+        unitConstruction(2)
+    }
+    else if(unit==13){
+        chosenUnit = cruiser
+        unitConstruction(2)
+    }
+    else if(unit==14){
+        chosenUnit = battleship
+        unitConstruction(2)
+    }
+}
 function building1Selected(){
     if(selectedUnit!=commandUnit){
         alert("You must select your command unit before starting construction of a building")
@@ -1466,7 +1644,7 @@ function building1Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
-        console.log("Building building")
+        selectedUnit = 0
         chosenBuilding = metalExtractor
     }
 }
@@ -1478,6 +1656,7 @@ function building2Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
+        selectedUnit = 0
         chosenBuilding = powerPlant
     }
 }
@@ -1489,6 +1668,7 @@ function building3Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
+        selectedUnit = 0
         chosenBuilding = landFactory
     }
 }
@@ -1500,6 +1680,7 @@ function building4Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
+        selectedUnit = 0
         chosenBuilding = navalFactory
     }
 }
@@ -1511,6 +1692,7 @@ function building5Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
+        selectedUnit = 0
         chosenBuilding = turret
     }
 }
@@ -1522,12 +1704,13 @@ function building6Selected(){
         alert("Click the Next Turn button to start a player's turn")
     }
     else{
+        selectedUnit = 0
         chosenBuilding = heavyArtillery
-
     }
 }
 // These functions just ensures it's a player's turn and assigns the selected building to
 // variable "chosenBuilding" to be used later
+
 function countBuildings(id){
 // This function uses the clicked div's id from function "startConstruction"
     canBuild = false
@@ -1541,14 +1724,35 @@ function countBuildings(id){
         }
 // If the building belongs to the player, "ownedBuildings" increases by 1
     }
-    if (ownedBuildings==10){
+    if (ownedBuildings==buildings.length/2){
         alert("You have built your maximum number of buildings.")
     }
 // If the amount of owned buildings = 10, then the player can't build anymore
-    else if(ownedBuildings<10){
+    else if(ownedBuildings<buildings.length/2){
         canBuild = true
     }
 // If the amount of owned buildings is < 10, "canBuild" is set to true to let them build more
+}
+function countUnits(){
+    canBuild = false
+    ownedUnits = 0
+    for(let i=2;i<units.length;i++){
+        if(units[i].player==playerTurn){
+            ownedUnits++
+        }
+    }
+    if(ownedUnits==(units.length/2)-1){
+        alert("You have built or queued the maximum number of units")
+    }
+    else if(ownedUnits<(units.length/2)-1){
+        searchBuildings(3)
+        if(buildings[globalI].queuedUnit!=0){
+            alert("That factory is already constructing a unit")
+        }
+    else{
+            canBuild = true
+        }
+    }
 }
 
 function firstEmptyBuilding(){
@@ -1568,12 +1772,16 @@ function firstEmptyBuilding(){
             buildings[i].health = chosenBuilding.health
             buildings[i].name = chosenBuilding.name
             buildings[i].operational = false
+            buildings[i].attackCooldown = 0
+            buildings[i].queuedUnit = 0
 // The stats specific to each building get assigned values
             div.innerHTML = chosenBuilding.symbol
             div.style.fontSize = "1.5vw"
             div.style.textAlign = "center"
-            div.setAttribute("data-terrain", "occupied-building")
-            div.setAttribute("data-name", chosenBuilding.name)
+            splitId(buildings[i].square)
+            map[mapY][mapX].terrain = "occupied-building"
+            map[mapY][mapX].name = chosenBuilding.name
+            map[mapY][mapX].playerControl = playerTurn
 // The building is then displayed on the map in the clicked div
             if(playerTurn==1){
                 div.style.color = sessionStorage.playerColour
@@ -1587,9 +1795,29 @@ function firstEmptyBuilding(){
         }
     }
 }
+function firstEmptyUnit(){
+    let queuedUnits = 0
+    for(let i=2;i<units.length;i++){
+        if(units[i].player==0){
+            buildings[globalI].queuedUnit = i
+            units[i].player = playerTurn
+            units[i].metalRequired = chosenUnit.metalRequired
+            units[i].powerRequired = chosenUnit.powerRequired
+            units[i].maxMetalSpend = chosenUnit.maxMetalSpend
+            units[i].maxPowerSpend = chosenUnit.maxPowerSpend
+            units[i].health = chosenUnit.health
+            units[i].attackCooldown = 0
+            units[i].alreadyMoved = false
+            units[i].name = chosenUnit.name
+            units[i].queuedFactory = globalI
+            break
+        }
+    }
+}
 
 function terrainChecker(){
-    let terrain = document.getElementById(squareId).getAttribute("data-terrain")
+    splitId(squareId)
+    let terrain = map[mapY][mapX].terrain
 // This finds the terrain of the clicked div
     if(terrain=="occupied-building"){
         canBuild = false
@@ -1605,4 +1833,9 @@ function terrainChecker(){
     }
 // If the terrain for the building is wrong, the player is no longer able to build the building there
 // If the terrain is suitable, construction goes ahead
+}
+
+function splitId(id){
+    mapX=parseInt(id.slice(id.indexOf("-")+1))
+    mapY=parseInt(id.slice(0, id.indexOf("-")))
 }
