@@ -604,34 +604,34 @@ let landFactory = {symbol: "ጁ", type: 3, health: 16, metalRequired: 16, powerR
 let navalFactory = {symbol: "ᎇ", type: 4, health: 24, metalRequired: 30, powerRequired: 48,
     maxMetalSpend: 10, maxPowerSpend: 16, terrain1: "shallowSea", terrain2: "deepSea", name: "navalFactory"}
 let turret = {symbol: "ኡ", type: 5, health: 18, metalRequired: 32, powerRequired: 44,
-    maxMetalSpend: 16, maxPowerSpend: 22, terrain1: "land", aRange: 6, damage: 8, name: "turret", attackCooldown: 1}
+    maxMetalSpend: 16, maxPowerSpend: 22, terrain1: "land", attackRange: 6, damage: 8, name: "turret", attackCooldown: 1}
 let heavyArtillery = {symbol: "ፏ", type: 6, health: 28, metalRequired: 120, powerRequired: 180,
     maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", attackCooldown: 2, damage: 20, name: "heavyArtillery"}
 // Declares 6 building types and the general data specific to each type
 let commandUnit = {symbol: "ደ", type: 7, health: 32, metalrequired: 0, powerRequired: 0,
     maxMetalSpend: 0, maxPowerSpend: 0, terrain1: "land", terrain2: "shallowSea",
-    aRange: 18, mRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
+    attackRange: 18, movementRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
 let tank = {symbol: "Ⱝ", type: 8, health: 10, metalRequired: 10, powerRequired: 14,
-    maxMetalSpend: 5, maxPowerSpend: 7, terrain1: "land", aRange: 7, mRange: 5,
+    maxMetalSpend: 5, maxPowerSpend: 7, terrain1: "land", attackRange: 7, movementRange: 5,
     damage: 7, name: "tank", attackCooldown: 1}
 let labDroid = {symbol: "Ѫ", type: 9, health: 14, metalRequired: 12, powerRequired: 18,
     maxMetalSpend: 4, maxPowerSpend: 6, terrain1: "land", terrain2: "metal",
-    aRange: 9, mRange: 6, damage: 9, name: "labDroid", attackCooldown: 1}
+    attackRange: 9, movementRange: 6, damage: 9, name: "labDroid", attackCooldown: 1}
 let missileCarrier = {symbol: "ᛣ ", type: 10, health: 8, metalRequired: 36, powerRequired: 60,
-    maxMetalSpend: 12, maxPowerSpend: 20, terrain1: "land", aRange: 18, mRange: 6, damage: 12,
+    maxMetalSpend: 12, maxPowerSpend: 20, terrain1: "land", attackRange: 18, movementRange: 6, damage: 12,
     name: "missileCarrier", attackCooldown: 2}
 let detonatingSphere = {symbol: "ᵹ", type: 11, health: 80, metalRequired: 44, powerRequired: 84,
-    maxMetalSpend: 11, maxPowerSpend: 21, terrain1: "land", aRange: 1, mRange: 1, damage: 28,
+    maxMetalSpend: 11, maxPowerSpend: 21, terrain1: "land", attackRange: 1, movementRange: 1, damage: 28,
     name:"detonatingSphere", attackCooldown: 1}
 let destroyer = {symbol: "₣", type: 12, health: 16, metalRequired: 16, powerRequired: 22,
     maxMetalSpend: 8, maxPowerSpend: 11, terrain1: "shallowSea", terrain2: "deepSea",
-    aRange: 8, mRange: 7, damage: 10, name: "destroyer", attackCooldown: 1}
+    attackRange: 8, movementRange: 7, damage: 10, name: "destroyer", attackCooldown: 1}
 let cruiser = {symbol: "₸", type: 13, health: 20, metalRequired: 24, powerRequired: 39,
     maxMetalSpend: 8, maxPowerSpend: 13, terrain1: "shallowSea", terrain2: "deepSea",
-    aRange: 20, mRange: 6, damage: 12, name: "cruiser", attackCooldown: 1}
+    attackRange: 20, movementRange: 6, damage: 12, name: "cruiser", attackCooldown: 1}
 let battleship = {symbol: "₮", type: 14, health: 32, metalRequired: 48, powerRequired: 72,
     maxMetalSpend: 12, maxPowerSpend: 18, terrain1: "shallowSea", terrain2: "deepSea",
-    aRange: 16, mRange: 5, damage: 22, name: "battleship", attackCooldown: 2}
+    attackRange: 16, movementRange: 5, damage: 22, name: "battleship", attackCooldown: 2}
 // Declares 8 unit types and the general data specific to each type    
 
 function display(){
@@ -743,23 +743,30 @@ function unitPlacement(){
 function deselectUnit(query){
 // Called whenever a unit/building needs to be deselected or when the
 // non-terrain-coloured divs need to revert to their original colour
-    buttonRemoval()
+    if(!placingConstructedUnit){
+// Checks to make sure you're not deselecting a unit waiting to be placed somewhere
+// for the first time. REMOVE AND PUT BACK IN WHEN PUTTING ONTO DOCUMENT!
+        buttonRemoval()
 // Removes the attributes assigned to the buttons at the top left of the screen
-    document.getElementById("unitHealth").innerHTML = ""
+        document.getElementById("unitHealth").innerHTML = ""
 // Removes the unit health being dislayed
-    if(squares.length>1){
-        for(let i=0;i<squares.length;i+=2){
-            splitId(squares[i])
-            mapDiv = document.getElementById(squares[i])
-            colourSelector(squares[i], false)
+        if(squares.length>1){
+            for(let i=0;i<squares.length;i+=2){
+                splitId(squares[i])
+                mapDiv = document.getElementById(squares[i])
+                colourSelector(squares[i], false)
+            }
         }
-    }
 // Goes through each non-terrain-coloured div and reverts them to their original colour
-    if(query==2){
-        selectedUnit = 0
-        selectedBuilding = 0
-    }
+        if(query==2){
+            selectedUnit = 0
+            selectedBuilding = 0
+        }
 // If necessary, it sets these values to 0 to prevent further actions
+    }
+    else{
+        alert("You cannot deselect a unit awaiting placement")
+    }
 }
 
 function searchUnits(check){
@@ -871,7 +878,7 @@ function clickedDiv(id){
 // Sets the id of the clicked div to "squareId"
     splitId(squareId)
 // Splits the id into its x and y components
-    console.log(map[mapY][mapX].terrain)
+    console.log("Square Terrain "+map[mapY][mapX].terrain)
     console.log("squareId "+squareId)
     let div = document.getElementById(squareId)
     if(playerTurn==0){
@@ -914,7 +921,7 @@ function clickedDiv(id){
                 selectedBuilding = turret
                 unitUIDisplay(1)
                 if(buildings[globalI].operational){
-                    unitRange1(0, "land", "land", selectedBuilding.aRange, 0)
+                    unitRange1(0, "land", "land", selectedBuilding.attackRange, 0)
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
@@ -927,7 +934,7 @@ function clickedDiv(id){
                 selectedBuilding = heavyArtillery
                 unitUIDisplay(1)
                 if(buildings[globalI].operational){
-                    unitRange1(0, land, land, selectedBuilding.aRange, 0)
+                    unitRange1(0, land, land, selectedBuilding.attackRange, 0)
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
@@ -1046,7 +1053,7 @@ function clickedDiv(id){
             }
 // If the player clicks on a div occupied by the enemy, they're able to attack it
             else{
-                alert("You cannot attack your own units or buildings")
+                alert("You cannot attack your own units or buildings or move onto them")
             }
 // If the occupying unit or building belongs to the player, they're alerted
         }
@@ -1078,7 +1085,7 @@ function unitUIDisplay(check){
         searchUnits(2)
 // Finds the position in the array the unit is in
         document.getElementById("unitHealth").innerHTML = units[globalI].health
-        unitRange1(0, selectedUnit.terrain1, selectedUnit.terrain2, selectedUnit.aRange, selectedUnit.mRange)
+        unitRange1(0, selectedUnit.terrain1, selectedUnit.terrain2, selectedUnit.attackRange, selectedUnit.movementRange)
 // The health of the unit is displayed and their attack and movement ranges are worked out
     }
     else if(check==3){
@@ -1155,13 +1162,15 @@ function attack(){
 // Finds the x and y values of the clicked div
     if(map[mapY][mapX].terrain=="occupiedBuilding"){
 // Checks to see if a building is being attacked
-        alert("You are attacking a building")
         searchBuildings(4)
+        alert("You are attacking a building")
 // Finds the attacked building's position in the array
+        console.log("Health before "+buildings[globalI].health)
         buildings[globalI].health = buildings[globalI].health - selected.damage
+        console.log("Health after "+buildings[globalI].health)
 // Damage is dealt to the building
         if(buildings[globalI].health<=0){
-            alert("You have killed a unit")
+            alert("You have destroyed a building")
             document.getElementById(squareId).innerHTML = ""
             colourSelector(squareId, true)
             kill(1, globalI)
@@ -1169,9 +1178,11 @@ function attack(){
 // If the building's health drops to or below 0, the unit is wiped off te map and from the array
     }
     else if(map[mapY][mapX].terrain=="occupiedUnit"){
-        alert("You are attacking a unit")
         searchUnits(7)
+        alert("You are attacking a unit")
+        console.log("Health before "+units[globalI].health)
         units[globalI].health = units[globalI].health - selected.damage
+        console.log("Health after "+units[globalI].health)
         if(units[globalI].health<=0){
             alert("You have killed a unit")
             document.getElementById(squareId).innerHTML = ""
@@ -1349,34 +1360,34 @@ function buttonCreation(check){
 // Assigns the buttons the units a naval factory can construct
 }
 
-function unitRange1(constructed, terrain1, terrain2, aRange, mRange){
+function unitRange1(constructed, terrain1, terrain2, attackRange, movementRange){
 // Called when a building or unit needs to have its movement and attack ranges worked out
     let xId = 0
     let yId = 0
     let id = 0
 // Sets the x and y values of the ids and "id" to 0
     let range = 0
-    if(aRange>mRange){
-        range = aRange
+    if(attackRange>movementRange){
+        range = attackRange
     }
     else{
-        range = mRange
+        range = movementRange
     }
 // Sets the larger two of the attack and movement range to "range"
     for(let i=0;i<=range;i++){
         xId=parseInt(squareId.slice(squareId.indexOf("-")+1))+i
 // The x value starts from the right
-        unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2)
+        unitRange2(constructed, range, i, xId, yId, id, movementRange, terrain1, terrain2)
         xId = xId - 2*i
 // and then flips to the left
-        unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2)
+        unitRange2(constructed, range, i, xId, yId, id, movementRange, terrain1, terrain2)
     }
 // Finds the x values of left and right of the selected unit/building
 // and uses "unitRange" for the y parts
 // The x values start where the unit/building is an gradually move out to the peak
 // of the range
 }
-function unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terrain2){
+function unitRange2(constructed, range, i, xId, yId, id, movementRange, terrain1, terrain2){
     for(let z=range-i;z>=0;z--){
         yId=parseInt(squareId.slice(0, squareId.indexOf("-")))+z
 // The y value starts from the above
@@ -1384,7 +1395,7 @@ function unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terra
 // Makes sure only the y and x values on the map get used, not something like -3 or 61
             id = yId.toString()+"-"+xId.toString()
 // Creates the whole id to edit the colours
-            rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2)
+            rangeColouring(constructed, i, z, id, movementRange, terrain1, terrain2)
             document.getElementById(id).style.backgroundColor = colour
 // Changes the background colour to what's appropriate
             squares.push(id)
@@ -1395,7 +1406,7 @@ function unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terra
 // The y value flips to below
         if((yId>=0&&yId<25)&&(xId>=0&&xId<58)){
             id = yId.toString()+"-"+xId.toString()
-            rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2)
+            rangeColouring(constructed, i, z, id, movementRange, terrain1, terrain2)
             document.getElementById(id).style.backgroundColor = colour
             squares.push(id)
             squares.push(colour)
@@ -1407,7 +1418,7 @@ function unitRange2(constructed, range, i, xId, yId, id, mRange, terrain1, terra
 // x value increases to the peak.
     }
 }
-function rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2){
+function rangeColouring(constructed, i, z, id, movementRange, terrain1, terrain2){
     if(constructed==1){
 // Checks to see if the unit being checked is newly constructed
         document.getElementById(id).setAttribute("data-withinRange", "true")
@@ -1427,7 +1438,7 @@ function rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2){
     }
 // If the div from where the unit having the range found is from, the square will go black
     else if(id!=previousSquareId){
-        if((i+z)<=mRange){
+        if((i+z)<=movementRange){
             document.getElementById(id).setAttribute("data-withinRange", "true")
         }
 // If the i and z values add up to less than or equal to the movement range, the div is assigned "true" to
@@ -1442,7 +1453,7 @@ function rangeColouring(constructed, i, z, id, mRange, terrain1, terrain2){
         }
 // If the div is controlled by the enemy, it'll go red
         else if(map[mapY][mapX].terrain==terrain1||map[mapY][mapX].terrain==terrain2){
-            if((i+z)<=mRange){
+            if((i+z)<=movementRange){
                 colour = "#ff00ff"
             }
 // If the divis unoccupied and of the appropriate terrain, while being within the movement range
@@ -1510,7 +1521,7 @@ function unitConstruction(option){
         if(canBuild){
             firstEmptyUnit()
 // If the player can queue another one, the first empty slot in the array is filled
-            console.log("Unit has been queued")
+            console.log("Unit has "+chosenUnit.name+" been queued")
             findEconomy()
             updateResources()
 // The economy is then recalculated and displayed
@@ -1523,27 +1534,6 @@ function unitConstruction(option){
 // The appropriate player's unit limit is then updated
         }
     }
-}
-
-function mapMaker(){
-// This function executes after function display tells it to
-    if(sessionStorage.map == '1'){
-        map = forgottenIslands
-        commander1 = "6-6"
-        commander2 = "6-51"
-    }
-    else if(sessionStorage.map == '2'){
-        map = desertStorm
-        commander1 = "3-6"
-        commander2 = "3-51"
-    }
-    else if(sessionStorage.map == '3') {
-        map = greenPlains
-        commander1 = "4-11"
-        commander2 = "20-46"
-    }
-// Assigns the correct map array to array "map" depending on the user's choice
-    return map
 }
 
 function updateResources(){
@@ -1596,6 +1586,26 @@ function netIncome(){
 // for negative numbers so is not assigned here)
 }
 
+function mapMaker(){
+// This function executes after function display tells it to
+    if(sessionStorage.map == '1'){
+        map = forgottenIslands
+        commander1 = "6-6"
+        commander2 = "6-51"
+    }
+    else if(sessionStorage.map == '2'){
+        map = desertStorm
+        commander1 = "3-6"
+        commander2 = "3-51"
+    }
+    else if(sessionStorage.map == '3') {
+        map = greenPlains
+        commander1 = "4-11"
+        commander2 = "20-46"
+    }
+// Assigns the correct map array to array "map" depending on the user's choice
+    return map
+}
 function colourSelector(id, replace){
 // This functions executes whenever part of the map needs to e displayed
     if(playerTurn!=0){
@@ -1643,7 +1653,7 @@ function colourSelector(id, replace){
             map[mapY][mapX].name = 0
         }
         mapDiv.style.backgroundColor = '#939993'
-        mapDiv.title = "Terrain: Exposed Metal, Impassable"
+        mapDiv.title = "Terrain: Exposed Metal, Impassable for all except the Lab Droid"
     }
     else if(checked=='f'){
         if(replace){
@@ -1807,7 +1817,7 @@ function spendEconomy(){
     else{
         resourceMultiplier = powerMultiplier
     }
-    console.log(resourceMultiplier)
+    console.log("Resource Multiplier "+resourceMultiplier)
 // If either of the multipliers aren't >= 1, then the lowest is assigned to "resourceMultiplier"
 // as only the lowest multiplier can be assigned to spend the correct amount of resources
     for(let i=0;i<20;i++){
@@ -1822,7 +1832,7 @@ function spendEconomy(){
 // Subtracts the amount of Power able to be spent (decided by multiplying "power" and the
 // multiplier together) from the amount still required
                 if(buildings[i].metalRequired<=0&&buildings[i].powerRequired<=0){
-                    console.log("Construction Complete")
+                    console.log("Construction of "+buildings[i].name+" Complete")
                     buildings[i].operational = true
                 }
             }
@@ -1835,15 +1845,14 @@ function spendEconomy(){
             units[i].powerRequired=units[i].powerRequired-(units[i].maxPowerSpend*resourceMultiplier)
 // Resources are spent on the units
             if(units[i].metalRequired<=0&&units[i].powerRequired<=0){
+                console.log("Unit "+units[i].name+" completed")
                 units[i].square = buildings[units[i].queuedFactory].square
                 buildings[units[i].queuedFactory].queuedUnit = 0
                 units[i].queuedFactory = 0
                 alert("Place your unit")
                 selectedBuilding = 0
                 selectedUnit = units[i].name
-                console.log(selectedUnit)
                 selectUnit(selectedUnit)
-                console.log(selectedUnit)
                 placingConstructedUnit = true
                 previousSquareId = units[i].square
                 squareId = previousSquareId
