@@ -11,6 +11,12 @@ function pageLoad(){
 function prevent(){
 // This function executes once the submit button on the webpage has been clicked
     event.preventDefault()
+    let error1=""
+    let error2=""
+    let error3=""
+    let error4=""
+    let error5=""
+    let error6=""
 // This prevents the submit button's default action so that the data submitted can be used
     sessionStorage.playerColour=document.getElementById("playerColour").value
     sessionStorage.enemyColour=document.getElementById("enemyColour").value
@@ -29,32 +35,40 @@ function prevent(){
 // The above just output the values that were just stored (used for testing)
     if(sessionStorage.playerColour==sessionStorage.enemyColour){
 // Ensures the player and enemy don't start with the same colour as you won't be able to tell your units apart
-        alert("You and the enemy require different colours before playing.")
+        error1="You and the enemy require different colours before playing."
 // An appropriate message is displayed
     }
-    else if(100<sessionStorage.playerMetal || 100<sessionStorage.enemyMetal){
+    if(100<sessionStorage.playerMetal || 100<sessionStorage.enemyMetal){
 // Ensures that neither players earn too much Metal from the start
-        alert("You and the enemy can earn a maximum of 100 metal without controlling metal zones.")
+        error2="You and the enemy can earn a maximum of 100 metal without controlling metal zones."
     }
-    else if(sessionStorage.playerMetal<1 || sessionStorage.enemyMetal<1){
+    if(sessionStorage.playerMetal<1 || sessionStorage.enemyMetal<1){
 // Ensures the players both earn enough Metal to build resource generators
-        alert("You and the enemy must earn at least one metal per turn.")
+        error3="You and the enemy must earn at least one metal per turn."
     }
-    else if(120<sessionStorage.playerPower || 120<sessionStorage.enemyPower){
+    if(120<sessionStorage.playerPower || 120<sessionStorage.enemyPower){
 // Ensures that neither player earns too much Power from the start
-        alert("You and the enemy can earn a maximum of 120 power without building power plants.")
+        error4="You and the enemy can earn a maximum of 120 power without building power plants."
     }
-    else if(sessionStorage.playerPower<1 || sessionStorage.enemyPower<1){
+    if(sessionStorage.playerPower<1 || sessionStorage.enemyPower<1){
 // Ensures the players both earn enough Power to build resource generators
-        alert("You and the enemy must earn at least one power per turn.")
+        error5="You and the enemy must earn at least one power per turn."
     }
-    else if(sessionStorage.map == "0"){
+    if(sessionStorage.map == "0"){
 // Ensures a map is selected by comparing to the default value of 0
-        alert("Please select a map.")
+        error6="Please select a map."
     }
-    else{
+    if(error1==""&&error2==""&&error3==""&&error4==""&&error5==""&&error6==""){
         location="Game.html"
 // If all conditions are met, the web page moves onto the Game page
+    }
+    else{
+        document.getElementById("error1").innerText = error1
+        document.getElementById("error2").innerText = error2
+        document.getElementById("error3").innerText = error3
+        document.getElementById("error4").innerText = error4
+        document.getElementById("error5").innerText = error5
+        document.getElementById("error6").innerText = error6
     }
 }
 function mapSelect(){
