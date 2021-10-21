@@ -1067,7 +1067,6 @@ function clickedDiv(id){
 // If there's nothing to attack and the unit can't move there, the player is alerted
     }
 }
-
 function unitUIDisplay(check){
 // Called whenever a unit is selected and tries to attack or move
     let div=document.getElementById(squareId)
@@ -1146,6 +1145,82 @@ function unitUIDisplay(check){
         }
 // The player is alerted if they try to move outside their movement range
     }
+}
+function buttonRemoval(){
+// Called when the buttons at the top lef tof the screen need to be changed
+    for(let i=1;i<7;i++){
+        let btn = document.getElementById("button"+i)
+        btn.onclick = ""
+        btn.innerHTML = ""
+        btn.title = ""
+    }
+// All data belonging to them is wiped
+}
+function buttonCreation(check){
+// Called when the buttons at the top lef tof the screen need to be changed
+// Using for loops didn't work for some reason so it's a long list of actions to do
+    let container = document.getElementById("buildOptions")
+    if(check==1){
+        let btn = document.getElementById("button1")
+        btn.innerHTML = metalExtractor.symbol
+        btn.onclick = function(){building1Selected()}
+        btn.title = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
+        btn = document.getElementById("button2")
+        btn.innerHTML = powerPlant.symbol
+        btn.onclick = function(){building2Selected()}
+        btn.title = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
+        btn = document.getElementById("button3")
+        btn.innerHTML = landFactory.symbol
+        btn.onclick = function(){building3Selected()}
+        btn.title = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
+        btn = document.getElementById("button4")
+        btn.innerHTML = navalFactory.symbol
+        btn.onclick = function(){building4Selected()}
+        btn.title = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
+        btn = document.getElementById("button5")
+        btn.innerHTML = turret.symbol
+        btn.onclick = function(){building5Selected()}
+        btn.title = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
+        btn = document.getElementById("button6")
+        btn.innerHTML = heavyArtillery.symbol
+        btn.onclick = function(){building6Selected()}
+        btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
+    }
+// Assigns the buttons the buildings the command unit can construct
+    else if(check==2){
+        let btn = document.getElementById("button1")
+        btn.innerHTML = tank.symbol
+        btn.title = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
+        btn.onclick = function(){unitSelected(8)}
+        btn = document.getElementById("button2")
+        btn.innerHTML = labDroid.symbol
+        btn.title = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
+        btn.onclick = function(){unitSelected(9)}
+        btn = document.getElementById("button3")
+        btn.innerHTML = missileCarrier.symbol
+        btn.title = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"
+        btn.onclick = function(){unitSelected(10)}
+        btn = document.getElementById("button4")
+        btn.innerHTML = detonatingSphere.symbol
+        btn.title = "Detonationg Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
+        btn.onclick = function(){unitSelected(11)}
+    }
+// Assigns the buttons the units a land factory can construct
+    else if(check==3){
+        let btn = document.getElementById("button1")
+        btn.innerHTML = destroyer.symbol
+        btn.title = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
+        btn.onclick = function(){unitSelected(12)}
+        btn = document.getElementById("button2")
+        btn.innerHTML = cruiser.symbol
+        btn.title = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
+        btn.onclick = function(){unitSelected(13)}
+        btn = document.getElementById("button3")
+        btn.innerHTML = battleship.symbol
+        btn.title = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
+        btn.onclick = function(){unitSelected(14)}
+    }
+// Assigns the buttons the units a naval factory can construct
 }
 
 function attack(){
@@ -1281,83 +1356,6 @@ function selectUnit(name){
     else if(name=="battleship"||name==14){
         selectedUnit=battleship
     }
-}
-
-function buttonRemoval(){
-// Called when the buttons at the top lef tof the screen need to be changed
-    for(let i=1;i<7;i++){
-        let btn = document.getElementById("button"+i)
-        btn.onclick = ""
-        btn.innerHTML = ""
-        btn.title = ""
-    }
-// All data belonging to them is wiped
-}
-function buttonCreation(check){
-// Called when the buttons at the top lef tof the screen need to be changed
-// Using for loops didn't work for some reason so it's a long list of actions to do
-    let container = document.getElementById("buildOptions")
-    if(check==1){
-        let btn = document.getElementById("button1")
-        btn.innerHTML = metalExtractor.symbol
-        btn.onclick = function(){building1Selected()}
-        btn.title = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
-        btn = document.getElementById("button2")
-        btn.innerHTML = powerPlant.symbol
-        btn.onclick = function(){building2Selected()}
-        btn.title = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
-        btn = document.getElementById("button3")
-        btn.innerHTML = landFactory.symbol
-        btn.onclick = function(){building3Selected()}
-        btn.title = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
-        btn = document.getElementById("button4")
-        btn.innerHTML = navalFactory.symbol
-        btn.onclick = function(){building4Selected()}
-        btn.title = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
-        btn = document.getElementById("button5")
-        btn.innerHTML = turret.symbol
-        btn.onclick = function(){building5Selected()}
-        btn.title = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
-        btn = document.getElementById("button6")
-        btn.innerHTML = heavyArtillery.symbol
-        btn.onclick = function(){building6Selected()}
-        btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
-    }
-// Assigns the buttons the buildings the command unit can construct
-    else if(check==2){
-        let btn = document.getElementById("button1")
-        btn.innerHTML = tank.symbol
-        btn.title = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
-        btn.onclick = function(){unitSelected(8)}
-        btn = document.getElementById("button2")
-        btn.innerHTML = labDroid.symbol
-        btn.title = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
-        btn.onclick = function(){unitSelected(9)}
-        btn = document.getElementById("button3")
-        btn.innerHTML = missileCarrier.symbol
-        btn.title = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"
-        btn.onclick = function(){unitSelected(10)}
-        btn = document.getElementById("button4")
-        btn.innerHTML = detonatingSphere.symbol
-        btn.title = "Detonationg Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
-        btn.onclick = function(){unitSelected(11)}
-    }
-// Assigns the buttons the units a land factory can construct
-    else if(check==3){
-        let btn = document.getElementById("button1")
-        btn.innerHTML = destroyer.symbol
-        btn.title = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
-        btn.onclick = function(){unitSelected(12)}
-        btn = document.getElementById("button2")
-        btn.innerHTML = cruiser.symbol
-        btn.title = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
-        btn.onclick = function(){unitSelected(13)}
-        btn = document.getElementById("button3")
-        btn.innerHTML = battleship.symbol
-        btn.title = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
-        btn.onclick = function(){unitSelected(14)}
-    }
-// Assigns the buttons the units a naval factory can construct
 }
 
 function unitRange1(constructed, terrain1, terrain2, attackRange, movementRange){
@@ -1585,176 +1583,6 @@ function netIncome(){
 // Decides what sign should be displayed ("-" is automatically shown
 // for negative numbers so is not assigned here)
 }
-
-function mapMaker(){
-// This function executes after function display tells it to
-    if(sessionStorage.map == '1'){
-        map = forgottenIslands
-        commander1 = "6-6"
-        commander2 = "6-51"
-    }
-    else if(sessionStorage.map == '2'){
-        map = desertStorm
-        commander1 = "3-6"
-        commander2 = "3-51"
-    }
-    else if(sessionStorage.map == '3') {
-        map = greenPlains
-        commander1 = "4-11"
-        commander2 = "20-46"
-    }
-// Assigns the correct map array to array "map" depending on the user's choice
-    return map
-}
-function colourSelector(id, replace){
-// This functions executes whenever part of the map needs to e displayed
-    if(playerTurn!=0){
-        splitId(id)
-    }
-// If it's someone's turn, the function finds the x and y values for the divs
-// This is automatically done by a different function upon page load
-    checked = map[mapY][mapX].terrainLetter
-// Finds the "terrainLetter" for each div to know what to assign
-    if(checked=='w'){
-        if(replace){
-            map[mapY][mapX].terrain = "shallowSea"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-// If the function is rewriting old data, it assigns the appropriate data to the "map" array
-// This isn't done at the start as it's all pre-written
-        mapDiv.style.backgroundColor = '#0be0cd'
-        mapDiv.title = "Terrain: Shallow Water, only traversable by the command unit and naval units"
-// The title and background colour are changed to reflect the terrain
-    }
-// The above happens for each letter
-    else if(checked=='s'){
-        if(replace){
-            map[mapY][mapX].terrain = "land"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#e2f075'
-        mapDiv.title = "Terrain: Sand, only traversable by land units"
-    }
-    else if(checked=='g'){
-        if(replace){
-            map[mapY][mapX].terrain = "land"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#00c45c'
-        mapDiv.title = "Terrain: Grass, only traversable by land units"
-    }
-    else if(checked=='m'){
-        if(replace){
-            map[mapY][mapX].terrain = "metal"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#939993'
-        mapDiv.title = "Terrain: Exposed Metal, Impassable for all except the Lab Droid"
-    }
-    else if(checked=='f'){
-        if(replace){
-            map[mapY][mapX].terrain = "land"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#184807'
-        mapDiv.title = "Terrain: Forest, only traversable by land units"
-    }
-    else if(checked=='d'){
-        if(replace){
-            map[mapY][mapX].terrain = "deepSea"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#062480'
-        mapDiv.title = "Terrain: Deep Water, only traversable by naval units"
-    }
-    else if(checked=='r'){
-        if(replace){
-            map[mapY][mapX].terrain = "impassable"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#ac6011'
-        mapDiv.title = "Terrain: Desert Rock, Impassable"
-    }
-    else if(checked=='c'){
-        if(replace){
-            map[mapY][mapX].terrain = "impassable"
-            map[mapY][mapX].playerControl = 0
-            map[mapY][mapX].name = 0
-        }
-        mapDiv.style.backgroundColor = '#3b3a3a'
-        mapDiv.title = "Terrain: Cliff, Impassable"
-    }
-// Assigning the correct background colour to a div based of
-// the value in array map
-// The terrain type and what type of unit can pass through it is also assigned
-}
-
-function nextTurn(){
-// This function is called whenever the "Next Turn" button is clicked
-    buttonRemoval()
-// If the buttons haven't previously been wiped, they are again
-    deselectUnit(2)
-// If a building or unit hasn't been deselected, it is again
-    for(let i = 0;i<units.length;i++){
-        if(units[i].player==playerTurn){
-            units[i].alreadyMoved = false
-            if(units[i].attackCooldown>0){
-                units[i].attackCooldown--
-            }
-        }
-    }
-// Each turn, the cooldown of the player's units decreases by 1 and are allowed to move again
-    chosenBuilding = 0
-    selectedBuilding = 0
-    chosenUnit = 0
-    selectedUnit = 0
-    previousSquareId = 0
-    squareId = 0
-// Certain variables are reset to prevent errors
-    let buttons = document.getElementsByClassName("buttons")
-    if(turnTotal%2==0){
-// This checks to see if it's player 2's turn, or if nobody has started their turn yet
-        player1Turn++
-        console.log("Player 1 Turn "+player1Turn)
-        playerTurn = 1
-        document.getElementById("playerTurn").style.color = sessionStorage.playerColour
-        document.getElementById("playerTurn").innerHTML = "Player 1's Turn"
-        for(i=0;i<buttons.length;i++){
-            buttons[i].style.color = sessionStorage.playerColour
-        }
-// Makes the turn player 1's and resets some data, the buttons also change to match the player's colour
-    }
-    else if(turnTotal%2==1){
-// This checks to see if it's player 1's turn
-        player2Turn++
-        console.log("Player 2 Turn "+player2Turn)
-        playerTurn = 2
-        document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
-        document.getElementById("playerTurn").innerHTML = "Player 2's Turn"
-        for(i=0;i<buttons.length;i++){
-            buttons[i].style.color = sessionStorage.enemyColour
-        }
-// Does the same as above but for player 2
-    }
-    findEconomy()
-// Executes "findEconomy" to see the total income and expenditure of the player
-    updateResources()
-// Executes "updateResources" to display what the player is earning and spending
-    spendEconomy()
-// Executes "spendEconomy" to spend their earned resources evenly across their
-// buildings under construction
-    turnTotal++
-// Increases the turn total to allow for the player's turn to change next time this
-// function executes
-}
-
 function findEconomy(){
     spentMetal = 0
     spentPower = 0
@@ -1865,6 +1693,194 @@ function spendEconomy(){
     findEconomy()
     updateResources()
 // The economy is then worked out again
+}
+
+function mapMaker(){
+// This function executes after function display tells it to
+    if(sessionStorage.map == '1'){
+        map = forgottenIslands
+        commander1 = "6-6"
+        commander2 = "6-51"
+    }
+    else if(sessionStorage.map == '2'){
+        map = desertStorm
+        commander1 = "3-6"
+        commander2 = "3-51"
+    }
+    else if(sessionStorage.map == '3') {
+        map = greenPlains
+        commander1 = "4-11"
+        commander2 = "20-46"
+    }
+// Assigns the correct map array to array "map" depending on the user's choice
+    return map
+}
+function colourSelector(id, replace){
+// This functions executes whenever part of the map needs to e displayed
+    if(playerTurn!=0){
+        splitId(id)
+    }
+// If it's someone's turn, the function finds the x and y values for the divs
+// This is automatically done by a different function upon page load
+    checked = map[mapY][mapX].terrainLetter
+// Finds the "terrainLetter" for each div to know what to assign
+    if(checked=='w'){
+        if(replace){
+            map[mapY][mapX].terrain = "shallowSea"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+// If the function is rewriting old data, it assigns the appropriate data to the "map" array
+// This isn't done at the start as it's all pre-written
+        mapDiv.style.backgroundColor = '#0be0cd'
+        mapDiv.title = "Terrain: Shallow Water, only traversable by the command unit and naval units"
+// The title and background colour are changed to reflect the terrain
+    }
+// The above happens for each letter
+    else if(checked=='s'){
+        if(replace){
+            map[mapY][mapX].terrain = "land"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#e2f075'
+        mapDiv.title = "Terrain: Sand, only traversable by land units"
+    }
+    else if(checked=='g'){
+        if(replace){
+            map[mapY][mapX].terrain = "land"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#00c45c'
+        mapDiv.title = "Terrain: Grass, only traversable by land units"
+    }
+    else if(checked=='m'){
+        if(replace){
+            map[mapY][mapX].terrain = "metal"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#939993'
+        mapDiv.title = "Terrain: Exposed Metal, Impassable for all except the Lab Droid"
+    }
+    else if(checked=='f'){
+        if(replace){
+            map[mapY][mapX].terrain = "land"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#184807'
+        mapDiv.title = "Terrain: Forest, only traversable by land units"
+    }
+    else if(checked=='d'){
+        if(replace){
+            map[mapY][mapX].terrain = "deepSea"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#062480'
+        mapDiv.title = "Terrain: Deep Water, only traversable by naval units"
+    }
+    else if(checked=='r'){
+        if(replace){
+            map[mapY][mapX].terrain = "impassable"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#ac6011'
+        mapDiv.title = "Terrain: Desert Rock, Impassable"
+    }
+    else if(checked=='c'){
+        if(replace){
+            map[mapY][mapX].terrain = "impassable"
+            map[mapY][mapX].playerControl = 0
+            map[mapY][mapX].name = 0
+        }
+        mapDiv.style.backgroundColor = '#3b3a3a'
+        mapDiv.title = "Terrain: Cliff, Impassable"
+    }
+// Assigning the correct background colour to a div based of
+// the value in array map
+// The terrain type and what type of unit can pass through it is also assigned
+}
+function terrainChecker(){
+    splitId(squareId)
+    let terrain = map[mapY][mapX].terrain
+// This finds the terrain of the clicked div
+    if(terrain=="occupiedBuilding"){
+        canBuild = false
+        alert("That square is already occupied by a building")
+    }
+    else if(terrain=="occupiedUnit"){
+        canBuild = false
+        alert("That square is already occupied by a unit")
+    }
+    else if(terrain!=chosenBuilding.terrain1&&terrain!=chosenBuilding.terrain2){
+        canBuild = false
+        alert("That is the wrong terrain for building "+chosenBuilding.symbol)
+    }
+// If the terrain for the building is wrong, the player is no longer able to build the building there
+// If the terrain is suitable, construction goes ahead
+}
+
+function nextTurn(){
+// This function is called whenever the "Next Turn" button is clicked
+    buttonRemoval()
+// If the buttons haven't previously been wiped, they are again
+    deselectUnit(2)
+// If a building or unit hasn't been deselected, it is again
+    for(let i = 0;i<units.length;i++){
+        if(units[i].player==playerTurn){
+            units[i].alreadyMoved = false
+            if(units[i].attackCooldown>0){
+                units[i].attackCooldown--
+            }
+        }
+    }
+// Each turn, the cooldown of the player's units decreases by 1 and are allowed to move again
+    chosenBuilding = 0
+    selectedBuilding = 0
+    chosenUnit = 0
+    selectedUnit = 0
+    previousSquareId = 0
+    squareId = 0
+// Certain variables are reset to prevent errors
+    let buttons = document.getElementsByClassName("buttons")
+    if(turnTotal%2==0){
+// This checks to see if it's player 2's turn, or if nobody has started their turn yet
+        player1Turn++
+        console.log("Player 1 Turn "+player1Turn)
+        playerTurn = 1
+        document.getElementById("playerTurn").style.color = sessionStorage.playerColour
+        document.getElementById("playerTurn").innerHTML = "Player 1's Turn"
+        for(i=0;i<buttons.length;i++){
+            buttons[i].style.color = sessionStorage.playerColour
+        }
+// Makes the turn player 1's and resets some data, the buttons also change to match the player's colour
+    }
+    else if(turnTotal%2==1){
+// This checks to see if it's player 1's turn
+        player2Turn++
+        console.log("Player 2 Turn "+player2Turn)
+        playerTurn = 2
+        document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
+        document.getElementById("playerTurn").innerHTML = "Player 2's Turn"
+        for(i=0;i<buttons.length;i++){
+            buttons[i].style.color = sessionStorage.enemyColour
+        }
+// Does the same as above but for player 2
+    }
+    findEconomy()
+// Executes "findEconomy" to see the total income and expenditure of the player
+    updateResources()
+// Executes "updateResources" to display what the player is earning and spending
+    spendEconomy()
+// Executes "spendEconomy" to spend their earned resources evenly across their
+// buildings under construction
+    turnTotal++
+// Increases the turn total to allow for the player's turn to change next time this
+// function executes
 }
 
 function unitSelected(unit){
@@ -2019,7 +2035,6 @@ function countUnits(){
         }
     }
 }
-
 function firstEmptyBuilding(){
     for(let i=0;i<buildings.length;i++){
 // Runs 20 times to check each entry in the "buildings" array
@@ -2079,26 +2094,6 @@ function firstEmptyUnit(){
             break
         }
     }
-}
-
-function terrainChecker(){
-    splitId(squareId)
-    let terrain = map[mapY][mapX].terrain
-// This finds the terrain of the clicked div
-    if(terrain=="occupiedBuilding"){
-        canBuild = false
-        alert("That square is already occupied by a building")
-    }
-    else if(terrain=="occupiedUnit"){
-        canBuild = false
-        alert("That square is already occupied by a unit")
-    }
-    else if(terrain!=chosenBuilding.terrain1&&terrain!=chosenBuilding.terrain2){
-        canBuild = false
-        alert("That is the wrong terrain for building "+chosenBuilding.symbol)
-    }
-// If the terrain for the building is wrong, the player is no longer able to build the building there
-// If the terrain is suitable, construction goes ahead
 }
 
 function splitId(id){
