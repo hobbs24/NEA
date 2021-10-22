@@ -608,7 +608,7 @@ let turret = {symbol: "ኡ", type: 5, health: 18, metalRequired: 32, powerRequir
 let heavyArtillery = {symbol: "ፏ", type: 6, health: 28, metalRequired: 120, powerRequired: 180,
     maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", attackCooldown: 2, damage: 20, name: "heavyArtillery"}
 // Declares 6 building types and the general data specific to each type
-let commandUnit = {symbol: "ደ", type: 7, health: 32, metalrequired: 0, powerRequired: 0,
+let commandUnit = {symbol: "ደ", type: 7, health: 32, metalRequired: 0, powerRequired: 0,
     maxMetalSpend: 0, maxPowerSpend: 0, terrain1: "land", terrain2: "shallowSea",
     attackRange: 18, movementRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
 let tank = {symbol: "Ⱝ", type: 8, health: 10, metalRequired: 10, powerRequired: 14,
@@ -708,7 +708,7 @@ function unitRemoval(query){
     mapDiv.innerHTML = ""
 // Removes the unit's symbol from the map
     splitId(previousSquareId)
-// Findsthe y and x values from "previousSquareId"
+// Finds the y and x values from "previousSquareId"
     colourSelector(previousSquareId, true)
     deselectUnit(1)
 // Removes the red, black and pink from the map to reveal the terrain colours
@@ -726,7 +726,7 @@ function unitMoved(){
 function unitPlacement(){
 // Called when moving a unit on the map or when placing a newly constructed unit
     mapDiv = document.getElementById(squareId)
-// Uses "squareId" t ostart doing work on the new unit location
+// Uses "squareId" to start doing work on the new unit location
     splitId(squareId)
     map[mapY][mapX].playerControl = playerTurn
     map[mapY][mapX].name = selectedUnit.name
@@ -745,7 +745,7 @@ function deselectUnit(query){
 // non-terrain-coloured divs need to revert to their original colour
     if(!placingConstructedUnit){
 // Checks to make sure you're not deselecting a unit waiting to be placed somewhere
-// for the first time. REMOVE AND PUT BACK IN WHEN PUTTING ONTO DOCUMENT!
+// for the first time.
         buttonRemoval()
 // Removes the attributes assigned to the buttons at the top left of the screen
         document.getElementById("unitHealth").innerHTML = ""
@@ -771,7 +771,7 @@ function deselectUnit(query){
 
 function searchUnits(check){
 // A function called for several purposes, focuses on the "units" array
-    let position = false
+    let query = false
 // "position" gets returned most times so it always needs to be reset
     for(let i=0;i<units.length;i++){
 // Goes through every unit in the array
@@ -779,14 +779,14 @@ function searchUnits(check){
             if(units[i].player==playerTurn && units[i].square==squareId){
                 if(check==4){
                     if(units[i].alreadyMoved==true){
-                        position = true
+                        query = true
                         break
                     }
 // Sets "position" to true if the unit belongs to the player and is in the selected div
 // and if it has already moved
                 }
                 else if(check==1){
-                    position = true
+                    query = true
                     break
                 }
 // Same as above but doesn't need to have already moved
@@ -796,14 +796,14 @@ function searchUnits(check){
             if(units[i].player==playerTurn && units[i].square==previousSquareId){
                 if(check==5){
                     if(units[i].alreadyMoved==true){
-                        position = true
+                        query = true
                         break
                     }
                 }
 // Checks to see if the unit in the previous div belongs to the player and has already moved
                 else if(check==6){
                     if(units[i].attackCooldown>0){
-                        position = true
+                        query = true
                         break
                     }
                 }
@@ -818,7 +818,7 @@ function searchUnits(check){
         else if(check==3||check==7){
             if(units[i].player!=playerTurn && units[i].square==squareId){
                 if(check==3){
-                    position = true
+                    query = true
                     break
                 }
 // Sets "position" to true if the unit belongs to the enemy and is in the current div
@@ -830,18 +830,18 @@ function searchUnits(check){
             }
         }
     }
-    return position
+    return query
 }
 function searchBuildings(check){
 // A multi-purpose function that focuses on the buildings
-    let position = false
+    let query = false
 // Sets "position" to false in order to be used
     for(let i=0;i<buildings.length;i++){
 // Goes through every building in the array
         if(check==1||check==4){
             if(buildings[i].player!=0&&buildings[i].square==squareId){
                 if(check==1){
-                    position = true
+                    query = true
                     break
                 }
 // Checks to see if the building belongs to the enemy and is in the current div
@@ -855,7 +855,7 @@ function searchBuildings(check){
         else if(check==2||check==3){
             if(buildings[i].player==playerTurn&&buildings[i].square==squareId){
                 if(check==2){
-                    position = true
+                    query = true
                     break
                 }
 // Checks to see if the building belongs to the player and is in the current div
@@ -867,7 +867,7 @@ function searchBuildings(check){
             }
         }
     }
-    return position
+    return query
 }
 
 function clickedDiv(id){
@@ -1147,7 +1147,7 @@ function unitUIDisplay(check){
     }
 }
 function buttonRemoval(){
-// Called when the buttons at the top lef tof the screen need to be changed
+// Called when the buttons at the top left of the screen need to be changed
     for(let i=1;i<7;i++){
         let btn = document.getElementById("button"+i)
         btn.onclick = ""
@@ -1157,33 +1157,33 @@ function buttonRemoval(){
 // All data belonging to them is wiped
 }
 function buttonCreation(check){
-// Called when the buttons at the top lef tof the screen need to be changed
+// Called when the buttons at the top left of the screen need to be changed
 // Using for loops didn't work for some reason so it's a long list of actions to do
     let container = document.getElementById("buildOptions")
     if(check==1){
         let btn = document.getElementById("button1")
         btn.innerHTML = metalExtractor.symbol
-        btn.onclick = function(){building1Selected()}
+        btn.onclick = function(){selectingConstruction(1)}
         btn.title = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
         btn = document.getElementById("button2")
         btn.innerHTML = powerPlant.symbol
-        btn.onclick = function(){building2Selected()}
+        btn.onclick = function(){selectingConstruction(2)}
         btn.title = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
         btn = document.getElementById("button3")
         btn.innerHTML = landFactory.symbol
-        btn.onclick = function(){building3Selected()}
+        btn.onclick = function(){selectingConstruction(3)}
         btn.title = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
         btn = document.getElementById("button4")
         btn.innerHTML = navalFactory.symbol
-        btn.onclick = function(){building4Selected()}
+        btn.onclick = function(){selectingConstruction(4)}
         btn.title = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
         btn = document.getElementById("button5")
         btn.innerHTML = turret.symbol
-        btn.onclick = function(){building5Selected()}
+        btn.onclick = function(){selectingConstruction(5)}
         btn.title = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
         btn = document.getElementById("button6")
         btn.innerHTML = heavyArtillery.symbol
-        btn.onclick = function(){building6Selected()}
+        btn.onclick = function(){selectingConstruction(6)}
         btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
     }
 // Assigns the buttons the buildings the command unit can construct
@@ -1191,34 +1191,34 @@ function buttonCreation(check){
         let btn = document.getElementById("button1")
         btn.innerHTML = tank.symbol
         btn.title = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
-        btn.onclick = function(){unitSelected(8)}
+        btn.onclick = function(){selectingConstruction(8)}
         btn = document.getElementById("button2")
         btn.innerHTML = labDroid.symbol
         btn.title = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
-        btn.onclick = function(){unitSelected(9)}
+        btn.onclick = function(){selectingConstruction(9)}
         btn = document.getElementById("button3")
         btn.innerHTML = missileCarrier.symbol
         btn.title = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"
-        btn.onclick = function(){unitSelected(10)}
+        btn.onclick = function(){selectingConstruction(10)}
         btn = document.getElementById("button4")
         btn.innerHTML = detonatingSphere.symbol
-        btn.title = "Detonationg Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
-        btn.onclick = function(){unitSelected(11)}
+        btn.title = "Detonating Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
+        btn.onclick = function(){selectingConstruction(11)}
     }
 // Assigns the buttons the units a land factory can construct
     else if(check==3){
         let btn = document.getElementById("button1")
         btn.innerHTML = destroyer.symbol
         btn.title = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
-        btn.onclick = function(){unitSelected(12)}
+        btn.onclick = function(){selectingConstruction(12)}
         btn = document.getElementById("button2")
         btn.innerHTML = cruiser.symbol
         btn.title = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
-        btn.onclick = function(){unitSelected(13)}
+        btn.onclick = function(){selectingConstruction(13)}
         btn = document.getElementById("button3")
         btn.innerHTML = battleship.symbol
         btn.title = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
-        btn.onclick = function(){unitSelected(14)}
+        btn.onclick = function(){selectingConstruction(14)}
     }
 // Assigns the buttons the units a naval factory can construct
 }
@@ -1250,7 +1250,7 @@ function attack(){
             colourSelector(squareId, true)
             kill(1, globalI)
         }
-// If the building's health drops to or below 0, the unit is wiped off te map and from the array
+// If the building's health drops to or below 0, the unit is wiped off the map and from the array
     }
     else if(map[mapY][mapX].terrain=="occupiedUnit"){
         searchUnits(7)
@@ -1270,7 +1270,7 @@ function attack(){
 function kill(recipient, i){
 // Called when a unit's health drops to or below 0
     if(recipient==1){
-// Chekcs to see if a building is being attacked
+// Checks to see if a building is being attacked
         if(buildings[i].queuedUnit==0){
             kill(2, buildings[i].queuedUnit)
         }
@@ -1288,6 +1288,7 @@ function kill(recipient, i){
         buildings[i].operational = false
         buildings[i].metalIncome = 0
         buildings[i].powerIncome = 0
+        countBuildings()
     }
 // All data belonging to the building is wiped
     else if(recipient==2){
@@ -1302,6 +1303,7 @@ function kill(recipient, i){
         units[i].attackCooldown = 0
         units[i].health = 0
         units[i].alreadyMoved = 0
+        countUnits()
     }
 // The same as above but for units
 }
@@ -1382,7 +1384,7 @@ function unitRange1(constructed, terrain1, terrain2, attackRange, movementRange)
     }
 // Finds the x values of left and right of the selected unit/building
 // and uses "unitRange" for the y parts
-// The x values start where the unit/building is an gradually move out to the peak
+// The x values start where the unit/building is and gradually move out to the peak
 // of the range
 }
 function unitRange2(constructed, range, i, xId, yId, id, movementRange, terrain1, terrain2){
@@ -1501,9 +1503,9 @@ function startConstruction(){
 // and the unit is deselected
 }
 function unitConstruction(option){
-// Called when a factory is selected or when trying to queue a unit for constructio
+// Called when a factory is selected or when trying to queue a unit for construction
     if(option==1){
-// Checks to see if the buttons at the top lef tof the screen require changing
+// Checks to see if the buttons at the top left of the screen require changing
         if(selectedBuilding.name=="landFactory"){
             buttonCreation(2)
         }
@@ -1713,7 +1715,6 @@ function mapMaker(){
         commander2 = "20-46"
     }
 // Assigns the correct map array to array "map" depending on the user's choice
-    return map
 }
 function colourSelector(id, replace){
 // This functions executes whenever part of the map needs to e displayed
@@ -1722,7 +1723,7 @@ function colourSelector(id, replace){
     }
 // If it's someone's turn, the function finds the x and y values for the divs
 // This is automatically done by a different function upon page load
-    checked = map[mapY][mapX].terrainLetter
+    let checked = map[mapY][mapX].terrainLetter
 // Finds the "terrainLetter" for each div to know what to assign
     if(checked=='w'){
         if(replace){
@@ -1830,12 +1831,17 @@ function nextTurn(){
 // If the buttons haven't previously been wiped, they are again
     deselectUnit(2)
 // If a building or unit hasn't been deselected, it is again
-    for(let i = 0;i<units.length;i++){
+    for(let i=0;i<units.length;i++){
         if(units[i].player==playerTurn){
             units[i].alreadyMoved = false
             if(units[i].attackCooldown>0){
                 units[i].attackCooldown--
             }
+        }
+    }
+    for(let i=2;i<buildings.length;i++){
+        if(buildings[i].player==playerTurn&&buildings[i].attackCooldown>0){
+            buildings[i].attackCooldown--
         }
     }
 // Each turn, the cooldown of the player's units decreases by 1 and are allowed to move again
@@ -1883,9 +1889,44 @@ function nextTurn(){
 // function executes
 }
 
-function unitSelected(unit){
+function selectingConstruction(unit){
 // Is called by the buttons at the top left of the screen if they have been written to
-    if(unit==8){
+    if(unit<7){
+        if(selectedUnit!=commandUnit){
+            alert("You must select your command unit before starting construction of a building")
+        }
+        else if(playerTurn==0){
+            alert("Click the Next Turn button to start a player's turn")
+        }
+    }
+// Makes sure that if a building is being queued that the command unit has been selected
+// and that a player is taking their turn
+    if(unit==1){
+        selectedUnit = 0
+        chosenBuilding = metalExtractor
+    }
+    else if(unit==2){
+        selectedUnit = 0
+        chosenBuilding = powerPlant
+    }
+    else if(unit==3){
+        selectedUnit = 0
+        chosenBuilding = landFactory
+    }
+    else if(unit==4){
+        selectedUnit = 0
+        chosenBuilding = navalFactory
+    }
+    else if(unit==5){
+        selectedUnit = 0
+        chosenBuilding = turret
+    }
+    else if(unit==6){
+        selectedUnit = 0
+        chosenBuilding = heavyArtillery
+    }
+// Assigns the chosen building
+    else if(unit==8){
         chosenUnit = tank
         unitConstruction(2)
     }
@@ -1901,6 +1942,7 @@ function unitSelected(unit){
         chosenUnit = detonatingSphere
         unitConstruction(2)
     }
+// Assigns the chosen land unit
     else if(unit==12){
         chosenUnit = destroyer
         unitConstruction(2)
@@ -1913,82 +1955,8 @@ function unitSelected(unit){
         chosenUnit = battleship
         unitConstruction(2)
     }
-// Determines what unit has been chosen to be built and starts construction
+// Assigns the chosen naval unit
 }
-function building1Selected(){
-    if(selectedUnit!=commandUnit){
-        alert("You must select your command unit before starting construction of a building")
-    }
-    else if(playerTurn==0){
-        alert("Click the Next Turn button to start a player's turn")
-    }
-    else{
-        selectedUnit = 0
-        chosenBuilding = metalExtractor
-    }
-}
-function building2Selected(){
-    if(selectedUnit!=commandUnit){
-        alert("You must select your command unit before starting construction of a building")
-    }
-    else if(playerTurn==0){
-        alert("Click the Next Turn button to start a player's turn")
-    }
-    else{
-        selectedUnit = 0
-        chosenBuilding = powerPlant
-    }
-}
-function building3Selected(){
-    if(selectedUnit!=commandUnit){
-        alert("You must select your command unit before starting construction of a building")
-    }
-    else if(playerTurn==0){
-        alert("Click the Next Turn button to start a player's turn")
-    }
-    else{
-        selectedUnit = 0
-        chosenBuilding = landFactory
-    }
-}
-function building4Selected(){
-    if(selectedUnit!=commandUnit){
-        alert("You must select your command unit before starting construction of a building")
-    }
-    else if(playerTurn==0){
-        alert("Click the Next Turn button to start a player's turn")
-    }
-    else{
-        selectedUnit = 0
-        chosenBuilding = navalFactory
-    }
-}
-function building5Selected(){
-    if(selectedUnit!=commandUnit){
-        alert("You must select your command unit before starting construction of a building")
-    }
-    else if(playerTurn==0){
-        alert("Click the Next Turn button to start a player's turn")
-    }
-    else{
-        selectedUnit = 0
-        chosenBuilding = turret
-    }
-}
-function building6Selected(){
-    if(selectedUnit!=commandUnit){
-        alert("You must select your command unit before starting construction of a building")
-    }
-    else if(playerTurn==0){
-        alert("Click the Next Turn button to start a player's turn")
-    }
-    else{
-        selectedUnit = 0
-        chosenBuilding = heavyArtillery
-    }
-}
-// These functions just ensures it's a player's turn and the command unit has been selected.
-// It then assigns the selected building to variable "chosenBuilding" to be used later
 
 function countBuildings(id){
 // This function uses the clicked div's id from function "startConstruction"
