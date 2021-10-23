@@ -42,6 +42,8 @@ let canBuild = 0
 let resourceMultiplier = 0
 // Used to store the multiplier that finds how much Metal and Power will actually be spent
 // on a building per turn, as the player may be in a resource deficit
+let percentage = 0
+// Used to store the construction % of units and buildings
 let selectedUnit = 0
 let selectedBuilding = 0
 // Store which unit or building is selected for easier manipualtion
@@ -52,6 +54,8 @@ let colour = 0
 // Used to store what colour a div should be
 let globalI = 0
 // Used to move the values from for loops around to other functions easily
+let globalTitle = 0
+// // Used when changing what is in the buttons
 let placingConstructedUnit = false
 // Used to decide whether the current unit being moved has just been constructed or not
 let buildings = [{player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0},
@@ -606,7 +610,7 @@ let navalFactory = {symbol: "ᎇ", type: 4, health: 24, metalRequired: 30, power
 let turret = {symbol: "ኡ", type: 5, health: 18, metalRequired: 32, powerRequired: 44,
     maxMetalSpend: 16, maxPowerSpend: 22, terrain1: "land", attackRange: 6, damage: 8, name: "turret", attackCooldown: 1}
 let heavyArtillery = {symbol: "ፏ", type: 6, health: 28, metalRequired: 120, powerRequired: 180,
-    maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", attackCooldown: 2, damage: 20, name: "heavyArtillery"}
+    maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", attackCooldown: 2, damage: 20, name: "heavyArtillery", attackRange: 80}
 // Declares 6 building types and the general data specific to each type
 let commandUnit = {symbol: "ደ", type: 7, health: 32, metalRequired: 0, powerRequired: 0,
     maxMetalSpend: 0, maxPowerSpend: 0, terrain1: "land", terrain2: "shallowSea",
@@ -749,6 +753,7 @@ function deselectUnit(query){
         buttonRemoval()
 // Removes the attributes assigned to the buttons at the top left of the screen
         document.getElementById("unitHealth").innerHTML = ""
+        document.getElementById("constructionProgress").innerText = ""
 // Removes the unit health being dislayed
         if(squares.length>1){
             for(let i=0;i<squares.length;i+=2){
@@ -761,6 +766,7 @@ function deselectUnit(query){
         if(query==2){
             selectedUnit = 0
             selectedBuilding = 0
+            percentage = 0
         }
 // If necessary, it sets these values to 0 to prevent further actions
     }
@@ -870,6 +876,27 @@ function searchBuildings(check){
     return query
 }
 
+function calculatePercentage(uniqueMetal, uniquePower, generalMetal, generalPower){
+    console.log("Metal "+uniqueMetal)
+    console.log("Metal general "+generalMetal)
+    console.log("Power "+uniquePower)
+    console.log("Power general "+generalPower)
+    let metal = generalMetal-uniqueMetal
+    let power = generalPower-uniquePower
+    console.log("Metal "+metal)
+    console.log("Power "+power)
+    let metalPercentage = (metal/generalMetal).toFixed(4)
+    let powerPercentage = (power/generalPower).toFixed(4)
+    console.log("Metal Percentage "+metalPercentage)
+    console.log("Power Percentage "+powerPercentage)
+    if(metalPercentage<powerPercentage){
+        percentage = (metalPercentage*100).toFixed(2)
+    }
+    else{
+        percentage = (powerPercentage*100).toFixed(2)
+    }
+}
+
 function clickedDiv(id){
 // This function is called every time a div is clicked (if it makes up the map)
 // It sorts through all the possibilities to see what the player is trying to do
@@ -888,6 +915,32 @@ function clickedDiv(id){
     else if(chosenBuilding==0&&selectedUnit==0&&selectedBuilding==0){
 // Checks to see if no unit or building is selected and that nothing is going to be constructed
         if(searchBuildings(2)) {
+            percentage = 0
+            searchBuildings(3)
+            if(buildings[globalI].operational){
+                if(buildings[globalI].queuedUnit!=0){
+                    selectUnit(units[buildings[globalI].queuedUnit].name)
+                    calculatePercentage(units[buildings[globalI].queuedUnit].metalRequired,
+                        units[buildings[globalI].queuedUnit].powerRequired, selectedUnit.metalRequired,
+                        selectedUnit.powerRequired)
+                    console.log(percentage)
+                    document.getElementById("constructionProgress").innerText = "Unit: "+percentage+"%"
+                }
+                else{
+                    document.getElementById("constructionProgress").innerText = "Finished"
+                }
+            }
+            else{
+                selectBuilding(buildings[globalI].name)
+                console.log(buildings[globalI].name)
+                console.log(selectedBuilding)
+                console.log("Metal Required "+selectedBuilding.metalRequired)
+                console.log("Power Required "+selectedBuilding.powerRequired)
+                calculatePercentage(buildings[globalI].metalRequired, buildings[globalI].powerRequired,
+                    selectedBuilding.metalRequired, selectedBuilding.powerRequired)
+                console.log(percentage)
+                document.getElementById("constructionProgress").innerText = percentage+"%"
+            }
 // Checks to see if there's a building belonging to the player and in the current div
             if(div.innerHTML=="ጁ"){
 // Checks to see if a land factory is being selected
@@ -901,7 +954,6 @@ function clickedDiv(id){
 // change to the land units and the player is able to start building land units
                 else{
                     alert("This building hasn't finished construction so you cannot start constructing units")
-                    deselectUnit(2)
                 }
 // If the building hasn't finished construction, the player is alerted and the building is deselected
             }
@@ -913,7 +965,6 @@ function clickedDiv(id){
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start constructing units")
-                    deselectUnit(2)
                 }
             }
 // Does the same as above but for the naval factory and naval units
@@ -925,7 +976,6 @@ function clickedDiv(id){
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
-                    deselectUnit(2)
                 }
             }
 // Does the same as above but for the turret and instead of allowing for the construction of units,
@@ -934,11 +984,10 @@ function clickedDiv(id){
                 selectedBuilding = heavyArtillery
                 unitUIDisplay(1)
                 if(buildings[globalI].operational){
-                    unitRange1(0, land, land, selectedBuilding.attackRange, 0)
+                    unitRange1(0, "land", "land", selectedBuilding.attackRange, 0)
                 }
                 else{
                     alert("This building hasn't finished construction so you cannot start attacking enemy units or buildings")
-                    deselectUnit(2)
                 }
             }
 // The same as above but for the heavy artillery
@@ -951,7 +1000,6 @@ function clickedDiv(id){
                 }
                 else{
                     alert("This building hasn't finished construction so it doesn't provide you with resources")
-                    deselectUnit(2)
                 }
             }
 // The same as above but for the metal extractor but it can't attack
@@ -964,7 +1012,6 @@ function clickedDiv(id){
                 }
                 else{
                     alert("This building hasn't finished construction so it doesn't provide you with resources")
-                    deselectUnit(2)
                 }
             }
 // The same as above
@@ -1160,67 +1207,34 @@ function buttonCreation(check){
 // Called when the buttons at the top left of the screen need to be changed
 // Using for loops didn't work for some reason so it's a long list of actions to do
     let container = document.getElementById("buildOptions")
-    if(check==1){
-        let btn = document.getElementById("button1")
-        btn.innerHTML = metalExtractor.symbol
-        btn.onclick = function(){selectingConstruction(1)}
-        btn.title = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
-        btn = document.getElementById("button2")
-        btn.innerHTML = powerPlant.symbol
-        btn.onclick = function(){selectingConstruction(2)}
-        btn.title = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
-        btn = document.getElementById("button3")
-        btn.innerHTML = landFactory.symbol
-        btn.onclick = function(){selectingConstruction(3)}
-        btn.title = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
-        btn = document.getElementById("button4")
-        btn.innerHTML = navalFactory.symbol
-        btn.onclick = function(){selectingConstruction(4)}
-        btn.title = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
-        btn = document.getElementById("button5")
-        btn.innerHTML = turret.symbol
-        btn.onclick = function(){selectingConstruction(5)}
-        btn.title = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
-        btn = document.getElementById("button6")
-        btn.innerHTML = heavyArtillery.symbol
-        btn.onclick = function(){selectingConstruction(6)}
-        btn.title = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
+    let base = 0
+    let end = 0
+    if(check==1) {
+        base = 1
+        end = 7
     }
-// Assigns the buttons the buildings the command unit can construct
     else if(check==2){
-        let btn = document.getElementById("button1")
-        btn.innerHTML = tank.symbol
-        btn.title = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
-        btn.onclick = function(){selectingConstruction(8)}
-        btn = document.getElementById("button2")
-        btn.innerHTML = labDroid.symbol
-        btn.title = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
-        btn.onclick = function(){selectingConstruction(9)}
-        btn = document.getElementById("button3")
-        btn.innerHTML = missileCarrier.symbol
-        btn.title = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"
-        btn.onclick = function(){selectingConstruction(10)}
-        btn = document.getElementById("button4")
-        btn.innerHTML = detonatingSphere.symbol
-        btn.title = "Detonating Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
-        btn.onclick = function(){selectingConstruction(11)}
+        base = 8
+        end = 12
     }
-// Assigns the buttons the units a land factory can construct
     else if(check==3){
-        let btn = document.getElementById("button1")
-        btn.innerHTML = destroyer.symbol
-        btn.title = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
-        btn.onclick = function(){selectingConstruction(12)}
-        btn = document.getElementById("button2")
-        btn.innerHTML = cruiser.symbol
-        btn.title = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
-        btn.onclick = function(){selectingConstruction(13)}
-        btn = document.getElementById("button3")
-        btn.innerHTML = battleship.symbol
-        btn.title = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
-        btn.onclick = function(){selectingConstruction(14)}
+        base = 12
+        end = 15
     }
-// Assigns the buttons the units a naval factory can construct
+    let button = 1
+    for(let i=base;i<end;i++){
+        if(i<7){
+            selectBuilding(i)
+            document.getElementById("button"+button).innerHTML = selectedBuilding.symbol
+        }
+        else{
+            selectUnit(i)
+            document.getElementById("button"+button).innerHTML = selectedUnit.symbol
+        }
+        document.getElementById("button"+button).title = globalTitle
+        document.getElementById("button"+button).onclick=function(){selectingConstruction(i)}
+        button++
+    }
 }
 
 function attack(){
@@ -1292,41 +1306,59 @@ function kill(recipient, i){
     }
 // All data belonging to the building is wiped
     else if(recipient==2){
-        units[i].player = 0
-        units[i].queuedFactory = 0
-        units[i].square = 0
-        units[i].metalRequired = 0
-        units[i].powerRequired = 0
-        units[i].maxMetalSpend = 0
-        units[i].maxPowerSpend = 0
-        units[i].name = 0
-        units[i].attackCooldown = 0
-        units[i].health = 0
-        units[i].alreadyMoved = 0
-        countUnits()
+        if(i==0){
+            alert("The game is over. Player 2 has beaten player 1. You will now be sent to the statistics page.")
+            location = "Statistics.html"
+        }
+        else if(i==1){
+            alert("The game is over. Player 1 has beaten player 2. You will now be sent to the statistics page.")
+            location = "Statistics.html"
+        }
+        else{
+            units[i].player = 0
+            units[i].queuedFactory = 0
+            units[i].square = 0
+            units[i].metalRequired = 0
+            units[i].powerRequired = 0
+            units[i].maxMetalSpend = 0
+            units[i].maxPowerSpend = 0
+            units[i].name = 0
+            units[i].attackCooldown = 0
+            units[i].health = 0
+            units[i].alreadyMoved = 0
+            countUnits()
+        }
     }
 // The same as above but for units
 }
 
 function selectBuilding(name){
+    console.log(name)
 // Called when selecting a building to assign the general data to the variable
     if(name=="metalExtractor"||name==1){
         selectedBuilding = metalExtractor
+        globalTitle = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
     }
-    else if(name="powerPlant"||name==2){
+    else if(name=="powerPlant"||name==2){
         selectedBuilding = powerPlant
+        globalTitle = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
     }
-    else if(name="landFactory"||name==3){
+    else if(name=="landFactory"|name==3){
         selectedBuilding = landFactory
+        globalTitle = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
     }
-    else if(name="navalFactory"||name==4){
+    else if(name=="navalFactory"||name==4){
         selectedBuilding = navalFactory
+        globalTitle = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
     }
-    else if(name="turret"||name==5){
+    else if(name=="turret"||name==5){
         selectedBuilding = turret
+        globalTitle = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
     }
-    else if(name="heavilyArtillery"||name==6){
+    else if(name=="heavyArtillery"||name==6){
+        console.log("BINGO")
         selectedBuilding = heavyArtillery
+        globalTitle = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
     }
 }
 function selectUnit(name){
@@ -1339,24 +1371,30 @@ function selectUnit(name){
 // buildings it can construct
     else if(name=="tank"||name==8){
         selectedUnit=tank
+        globalTitle = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
     }
     else if(name=="labDroid"||name==9){
         selectedUnit=labDroid
+        globalTitle = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
     }
     else if(name=="missileCarrier"||name==10){
         selectedUnit=missileCarrier
-    }
+        globalTitle = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"    }
     else if(name=="detonatingSphere"||name==11){
         selectedUnit=detonatingSphere
+        globalTitle = "Detonating Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
     }
     else if(name=="destroyer"||name==12){
         selectedUnit=destroyer
+        globalTitle = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
     }
     else if(name=="cruiser"||name==13){
         selectedUnit=cruiser
+        globalTitle = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
     }
     else if(name=="battleship"||name==14){
         selectedUnit=battleship
+        globalTitle = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
     }
 }
 
