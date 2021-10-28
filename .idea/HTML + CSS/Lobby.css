@@ -69,3 +69,6 @@ body{
     width: 80%;
 /* Gives the map images a decent size and ratio */
 }
+#errors{
+    background-color: red;
+}

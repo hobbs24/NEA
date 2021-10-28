@@ -27,6 +27,35 @@ let netPower = 0
 let metalSign = 0
 let powerSign = 0
 // Used to show whether the player is in a resource surplus or deficit
+sessionStorage.p1BuildingsConstructed = 0
+sessionStorage.p2BuildingsConstructed = 0
+sessionStorage.p1BuildingsDestroyed = 0
+sessionStorage.p2BuildingsDestroyed = 0
+sessionStorage.p1UnitsConstructed = 0
+sessionStorage.p2UnitsConstructed = 0
+sessionStorage.p1UnitsDestroyed = 0
+sessionStorage.p2UnitsDestroyed = 0
+let p1MetalPerTurn = [0]
+let p2MetalPerTurn = [0]
+let p1SpentMetalPerTurn = [0]
+let p2SpentMetalPerTurn = [0]
+let p1TotalMetal = [0]
+let p2TotalMetal = [0]
+let p1TotalMetalSpent = [0]
+let p2TotalMetalSpent = [0]
+let p1PowerPerTurn = [0]
+let p2PowerPerTurn = [0]
+let p1SpentPowerPerTurn = [0]
+let p2SpentPowerPerTurn = [0]
+let p1TotalPower = [0]
+let p2TotalPower = [0]
+let p1TotalPowerSpent = [0]
+let p2TotalPowerSpent = [0]
+let p1Buildings = [0]
+let p2Buildings = [0]
+let p1Units = [0]
+let p2Units = [0]
+// Used to provide data for the the statistics webpage
 let chosenBuilding = 0
 let chosenUnit = 0
 // Used to show if a building has been selected and which one
@@ -612,9 +641,9 @@ let turret = {symbol: "ኡ", type: 5, health: 18, metalRequired: 32, powerRequir
 let heavyArtillery = {symbol: "ፏ", type: 6, health: 28, metalRequired: 120, powerRequired: 180,
     maxMetalSpend: 30, maxPowerSpend: 45, terrain1: "land", attackCooldown: 2, damage: 20, name: "heavyArtillery", attackRange: 80}
 // Declares 6 building types and the general data specific to each type
-let commandUnit = {symbol: "ደ", type: 7, health: 32, metalRequired: 0, powerRequired: 0,
+let commandUnit = {symbol: "ደ", type: 7, health: 1, metalRequired: 0, powerRequired: 0,
     maxMetalSpend: 0, maxPowerSpend: 0, terrain1: "land", terrain2: "shallowSea",
-    attackRange: 18, movementRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
+    attackRange: 80, movementRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
 let tank = {symbol: "Ⱝ", type: 8, health: 10, metalRequired: 10, powerRequired: 14,
     maxMetalSpend: 5, maxPowerSpend: 7, terrain1: "land", attackRange: 7, movementRange: 5,
     damage: 7, name: "tank", attackCooldown: 1}
@@ -898,6 +927,8 @@ function calculatePercentage(uniqueMetal, uniquePower, generalMetal, generalPowe
 }
 
 function clickedDiv(id){
+    console.log(selectedBuilding)
+    console.log(selectedUnit)
 // This function is called every time a div is clicked (if it makes up the map)
 // It sorts through all the possibilities to see what the player is trying to do
 // Like whether they're trying to construct a building or attack an enemy
@@ -919,7 +950,7 @@ function clickedDiv(id){
             searchBuildings(3)
             if(buildings[globalI].operational){
                 if(buildings[globalI].queuedUnit!=0){
-                    selectUnit(units[buildings[globalI].queuedUnit].name)
+                    selectUnit(units[buildings[globalI].queuedUnit].name, 1)
                     calculatePercentage(units[buildings[globalI].queuedUnit].metalRequired,
                         units[buildings[globalI].queuedUnit].powerRequired, selectedUnit.metalRequired,
                         selectedUnit.powerRequired)
@@ -931,7 +962,7 @@ function clickedDiv(id){
                 }
             }
             else{
-                selectBuilding(buildings[globalI].name)
+                selectBuilding(buildings[globalI].name, 1)
                 console.log(buildings[globalI].name)
                 console.log(selectedBuilding)
                 console.log("Metal Required "+selectedBuilding.metalRequired)
@@ -1023,7 +1054,7 @@ function clickedDiv(id){
 // to attack it
         else if(searchUnits(1)) {
             selectedUnit = map[mapY][mapX].name
-            selectUnit(selectedUnit)
+            selectUnit(selectedUnit, 1)
             unitUIDisplay(2)
         }
 // If there's a unit belonging to the player in the div, it is selected. Its health is displayed and the
@@ -1224,12 +1255,14 @@ function buttonCreation(check){
     let button = 1
     for(let i=base;i<end;i++){
         if(i<7){
-            selectBuilding(i)
-            document.getElementById("button"+button).innerHTML = selectedBuilding.symbol
+            selectBuilding(i, 2)
+            document.getElementById("button"+button).innerHTML = chosenBuilding.symbol
+            chosenBuilding = 0
         }
         else{
-            selectUnit(i)
-            document.getElementById("button"+button).innerHTML = selectedUnit.symbol
+            selectUnit(i, 2)
+            document.getElementById("button"+button).innerHTML = chosenUnit.symbol
+            chosenUnit = 0
         }
         document.getElementById("button"+button).title = globalTitle
         document.getElementById("button"+button).onclick=function(){selectingConstruction(i)}
@@ -1282,13 +1315,21 @@ function attack(){
     }
 }
 function kill(recipient, i){
+    console.log("Recipient "+recipient)
+    console.log("i "+i)
 // Called when a unit's health drops to or below 0
     if(recipient==1){
 // Checks to see if a building is being attacked
-        if(buildings[i].queuedUnit==0){
+        if(buildings[i].queuedUnit!=0){
             kill(2, buildings[i].queuedUnit)
         }
 // If the building is currently constructing a unit, the unit is also killed
+        if(playerTurn==1){
+            sessionStorage.p1BuildingsDestroyed = parseInt(sessionStorage.p1BuildingsDestroyed)+1
+        }
+        else if(playerTurn==2){
+            sessionStorage.p2BuildingsDestroyed = parseInt(sessionStorage.p2BuildingsDestroyed)+1
+        }
         buildings[i].player = 0
         buildings[i].queuedUnit = 0
         buildings[i].square = 0
@@ -1306,15 +1347,23 @@ function kill(recipient, i){
     }
 // All data belonging to the building is wiped
     else if(recipient==2){
-        if(i==0){
-            alert("The game is over. Player 2 has beaten player 1. You will now be sent to the statistics page.")
-            location = "Statistics.html"
-        }
-        else if(i==1){
-            alert("The game is over. Player 1 has beaten player 2. You will now be sent to the statistics page.")
-            location = "Statistics.html"
+        if(i<3){
+            if(i==0){
+                alert("The game is over. Player 2 has beaten player 1. You will now be sent to the statistics page.")
+                dataSort()
+            }
+            else if(i==1){
+                alert("The game is over. Player 1 has beaten player 2. You will now be sent to the statistics page.")
+                dataSort()
+            }
         }
         else{
+            if(playerTurn==1){
+                sessionStorage.p1UnitsDestroyed =parseInt(sessionStorage.p1UnitsDestroyed)+1
+            }
+            else if(playerTurn==2){
+                sessionStorage.p2UnitsDestroyed = parseInt(sessionStorage.p2UnitsDestroyed)+1
+            }
             units[i].player = 0
             units[i].queuedFactory = 0
             units[i].square = 0
@@ -1332,36 +1381,65 @@ function kill(recipient, i){
 // The same as above but for units
 }
 
-function selectBuilding(name){
+function selectBuilding(name, selection){
     console.log(name)
 // Called when selecting a building to assign the general data to the variable
     if(name=="metalExtractor"||name==1){
-        selectedBuilding = metalExtractor
+        if(selection==1){
+            selectedBuilding = metalExtractor
+        }
+        else{
+            chosenBuilding = metalExtractor
+        }
         globalTitle = "Metal Extractor. For 2 turns, requires 3 Metal and 4 Power. Produces 8 Metal per turn."
     }
     else if(name=="powerPlant"||name==2){
-        selectedBuilding = powerPlant
+        if(selection==1){
+            selectedBuilding = powerPlant
+        }
+        else{
+            chosenBuilding = powerPlant
+        }
         globalTitle = "Power Plant. For 1 turn, requires 5 Metal and 8 Power. Produces 12 Power per turn."
     }
     else if(name=="landFactory"|name==3){
-        selectedBuilding = landFactory
+        if(selection==1){
+            selectedBuilding = landFactory
+        }
+        else{
+            chosenBuilding = landFactory
+        }
         globalTitle = "Land Factory. For 2 turns, requires 8 Metal and 14 Power. Produces units you choose."
     }
     else if(name=="navalFactory"||name==4){
-        selectedBuilding = navalFactory
+        if(selection==1){
+            selectedBuilding = navalFactory
+        }
+        else{
+            chosenBuilding = navalFactory
+        }
         globalTitle = "Naval Factory. For 3 turns, requires 10 Metal and 16 Power. Produces units you choose."
     }
     else if(name=="turret"||name==5){
-        selectedBuilding = turret
+        if(selection==1){
+            selectedBuilding = turret
+        }
+        else{
+            chosenBuilding = turret
+        }
         globalTitle = "Turret. For 2 turns, requires 16 Metal and 22 Power. Attacks enemy units you choose."
     }
     else if(name=="heavyArtillery"||name==6){
-        console.log("BINGO")
-        selectedBuilding = heavyArtillery
+        if(selection==1){
+            selectedBuilding = heavyArtillery
+        }
+        else{
+            chosenBuilding = heavyArtillery
+        }
         globalTitle = "Heavy Artillery. For 4 turns, requires 30 Metal and 45 Power. Attacks enemy units you choose."
     }
 }
-function selectUnit(name){
+function selectUnit(name, selection){
 // Called when selecting a unit to assign the general data to the variable
     if(name=="commandUnit"||name==7){
         selectedUnit=commandUnit
@@ -1370,30 +1448,65 @@ function selectUnit(name){
 // If the command unit is selected, the buttons at the top left of the page change to the
 // buildings it can construct
     else if(name=="tank"||name==8){
-        selectedUnit=tank
+        if(selection==1){
+            selectedUnit = tank
+        }
+        else{
+            chosenUnit = tank
+        }
         globalTitle = "Tank. A basic land unit, small range and damage. For 2 turns, 5 Metal and 7 Power"
     }
     else if(name=="labDroid"||name==9){
-        selectedUnit=labDroid
+        if(selection==1){
+            selectedUnit = labDroid
+        }
+        else{
+            chosenUnit = labDroid
+        }
         globalTitle = "Lab Droid. Small damage but greater range. For 3 turns, 4 Metal and 6 Power"
     }
     else if(name=="missileCarrier"||name==10){
-        selectedUnit=missileCarrier
+        if(selection==1){
+            selectedUnit = missileCarrier
+        }
+        else{
+            chosenUnit = missileCarrier
+        }
         globalTitle = "Missile Carrier. Medium damage but very high range. For 3 turns, 12 Metal and 20 Power"    }
     else if(name=="detonatingSphere"||name==11){
-        selectedUnit=detonatingSphere
+        if(selection==1){
+            selectedUnit = detonatingSphere
+        }
+        else{
+            chosenUnit = detonatingSphere
+        }
         globalTitle = "Detonating Sphere. Very high damage but tiny range. For 4 turns, 11 Metal and 21 Power"
     }
     else if(name=="destroyer"||name==12){
-        selectedUnit=destroyer
+        if(selection==1){
+            selectedUnit = destroyer
+        }
+        else{
+            chosenUnit = destroyer
+        }
         globalTitle = "Destroyer. Basic naval unit, low damage and range. For 2 turns, 8 Metal and 11 Power"
     }
     else if(name=="cruiser"||name==13){
-        selectedUnit=cruiser
+        if(selection==1){
+            selectedUnit = cruiser
+        }
+        else{
+            chosenUnit = cruiser
+        }
         globalTitle = "Cruiser. Medium damage but large range. For 3 turns, 8 Metal and 13 Power"
     }
     else if(name=="battleship"||name==14){
-        selectedUnit=battleship
+        if(selection==1){
+            selectedUnit = battleship
+        }
+        else{
+            chosenUnit = battleship
+        }
         globalTitle = "Battleship. High damage and range. For 4 turns, 12 Metal and 18 Power"
     }
 }
@@ -1520,9 +1633,11 @@ function startConstruction(){
         if(canBuild==true){
             if(playerTurn==1){
                 document.getElementById("p1BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
+                sessionStorage.p1BuildingsConstructed = parseInt(sessionStorage.p1BuildingsConstructed)+1
             }
             else if(playerTurn==2){
                 document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
+                sessionStorage.p2BuildingsConstructed = parseInt(sessionStorage.p2BuildingsConstructed)+1
             }
 // The appropriate player's build limit is updated
             console.log("Construction Started "+chosenBuilding.name)
@@ -1565,9 +1680,11 @@ function unitConstruction(option){
 // The economy is then recalculated and displayed
             if(playerTurn==1){
                 document.getElementById("p1UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
+                sessionStorage.p1UnitsConstructed = parseInt(sessionStorage.p1UnitsConstructed)+1
             }
             else if(playerTurn==2){
                 document.getElementById("p2UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
+                sessionStorage.p2UnitsConstructed = parseInt(sessionStorage.p2UnitsConstructed)+1
             }
 // The appropriate player's unit limit is then updated
         }
@@ -1671,6 +1788,8 @@ function findEconomy(){
 // Goes through each unit to see if they're still being constructed and adds to the spent resources
 }
 function spendEconomy(){
+    let actuallySpentMetal = 0
+    let actuallySpentPower = 0
     metalMultiplier = earnedMetal/spentMetal
     powerMultiplier = earnedPower/spentPower
 // Determines the ratio of earned resources to spent resources
@@ -1694,9 +1813,11 @@ function spendEconomy(){
             if(buildings[i].player==playerTurn && (buildings[i].metalRequired>0||buildings[i].powerRequired>0)){
 // Checks to see if the building belongs to the player and hasn't finished construction
                 buildings[i].metalRequired-=(buildings[i].maxMetalSpend*resourceMultiplier)
+                actuallySpentMetal+=(buildings[i].maxMetalSpend*resourceMultiplier)
 // Subtracts the amount of Metal able to be spent (decided by multiplying "metal" and the
 // multiplier together) from the amount still required
                 buildings[i].powerRequired-=(buildings[i].maxPowerSpend*resourceMultiplier)
+                actuallySpentPower+=(buildings[i].maxPowerSpend*resourceMultiplier)
 // Subtracts the amount of Power able to be spent (decided by multiplying "power" and the
 // multiplier together) from the amount still required
                 if(buildings[i].metalRequired<=0&&buildings[i].powerRequired<=0){
@@ -1710,7 +1831,9 @@ function spendEconomy(){
         if(units[i].player==playerTurn&&(units[i].metalRequired>0||units[i].powerRequired>0)){
 // Checks to see if any of the player's units are still constructing
             units[i].metalRequired=units[i].metalRequired-(units[i].maxMetalSpend*resourceMultiplier)
+            actuallySpentMetal+=(units[i].maxMetalSpend*resourceMultiplier)
             units[i].powerRequired=units[i].powerRequired-(units[i].maxPowerSpend*resourceMultiplier)
+            actuallySpentPower+=(units[i].maxPowerSpend*resourceMultiplier)
 // Resources are spent on the units
             if(units[i].metalRequired<=0&&units[i].powerRequired<=0){
                 console.log("Unit "+units[i].name+" completed")
@@ -1720,7 +1843,7 @@ function spendEconomy(){
                 alert("Place your unit")
                 selectedBuilding = 0
                 selectedUnit = units[i].name
-                selectUnit(selectedUnit)
+                selectUnit(selectedUnit, 1)
                 placingConstructedUnit = true
                 previousSquareId = units[i].square
                 squareId = previousSquareId
@@ -1729,6 +1852,26 @@ function spendEconomy(){
 // If a unit finishes construction, it can then be placed and certain bits of data gets changed to allow
 // for more units to be built and the finished unit to operate properly
         }
+    }
+    if(playerTurn==1){
+        p1MetalPerTurn.push(earnedMetal)
+        p1TotalMetal.push((p1TotalMetal[p1TotalMetal.length-1]+earnedMetal))
+        p1PowerPerTurn.push(earnedPower)
+        p1TotalPower.push(p1TotalPower[p1TotalPower.length-1]+earnedPower)
+        p1SpentMetalPerTurn.push(actuallySpentMetal)
+        p1TotalMetalSpent.push(p1TotalMetalSpent[p1TotalMetalSpent.length-1]+actuallySpentMetal)
+        p1SpentPowerPerTurn.push(actuallySpentPower)
+        p1TotalPowerSpent.push(p1TotalPowerSpent[p1TotalPowerSpent.length-1]+actuallySpentPower)
+    }
+    else if(playerTurn==2){
+        p2MetalPerTurn.push(earnedMetal)
+        p2TotalMetal.push(p2TotalMetal[p2TotalMetal.length-1]+earnedMetal)
+        p2PowerPerTurn.push(earnedPower)
+        p2TotalPower.push(p2TotalPower[p2TotalPower.length-1]+earnedPower)
+        p2SpentMetalPerTurn.push(actuallySpentMetal)
+        p2TotalMetalSpent.push(p2TotalMetalSpent[p2TotalMetalSpent.length-1]+actuallySpentMetal)
+        p2SpentPowerPerTurn.push(actuallySpentPower)
+        p2TotalPowerSpent.push(p2TotalPowerSpent[p2TotalPowerSpent.length-1]+actuallySpentPower)
     }
     findEconomy()
     updateResources()
@@ -1882,6 +2025,8 @@ function nextTurn(){
             buildings[i].attackCooldown--
         }
     }
+    countUnits(1)
+    countBuildings(1)
 // Each turn, the cooldown of the player's units decreases by 1 and are allowed to move again
     chosenBuilding = 0
     selectedBuilding = 0
@@ -1996,7 +2141,7 @@ function selectingConstruction(unit){
 // Assigns the chosen naval unit
 }
 
-function countBuildings(id){
+function countBuildings(query){
 // This function uses the clicked div's id from function "startConstruction"
     canBuild = false
 // Declares "canBuild" as false in case it was something else
@@ -2009,16 +2154,26 @@ function countBuildings(id){
         }
 // If the building belongs to the player, "ownedBuildings" increases by 1
     }
-    if (ownedBuildings==buildings.length/2){
-        alert("You have built your maximum number of buildings.")
-    }
+    if(query!=1){
+        if (ownedBuildings==buildings.length/2){
+            alert("You have built your maximum number of buildings.")
+        }
 // If the amount of owned buildings = 10, then the player can't build anymore
-    else if(ownedBuildings<buildings.length/2){
-        canBuild = true
-    }
+        else if(ownedBuildings<buildings.length/2){
+            canBuild = true
+        }
 // If the amount of owned buildings is < 10, "canBuild" is set to true to let them build more
+    }
+    else{
+        if(playerTurn==1){
+            p1Buildings.push(ownedBuildings)
+        }
+        else if(playerTurn==2){
+            p2Buildings.push(ownedBuildings)
+        }
+    }
 }
-function countUnits(){
+function countUnits(query){
 // Called by the "unitConstruction" function
 // This is basically the same as "countBuildings" but for units
     canBuild = false
@@ -2028,16 +2183,26 @@ function countUnits(){
             ownedUnits++
         }
     }
-    if(ownedUnits==(units.length/2)-1){
-        alert("You have built or queued the maximum number of units")
-    }
-    else if(ownedUnits<(units.length/2)-1){
-        searchBuildings(3)
-        if(buildings[globalI].queuedUnit!=0){
-            alert("That factory is already constructing a unit")
+    if(query!=1){
+        if(ownedUnits==(units.length/2)-1){
+            alert("You have built or queued the maximum number of units")
         }
+        else if(ownedUnits<(units.length/2)-1){
+            searchBuildings(3)
+            if(buildings[globalI].queuedUnit!=0){
+                alert("That factory is already constructing a unit")
+            }
+            else{
+                canBuild = true
+            }
+        }
+    }
     else{
-            canBuild = true
+        if(playerTurn==1){
+            p1Units.push(ownedUnits)
+        }
+        else if(playerTurn==2){
+            p2Units.push(ownedUnits)
         }
     }
 }
@@ -2106,4 +2271,28 @@ function splitId(id){
     mapX=parseInt(id.slice(id.indexOf("-")+1))
     mapY=parseInt(id.slice(0, id.indexOf("-")))
 // This just finds the x and y values from the given div id
+}
+
+function dataSort(){
+    sessionStorage.p1MetalPerTurn = JSON.stringify(p1MetalPerTurn)
+    sessionStorage.p2MetalPerTurn = JSON.stringify(p2MetalPerTurn)
+    sessionStorage.p1SpentMetalPerTurn = JSON.stringify(p1SpentMetalPerTurn)
+    sessionStorage.p2SpentMetalPerTurn = JSON.stringify(p2SpentMetalPerTurn)
+    sessionStorage.p1PowerPerTurn = JSON.stringify(p1PowerPerTurn)
+    sessionStorage.p2PowerPerTurn = JSON.stringify(p2PowerPerTurn)
+    sessionStorage.p1SpentPowerPerTurn = JSON.stringify(p1SpentPowerPerTurn)
+    sessionStorage.p2SpentPowerPerTurn = JSON.stringify(p2SpentPowerPerTurn)
+    sessionStorage.p1TotalMetal = JSON.stringify(p1TotalMetal)
+    sessionStorage.p2TotalMetal = JSON.stringify(p2TotalMetal)
+    sessionStorage.p1TotalMetalSpent = JSON.stringify(p1TotalMetalSpent)
+    sessionStorage.p2TotalMetalSpent = JSON.stringify(p2TotalMetalSpent)
+    sessionStorage.p1TotalPower = JSON.stringify(p1TotalPower)
+    sessionStorage.p2TotalPower = JSON.stringify(p2TotalPower)
+    sessionStorage.p1TotalPowerSpent = JSON.stringify(p1TotalPowerSpent)
+    sessionStorage.p2TotalPowerSpent = JSON.stringify(p2TotalPowerSpent)
+    sessionStorage.p1Buildings = JSON.stringify(p1Buildings)
+    sessionStorage.p2Buildings = JSON.stringify(p2Buildings)
+    sessionStorage.p1Units = JSON.stringify(p1Units)
+    sessionStorage.p2Units = JSON.stringify(p2Units)
+    location = "Statistics.html"
 }

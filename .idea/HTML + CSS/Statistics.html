@@ -6,10 +6,268 @@
     <title>Statistics</title>
     <script src="../JavaScript/Statistics.js"></script>
 <!-- Adds Statistics.js as the JS source -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <link rel="stylesheet" type="text/css" href="Statistics.css">
 <!-- Adds Statistics.css as the css source -->
 </head>
+<script>
+    let p1MetalPerTurn = JSON.parse(sessionStorage.p1MetalPerTurn)
+    let p2MetalPerTurn = JSON.parse(sessionStorage.p2MetalPerTurn)
+    let p1SpentMetalPerTurn = JSON.parse(sessionStorage.p1SpentMetalPerTurn)
+    let p2SpentMetalPerTurn = JSON.parse(sessionStorage.p2SpentMetalPerTurn)
+    let p1PowerPerTurn = JSON.parse(sessionStorage.p1PowerPerTurn)
+    let p2PowerPerTurn = JSON.parse(sessionStorage.p2PowerPerTurn)
+    let p1SpentPowerPerTurn = JSON.parse(sessionStorage.p1SpentPowerPerTurn)
+    let p2SpentPowerPerTurn = JSON.parse(sessionStorage.p2SpentPowerPerTurn)
+    let p1TotalMetal = JSON.parse(sessionStorage.p1TotalMetal)
+    let p2TotalMetal = JSON.parse(sessionStorage.p2TotalMetal)
+    let p1TotalMetalSpent = JSON.parse(sessionStorage.p1TotalMetalSpent)
+    let p2TotalMetalSpent = JSON.parse(sessionStorage.p2TotalMetalSpent)
+    let p1TotalPower = JSON.parse(sessionStorage.p1TotalPower)
+    let p2TotalPower = JSON.parse(sessionStorage.p2TotalPower)
+    let p1TotalPowerSpent = JSON.parse(sessionStorage.p1TotalPowerSpent)
+    let p2TotalPowerSpent = JSON.parse(sessionStorage.p2TotalPowerSpent)
+    let p1Buildings = JSON.parse(sessionStorage.p1Buildings)
+    let p2Buildings = JSON.parse(sessionStorage.p2Buildings)
+    let p1Units = JSON.parse(sessionStorage.p1Units)
+    let p2Units = JSON.parse(sessionStorage.p2Units)
+</script>
 <body>
-    <p>Hello</p>
+    <p id="header" title="Displays the winner"></p>
+    <table>
+        <tr>
+            <td title="This graphs displays the amount of metal earned and spent per turn" class="graphs">
+                <h5>Metal Per Turn</h5>
+                <canvas id="graph1" aria-label="Metal Per Turn" role="img"></canvas>
+            </td>
+            <td title="This graph displays the amount of power earned and spent per turn" class="graphs">
+                <h5>Power Per Turn</h5>
+                <canvas id="graph2" aria-label="Power Per Turn" role="img"></canvas>
+            </td>
+            <td colspan="2">
+                <h6>Total Metal Earned</h6>
+                <p class="left" id="p1TME" title="The metal player 1 earned in total"></p>
+                <p class="right" id="p2TME" title="The metal player 2 earned in total"></p>
+                <h6>Total Metal Spent</h6>
+                <p class="left" id="p1TMS" title="The metal player 1 spent in total"></p>
+                <p class="right" id="p2TMS" title="The metal player 2 spent in total"></p>
+            </td>
+            <script>
+                let p1TMS = parseInt(p1TotalMetalSpent.slice(-1))
+                let p2TMS = parseInt(p2TotalMetalSpent.slice(-1))
+                document.getElementById("p1TME").style.color = sessionStorage.playerColour
+                document.getElementById("p1TME").innerHTML = p1TotalMetal.slice(-1)
+                document.getElementById("p2TME").style.color = sessionStorage.enemyColour
+                document.getElementById("p2TME").innerHTML = p2TotalMetal.slice(-1)
+                document.getElementById("p1TMS").style.color = sessionStorage.playerColour
+                document.getElementById("p1TMS").innerHTML = p1TMS
+                document.getElementById("p2TMS").style.color = sessionStorage.enemyColour
+                document.getElementById("p2TMS").innerHTML = p2TMS
+            </script>
+        </tr>
+        <tr>
+            <td class="graphs">
+                <h5 title="This graph displays the cumulative amount of metal earned and spent">Cumulative Metal</h5>
+                <canvas id="graph3" aria-label="Cumulative Metal" role="img"></canvas>
+            </td>
+            <td class="graphs">
+                <h5 title="This graph displays the cumulative amount of power earned and spent">Cumulative Power</h5>
+                <canvas id="graph4" aria-label="Cumulative Power" role="img"></canvas>
+            </td>
+            <td colspan="2">
+                <h6>Total Power Earned</h6>
+                <p class="left" id="p1TPE" title="The power player 1 earned in total"></p>
+                <p class="right" id="p2TPE" title="The power player 2 earned in total"></p>
+                <h6>Total Power Spent</h6>
+                <p class="left" id="p1TPS" title="The power player 1 spent in total"></p>
+                <p class="right" id="p2TPS" title="The power player 2 spent in total"></p>
+            </td>
+            <script>
+                let p1TPS = parseInt(p1TotalPowerSpent.slice(-1))
+                let p2TPS = parseInt(p2TotalPowerSpent.slice(-1))
+                document.getElementById("p1TPE").style.color = sessionStorage.playerColour
+                document.getElementById("p1TPE").innerHTML = p1TotalPower.slice(-1)
+                document.getElementById("p2TPE").style.color = sessionStorage.enemyColour
+                document.getElementById("p2TPE").innerHTML = p2TotalPower.slice(-1)
+                document.getElementById("p1TPS").style.color = sessionStorage.playerColour
+                document.getElementById("p1TPS").innerHTML = p1TPS
+                document.getElementById("p2TPS").style.color = sessionStorage.enemyColour
+                document.getElementById("p2TPS").innerHTML = p2TPS
+            </script>
+        </tr>
+        <tr>
+            <td title="This graph displays the amount of buildings alive per turn" class="graphs">
+                <h5>Buildings</h5>
+                <canvas id="graph5" aria-label="Buildings" role="img"></canvas>
+            </td>
+
+            <td title="This graph displays the amount of units alive per turn (including when being constructed)" class="graphs">
+                <h5>Units</h5>
+                <canvas id="graph6" aria-label="Units" role="img"></canvas>
+            </td>
+            <td>
+                <h6>Buildings Constructed</h6>
+                <p id="p1BC" title="The number of buildings player 1 built on the map"></p>
+                <p id="p2BC" title="The number of buildings player 2 built on the map"></p>
+                <h6>Buildings Destroyed</h6>
+                <p id="p1BD" title="The number of enemy buildings player 1 destroyed"></p>
+                <p id="p2BD" title="The number of enemy buildings player 2 destroyed"></p>
+            </td>
+            <script>
+                document.getElementById("p1BC").style.color = sessionStorage.playerColour
+                document.getElementById("p1BC").innerHTML = sessionStorage.p1BuildingsConstructed
+                document.getElementById("p2BC").style.color = sessionStorage.enemyColour
+                document.getElementById("p2BC").innerHTML = sessionStorage.p2BuildingsConstructed
+                document.getElementById("p1BD").style.color = sessionStorage.playerColour
+                document.getElementById("p1BD").innerHTML = sessionStorage.p1BuildingsDestroyed
+                document.getElementById("p2BD").style.color = sessionStorage.enemyColour
+                document.getElementById("p2BD").innerHTML = sessionStorage.p2BuildingsDestroyed
+            </script>
+            <td>
+                <h6>Units Constructed</h6>
+                <p id="p1UC" title="The number of units player 1 queued for construction"></p>
+                <p id="p2UC" ttle="The number of units player 2 queued for construction"></p>
+                <h6>Units Destroyed</h6>
+                <p id="p1UD" title="The number of enemy units player 1 destroyed"></p>
+                <p id="p2UD" title="The number of enemy units player 2 destroyed"></p>
+            </td>
+            <script>
+                document.getElementById("p1UC").style.color = sessionStorage.playerColour
+                document.getElementById("p1UC").innerHTML = sessionStorage.p1UnitsConstructed
+                document.getElementById("p2UC").style.color = sessionStorage.enemyColour
+                document.getElementById("p2UC").innerHTML = sessionStorage.p2UnitsConstructed
+                document.getElementById("p1UD").style.color = sessionStorage.playerColour
+                document.getElementById("p1UD").innerHTML = sessionStorage.p1UnitsDestroyed
+                document.getElementById("p2UD").style.color = sessionStorage.enemyColour
+                document.getElementById("p2UD").innerHTML = sessionStorage.p2UnitsDestroyed
+            </script>
+        </tr>
+    </table>
+    <script>
+        if(p1MetalPerTurn.length>p2MetalPerTurn.length){
+            document.getElementById("header").innerHTML = "Congratulations Player 1 for killing Player 2's Command Unit"
+        }
+        else{
+            document.getElementById("header").innerHTML = "Congratulations Player 2 for killing Player 1's Command Unit"
+        }
+        for(let i=1;i<7;i++){
+            let labels = []
+            console.log(i)
+            if(i==1){
+                chart = document.getElementById("graph1").getContext('2d')
+                lines = 4
+                label1 = "Player 1 Earned"
+                line1 = p1MetalPerTurn
+                label2 = "Player 2 Earned"
+                line2 = p2MetalPerTurn
+                label3 = "Player 1 Spent"
+                line3 = p1SpentMetalPerTurn
+                label4 = "Player 2 Spent"
+                line4 = p2SpentMetalPerTurn
+            }
+        else if(i==2){
+                chart = document.getElementById("graph2").getContext('2d')
+                lines = 4
+                label1 = "Player 1 Earned"
+                line1 = p1PowerPerTurn
+                label2 = "Player 2 Earned"
+                line2 = p2PowerPerTurn
+                label3 = "Player 1 Spent"
+                line3 = p1SpentPowerPerTurn
+                label4 = "Player 2 Spent"
+                line4 = p2SpentPowerPerTurn
+            }
+        else if(i==3){
+                chart = document.getElementById("graph3").getContext('2d')
+                lines = 4
+                label1 = "Player 1 Earned"
+                line1 = p1TotalMetal
+                label2 = "Player 2 Earned"
+                line2 = p2TotalMetal
+                label3 = "Player 1 Spent"
+                line3 = p1TotalMetalSpent
+                label4 = "Player 2 Spent"
+                line4 = p2TotalMetalSpent
+            }
+        else if(i==4){
+                chart = document.getElementById("graph4").getContext('2d')
+                lines = 4
+                label1 = "Player 1 Earned"
+                line1 = p1TotalPower
+                label2 = "Player 2 Earned"
+                line2 = p2TotalPower
+                label3 = "Player 1 Spent"
+                line3 = p1TotalPowerSpent
+                label4 = "Player 2 Spent"
+                line4 = p2TotalPowerSpent
+            }
+        else if(i==5){
+                chart = document.getElementById("graph5").getContext('2d')
+                lines = 2
+                label1 = "Player 1"
+                line1 = p1Buildings
+                label2 = "Player 2"
+                line2 = p2Buildings
+                label3 = "Null"
+                line3 = 0
+                label4 = "Null"
+                line4 = 0
+            }
+        else if(i==6){
+                chart = document.getElementById("graph6").getContext('2d')
+                lines = 2
+                label1 = "Player 1"
+                line1 = p1Units
+                label2 = "Player 2"
+                line2 = p2Units
+                label3 = "Null"
+                line3 = 0
+                label4 = "Null"
+                line4 = 0
+            }
+        for(let z=0;z<line1.length;z++){
+            labels.push("")
+        }
+            let lineChart = new Chart(chart, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label1,
+                        data: line1,
+                        backgroundColor: sessionStorage.playerColour,
+                        borderColor: sessionStorage.playerColour,
+                        fill: false,
+                    },
+                    {
+                        label: label2,
+                        data: line2,
+                        backgroundColor: sessionStorage.enemyColour,
+                        borderColor: sessionStorage.enemyColour,
+                        fill: false,
+                    },
+                    {
+                        label: label3,
+                        data: line3,
+                        backgroundColor: '#000000',
+                        borderColor: '#000000',
+                        fill: false,
+                    },
+                    {
+                        label: label4,
+                        data: line4,
+                        backgroundColor: '#ff0000',
+                        borderColor: '#ff0000',
+                        fill: false,
+                    },],
+
+                },
+                options: {}
+            })
+        }
+
+
+    </script>
 </body>
+
 </html>

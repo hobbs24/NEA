@@ -1,4 +1,18 @@
 body{
-    background-color: black;
+    text-align: center;
+    font-family: Arial, serif;
+/* Sets the font to Arial in the serif family */
+    background-color: white;
+    color: black;
+}
+.graphs{
+    height: 20vh;
+    width: 25vw;
+}
+
+#header{
+    padding: 0.6vh;
+    text-align: center;
+    background-color: blue;
     color: white;
 }
