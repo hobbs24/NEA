@@ -35,6 +35,7 @@ sessionStorage.p1UnitsConstructed = 0
 sessionStorage.p2UnitsConstructed = 0
 sessionStorage.p1UnitsDestroyed = 0
 sessionStorage.p2UnitsDestroyed = 0
+// Used to provide certain bits of data for the statistics page
 let p1MetalPerTurn = [0]
 let p2MetalPerTurn = [0]
 let p1SpentMetalPerTurn = [0]
@@ -55,7 +56,7 @@ let p1Buildings = [0]
 let p2Buildings = [0]
 let p1Units = [0]
 let p2Units = [0]
-// Used to provide data for the the statistics webpage
+// Used to provide data for the the graphs on the statistics webpage
 let chosenBuilding = 0
 let chosenUnit = 0
 // Used to show if a building has been selected and which one
@@ -1330,6 +1331,7 @@ function kill(recipient, i){
         else if(playerTurn==2){
             sessionStorage.p2BuildingsDestroyed = parseInt(sessionStorage.p2BuildingsDestroyed)+1
         }
+// Increases the number of buildings the players have killed
         buildings[i].player = 0
         buildings[i].queuedUnit = 0
         buildings[i].square = 0
@@ -1364,6 +1366,7 @@ function kill(recipient, i){
             else if(playerTurn==2){
                 sessionStorage.p2UnitsDestroyed = parseInt(sessionStorage.p2UnitsDestroyed)+1
             }
+// Uncreases the number of units the players have destroyed
             units[i].player = 0
             units[i].queuedFactory = 0
             units[i].square = 0
@@ -1639,7 +1642,7 @@ function startConstruction(){
                 document.getElementById("p2BuildLimit").innerHTML = ownedBuildings+1+"/"+(buildings.length/2)
                 sessionStorage.p2BuildingsConstructed = parseInt(sessionStorage.p2BuildingsConstructed)+1
             }
-// The appropriate player's build limit is updated
+// The appropriate player's build limit is updated and the number of buildings constructed increases
             console.log("Construction Started "+chosenBuilding.name)
             firstEmptyBuilding()
             findEconomy()
@@ -1686,7 +1689,7 @@ function unitConstruction(option){
                 document.getElementById("p2UnitLimit").innerHTML = (ownedUnits+1)+"/"+((units.length/2)-1)
                 sessionStorage.p2UnitsConstructed = parseInt(sessionStorage.p2UnitsConstructed)+1
             }
-// The appropriate player's unit limit is then updated
+// The appropriate player's unit limit is then updated and the number of units constructed increases
         }
     }
 }
@@ -2294,5 +2297,7 @@ function dataSort(){
     sessionStorage.p2Buildings = JSON.stringify(p2Buildings)
     sessionStorage.p1Units = JSON.stringify(p1Units)
     sessionStorage.p2Units = JSON.stringify(p2Units)
+// Makes all the arrays JSON strings to make them easy to move between JavaScript files
     location = "Statistics.html"
+// Moves the player onto the Statistics webpage
 }

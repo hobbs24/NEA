@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistics</title>
-    <script src="../JavaScript/Statistics.js"></script>
-<!-- Adds Statistics.js as the JS source -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<!-- Adds a link to an external library to make the graphs -->
     <link rel="stylesheet" type="text/css" href="Statistics.css">
 <!-- Adds Statistics.css as the css source -->
 </head>
@@ -31,6 +30,7 @@
     let p2Buildings = JSON.parse(sessionStorage.p2Buildings)
     let p1Units = JSON.parse(sessionStorage.p1Units)
     let p2Units = JSON.parse(sessionStorage.p2Units)
+// Makes all the JSON strings from the previous webpage JavaScript arrays again
 </script>
 <body>
     <p id="header" title="Displays the winner"></p>
@@ -40,10 +40,12 @@
                 <h5>Metal Per Turn</h5>
                 <canvas id="graph1" aria-label="Metal Per Turn" role="img"></canvas>
             </td>
+<!-- The first graph - Metal earned and spent per turn -->
             <td title="This graph displays the amount of power earned and spent per turn" class="graphs">
                 <h5>Power Per Turn</h5>
                 <canvas id="graph2" aria-label="Power Per Turn" role="img"></canvas>
             </td>
+<!-- The second graph - Power earned and spent per turn -->
             <td colspan="2">
                 <h6>Total Metal Earned</h6>
                 <p class="left" id="p1TME" title="The metal player 1 earned in total"></p>
@@ -63,6 +65,7 @@
                 document.getElementById("p1TMS").innerHTML = p1TMS
                 document.getElementById("p2TMS").style.color = sessionStorage.enemyColour
                 document.getElementById("p2TMS").innerHTML = p2TMS
+// Displays the "per turn" economy statistics next to the graphs
             </script>
         </tr>
         <tr>
@@ -70,10 +73,12 @@
                 <h5 title="This graph displays the cumulative amount of metal earned and spent">Cumulative Metal</h5>
                 <canvas id="graph3" aria-label="Cumulative Metal" role="img"></canvas>
             </td>
+<!-- The third graph - the cumulative amount of metal earned and spent -->
             <td class="graphs">
                 <h5 title="This graph displays the cumulative amount of power earned and spent">Cumulative Power</h5>
                 <canvas id="graph4" aria-label="Cumulative Power" role="img"></canvas>
             </td>
+<!-- The fourth graph - the cumulative amount of power earned aand spent -->
             <td colspan="2">
                 <h6>Total Power Earned</h6>
                 <p class="left" id="p1TPE" title="The power player 1 earned in total"></p>
@@ -93,6 +98,7 @@
                 document.getElementById("p1TPS").innerHTML = p1TPS
                 document.getElementById("p2TPS").style.color = sessionStorage.enemyColour
                 document.getElementById("p2TPS").innerHTML = p2TPS
+// Displays the total economy statistics next to the graphs
             </script>
         </tr>
         <tr>
@@ -100,11 +106,12 @@
                 <h5>Buildings</h5>
                 <canvas id="graph5" aria-label="Buildings" role="img"></canvas>
             </td>
-
+<!-- The fifth graph - the amount of buildings alive per turn -->
             <td title="This graph displays the amount of units alive per turn (including when being constructed)" class="graphs">
                 <h5>Units</h5>
                 <canvas id="graph6" aria-label="Units" role="img"></canvas>
             </td>
+<!-- The sixth graph - the amount of units alive per turn -->
             <td>
                 <h6>Buildings Constructed</h6>
                 <p id="p1BC" title="The number of buildings player 1 built on the map"></p>
@@ -122,6 +129,7 @@
                 document.getElementById("p1BD").innerHTML = sessionStorage.p1BuildingsDestroyed
                 document.getElementById("p2BD").style.color = sessionStorage.enemyColour
                 document.getElementById("p2BD").innerHTML = sessionStorage.p2BuildingsDestroyed
+// Displays the buildings data next to the graphs
             </script>
             <td>
                 <h6>Units Constructed</h6>
@@ -140,6 +148,7 @@
                 document.getElementById("p1UD").innerHTML = sessionStorage.p1UnitsDestroyed
                 document.getElementById("p2UD").style.color = sessionStorage.enemyColour
                 document.getElementById("p2UD").innerHTML = sessionStorage.p2UnitsDestroyed
+// Displays the units data next to the graphs
             </script>
         </tr>
     </table>
@@ -150,8 +159,11 @@
         else{
             document.getElementById("header").innerHTML = "Congratulations Player 2 for killing Player 1's Command Unit"
         }
+// Shows a message for whichever player won the game
         for(let i=1;i<7;i++){
+// Does a for loop to affect each of the 6 graphs
             let labels = []
+// This will be used to allow for multiple plots be plotted on the graph
             console.log(i)
             if(i==1){
                 chart = document.getElementById("graph1").getContext('2d')
@@ -165,7 +177,9 @@
                 label4 = "Player 2 Spent"
                 line4 = p2SpentMetalPerTurn
             }
-        else if(i==2){
+// If it's the first graph, the "metal per turn" arrays get assigned to the "line" variables and an appropriate
+// label to the "label" variables
+            else if(i==2){
                 chart = document.getElementById("graph2").getContext('2d')
                 lines = 4
                 label1 = "Player 1 Earned"
@@ -177,7 +191,9 @@
                 label4 = "Player 2 Spent"
                 line4 = p2SpentPowerPerTurn
             }
-        else if(i==3){
+// If it's the second graph, the "power per turn" arrays get assigned to the "line" variables and an appropriate
+// label to the "label" variables
+            else if(i==3){
                 chart = document.getElementById("graph3").getContext('2d')
                 lines = 4
                 label1 = "Player 1 Earned"
@@ -189,7 +205,9 @@
                 label4 = "Player 2 Spent"
                 line4 = p2TotalMetalSpent
             }
-        else if(i==4){
+// If it's the third graph, the "total metal" arrays get assigned to the "line" variables and an appropriate
+// label to the "label" variables
+            else if(i==4){
                 chart = document.getElementById("graph4").getContext('2d')
                 lines = 4
                 label1 = "Player 1 Earned"
@@ -201,7 +219,9 @@
                 label4 = "Player 2 Spent"
                 line4 = p2TotalPowerSpent
             }
-        else if(i==5){
+// If it's the fourth graph, the "total power" arrays get assigned to the "line" variables and an appropriate
+// label to the "label" variables
+            else if(i==5){
                 chart = document.getElementById("graph5").getContext('2d')
                 lines = 2
                 label1 = "Player 1"
@@ -213,7 +233,9 @@
                 label4 = "Null"
                 line4 = 0
             }
-        else if(i==6){
+// If it's the fifth graph, the "building" arrays get assigned to the "line" variables and an appropriate
+// label to the "label" variables
+            else if(i==6){
                 chart = document.getElementById("graph6").getContext('2d')
                 lines = 2
                 label1 = "Player 1"
@@ -225,19 +247,30 @@
                 label4 = "Null"
                 line4 = 0
             }
-        for(let z=0;z<line1.length;z++){
-            labels.push("")
-        }
+// If it's the sixth graph, the "unit" arrays get assigned to the "line" variables and an appropriate
+// label to the "label" variables
+            for(let z=0;z<line1.length;z++){
+
+                labels.push("")
+            }
+// Adds empty elements to the array "labels" to have an unlabelled x-axis while allowing for
+// more plots to be shown on the graph
             let lineChart = new Chart(chart, {
+// Starts the creation of each graph
                 type: 'line',
+// Sets the type of the graph to a line graph
                 data: {
+// Sets the data that'll be shown on the line graph
                     labels: labels,
+// The array of empty elements is to label the x-axis
                     datasets: [{
                         label: label1,
                         data: line1,
                         backgroundColor: sessionStorage.playerColour,
                         borderColor: sessionStorage.playerColour,
                         fill: false,
+// The first line is labelled by the variable "label1" and uses the data stored in "line1"
+// The colour is set to player 1's colour and fill is set to false to make it easier to view several lines
                     },
                     {
                         label: label2,
@@ -245,6 +278,8 @@
                         backgroundColor: sessionStorage.enemyColour,
                         borderColor: sessionStorage.enemyColour,
                         fill: false,
+// The second line is labelled by the variable "label2" and uses the data stored in "line2"
+// The colour is set to player 2's colour and fill is set to false to make it easier to view several lines
                     },
                     {
                         label: label3,
@@ -252,6 +287,8 @@
                         backgroundColor: '#000000',
                         borderColor: '#000000',
                         fill: false,
+// The third line is labelled by the variable "label3" and uses the data stored in "line3"
+// The colour is set to black (to stand out from the player's other line) and fill is set to false to make it easier to view several lines
                     },
                     {
                         label: label4,
@@ -259,10 +296,10 @@
                         backgroundColor: '#ff0000',
                         borderColor: '#ff0000',
                         fill: false,
+// The fourth line is labelled by the variable "label4" and uses the data stored in "line4"
+// The colour is set to red (to stand out from the player's other line) and fill is set to false to make it easier to view several lines
                     },],
-
-                },
-                options: {}
+                }
             })
         }
 
