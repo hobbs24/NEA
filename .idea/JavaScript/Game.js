@@ -56,7 +56,7 @@ let p1Buildings = [0]
 let p2Buildings = [0]
 let p1Units = [0]
 let p2Units = [0]
-// Used to provide data for the the graphs on the statistics webpage
+// Used to provide data for the graphs on the statistics webpage
 let chosenBuilding = 0
 let chosenUnit = 0
 // Used to show if a building has been selected and which one
@@ -1349,7 +1349,7 @@ function kill(recipient, i){
     }
 // All data belonging to the building is wiped
     else if(recipient==2){
-        if(i<3){
+        if(i<2){
             if(i==0){
                 alert("The game is over. Player 2 has beaten player 1. You will now be sent to the statistics page.")
                 dataSort()
@@ -1366,7 +1366,8 @@ function kill(recipient, i){
             else if(playerTurn==2){
                 sessionStorage.p2UnitsDestroyed = parseInt(sessionStorage.p2UnitsDestroyed)+1
             }
-// Uncreases the number of units the players have destroyed
+            console.log(sessionStorage.p1UnitsDestroyed)
+// Increases the number of units the players have destroyed
             units[i].player = 0
             units[i].queuedFactory = 0
             units[i].square = 0
