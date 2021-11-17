@@ -1,14 +1,24 @@
 // sessionStorage was used rather than localStorage as it is removed after the user leaves the site
 function pageLoad(){
+    sessionStorage.enemySelect = ""
+    sessionStorage.colourBlind = ""
 // This function executes when as soon as the Lobby web page is loaded
     document.getElementById("settings").addEventListener("submit", prevent)
 // This creates an event listener that waits until the submit button on the web page is
 // clicked to execute the function prevent
     sessionStorage.map=0
     document.getElementById("error1").innerText="It's recommended you don't choose a colour" +
-        " from the map and you can't choose red or black"
+        " from the map and you can't choose red, black or white"
 // This sets sessionStorage.map to 0 to ensure a map gets chosen in a later function
 // Session Storage is used here to easily allow for the transfer of data between JS files
+}
+function enemySelection(choice){
+    sessionStorage.enemySelect = choice
+    console.log(sessionStorage.enemySelect)
+}
+function colourBlindMode(choice){
+    sessionStorage.colourBlind = choice
+    console.log(sessionStorage.colourBlind)
 }
 function prevent(){
 // This function executes once the submit button on the webpage has been clicked
@@ -20,6 +30,8 @@ function prevent(){
     let error5=""
     let error6=""
     let error7=""
+    let error8=""
+    let error9=""
 // This prevents the submit button's default action so that the data submitted can be used
     sessionStorage.playerColour=document.getElementById("playerColour").value
     sessionStorage.enemyColour=document.getElementById("enemyColour").value
@@ -42,8 +54,9 @@ function prevent(){
 // An appropriate message is displayed
     }
     if((sessionStorage.playerColour=="#000000"||sessionStorage.enemyColour=="#000000")||
-        (sessionStorage.playerColour=="#ff0000"||sessionStorage.enemyColour=="#ff0000")){
-        error2="You can't be red or black as it'll conflict with certain game mechanics"
+        (sessionStorage.playerColour=="#ff0000"||sessionStorage.enemyColour=="#ff0000")||
+        (sessionStorage.playerColour=="#ffffff"||sessionStorage.enemyColour=="#ffffff")){
+        error2="You can't be red, black or white as it'll conflict with certain colours in the game"
     }
     if(100<sessionStorage.playerMetal || 100<sessionStorage.enemyMetal){
 // Ensures that neither players earn too much Metal from the start
@@ -65,6 +78,12 @@ function prevent(){
 // Ensures a map is selected by comparing to the default value of 0
         error7="You must select a map."
     }
+    if(sessionStorage.enemySelect!="true"&&sessionStorage.enemySelect!="false"){
+        error8="You must select who you're playing against"
+    }
+    if(sessionStorage.colourBlind!="true"&&sessionStorage.colourBlind!="false"){
+        error9="You must select whether you're colourblind or not"
+    }
     if(error1==""&&error2==""&&error3==""&&error4==""&&error5==""&&error6==""&&error7==""){
         location="Game.html"
 // If all conditions are met, the web page moves onto the Game page
@@ -77,6 +96,8 @@ function prevent(){
         document.getElementById("error5").innerText = error5
         document.getElementById("error6").innerText = error6
         document.getElementById("error7").innerText = error7
+        document.getElementById("error8").innerText = error8
+        document.getElementById("error9").innerText = error9
     }
 }
 function mapSelect(){

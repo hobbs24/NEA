@@ -24,6 +24,35 @@
     <form id="settings">
 <!-- Creates a form that'll be used to input user settings -->
         <table class="leftTable" style="float: left;">
+            <tr>
+                <td colspan="2" title="Select whether you want to fight against a second person or the computer">
+                    <h4>Select Your Enemy</h4>
+                    <div>
+                        <input type="radio" id="player" name="enemySelect" onclick="enemySelection('false')">
+                        <label for="player">Second Person</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="computer" name="enemySelect" onclick="enemySelection('true')">
+                        <label for="computer">The Computer</label>
+                    </div>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="2" title="Select if you want to enter colour-blind mode. This displays letters in each square
+to display what the terrain is">
+                    <h4>Enter Colour-Blind Mode?</h4>
+                    <div>
+                        <input type="radio" id="no" name="colourBlind" onclick="colourBlindMode('false')">
+                        <label for="no">No</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="yes" name="colourBlind" onclick="colourBlindMode('true')">
+                        <label for="yes">Yes</label>
+                    </div>
+                </td>
+
+            </tr>
 <!-- Creates a table for easier organisation of things -->
             <tr class="lfirstColumn">
 <!-- Creates the first row -->
@@ -99,6 +128,8 @@ A higher value is easier but you need more power than metal.">Player 2 Power</h4
                     <p id="error5"></p>
                     <p id="error6"></p>
                     <p id="error7"></p>
+                    <p id="error8"></p>
+                    <p id="error9"></p>
                 </td>
 <!-- Displays all the errors the player has made when selecting their options -->
             </tr>

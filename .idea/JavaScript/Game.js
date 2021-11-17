@@ -692,9 +692,8 @@ function display(){
             mapX = x
             mapDiv = div
 // Sets these values for use in "colourSelector"
-            colourSelector(0, false)
+            colourSelector(0, true)
 // Executes colourSelector to determine the colour of each div, based of its terrainLetter
-// False means it doesn't have to replace data in the array "map"
             container.appendChild(div)
 // Adds the div to the parent div to be displayed in a grid
         }
@@ -766,6 +765,8 @@ function unitPlacement(){
     map[mapY][mapX].name = selectedUnit.name
     map[mapY][mapX].terrain = "occupiedUnit"
 // Sets data to show a square of the map is occupied and by what
+    mapDiv.style.textAlign = "center"
+    mapDiv.style.fontSize ="1.5vw"
     mapDiv.style.color = colour
     mapDiv.innerText = selectedUnit.symbol
 // Displays the unit in its new location in the appropriate colour
@@ -1294,7 +1295,7 @@ function attack(){
 // Damage is dealt to the building
         if(buildings[globalI].health<=0){
             alert("You have destroyed a building")
-            document.getElementById(squareId).innerHTML = ""
+            mapDiv = document.getElementById(squareId)
             colourSelector(squareId, true)
             kill(1, globalI)
         }
@@ -1308,7 +1309,7 @@ function attack(){
         console.log("Health after "+units[globalI].health)
         if(units[globalI].health<=0){
             alert("You have killed a unit")
-            document.getElementById(squareId).innerHTML = ""
+            mapDiv = document.getElementById(squareId)
             colourSelector(squareId, true)
             kill(2, globalI)
         }
@@ -1906,6 +1907,7 @@ function colourSelector(id, replace){
     if(playerTurn!=0){
         splitId(id)
     }
+
 // If it's someone's turn, the function finds the x and y values for the divs
 // This is automatically done by a different function upon page load
     let checked = map[mapY][mapX].terrainLetter
@@ -1915,6 +1917,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "shallowSea"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
 // If the function is rewriting old data, it assigns the appropriate data to the "map" array
 // This isn't done at the start as it's all pre-written
@@ -1928,6 +1939,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "land"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#e2f075'
         mapDiv.title = "Terrain: Sand, only traversable by land units"
@@ -1937,6 +1957,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "land"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#00c45c'
         mapDiv.title = "Terrain: Grass, only traversable by land units"
@@ -1946,6 +1975,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "metal"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#939993'
         mapDiv.title = "Terrain: Exposed Metal, Impassable for all except the Lab Droid"
@@ -1955,6 +1993,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "land"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#184807'
         mapDiv.title = "Terrain: Forest, only traversable by land units"
@@ -1964,6 +2011,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "deepSea"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#062480'
         mapDiv.title = "Terrain: Deep Water, only traversable by naval units"
@@ -1973,6 +2029,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "impassable"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#ac6011'
         mapDiv.title = "Terrain: Desert Rock, Impassable"
@@ -1982,6 +2047,15 @@ function colourSelector(id, replace){
             map[mapY][mapX].terrain = "impassable"
             map[mapY][mapX].playerControl = 0
             map[mapY][mapX].name = 0
+            if(sessionStorage.colourBlind=="true"){
+                mapDiv.style.color = "#ffffff"
+                mapDiv.style.fontSize = "0.8vw"
+                mapDiv.innerHTML = checked
+                mapDiv.style.textAlign = "left"
+            }
+            else{
+                mapDiv.innerHTML = ""
+            }
         }
         mapDiv.style.backgroundColor = '#3b3a3a'
         mapDiv.title = "Terrain: Cliff, Impassable"
