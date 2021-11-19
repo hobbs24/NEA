@@ -1,0 +1,18 @@
+body{
+    font-family: Arial, serif;
+
+}
+#title{
+    background-color: blue;
+    color: white;
+    text-align: center;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    text-align: center;
+}
+#table{
+    font-size: large;
+}
+#start{
+    text-align: center;
+}
