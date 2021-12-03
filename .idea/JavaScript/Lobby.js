@@ -1,6 +1,6 @@
 // sessionStorage was used rather than localStorage as it is removed after the user leaves the site
 function pageLoad(){
-    sessionStorage.enemySelect = ""
+    computerEnemy = ""
     sessionStorage.colourBlind = ""
 // This function executes when as soon as the Lobby web page is loaded
     document.getElementById("settings").addEventListener("submit", prevent)
@@ -13,8 +13,18 @@ function pageLoad(){
 // Session Storage is used here to easily allow for the transfer of data between JS files
 }
 function enemySelection(choice){
-    sessionStorage.enemySelect = choice
-    console.log(sessionStorage.enemySelect)
+    sessionStorage.computerEnemy = choice
+    if(choice=="true"){
+        document.getElementById("swappable1").innerText = "Computer's Colour"
+        document.getElementById("swappable2").innerText = "Computer Metal"
+        document.getElementById("swappable3").innerText = "Computer Power"
+    }
+    else{
+        document.getElementById("swappable1").innerText = "Player 2's Colour"
+        document.getElementById("swappable2").innerText = "Player 2 Metal"
+        document.getElementById("swappable3").innerText = "Player 2 Power"
+    }
+    console.log(computerEnemy)
 }
 function colourBlindMode(choice){
     sessionStorage.colourBlind = choice
@@ -78,7 +88,7 @@ function prevent(){
 // Ensures a map is selected by comparing to the default value of 0
         error7="You must select a map."
     }
-    if(sessionStorage.enemySelect!="true"&&sessionStorage.enemySelect!="false"){
+    if(computerEnemy!="true"&&computerEnemy!="false"){
         error8="You must select who you're playing against"
     }
     if(sessionStorage.colourBlind!="true"&&sessionStorage.colourBlind!="false"){

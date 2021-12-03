@@ -36,6 +36,7 @@ sessionStorage.p2UnitsConstructed = 0
 sessionStorage.p1UnitsDestroyed = 0
 sessionStorage.p2UnitsDestroyed = 0
 // Used to provide certain bits of data for the statistics page
+let checked = 0
 let p1MetalPerTurn = [0]
 let p2MetalPerTurn = [0]
 let p1SpentMetalPerTurn = [0]
@@ -110,48 +111,48 @@ let buildings = [{player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxM
     {player: 0, square: 0, metalRequired: 0, powerRequired: 0, maxMetalSpend: 0, maxPowerSpend: 0, metalIncome: 0, powerIncome: 0, health: 0, name: 0, operational: false, attackCooldown: 0, queuedUnit: 0}]
 // Pre-declares an array of twenty building slots (meaning each player can have a
 // maximum of 10 buildings).
-let units = [{player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0},
-    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0}]
+let units = [{player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0},
+    {player: 0, square: 0, alreadyMoved: false, attackCooldown: 0, metalRequired: 0, powerRequired: 0, health: 0, name: 0, maxMetalSpend: 0, maxPowerSpend: 0, queuedFactory: 0, combatRating: 0}]
 // Pre-declares an array of fourty-two unit slots (meaning each player can have a maximum
 // of 20 units as the first two get taken up by their command units).
 let forgottenIslands = [
@@ -647,26 +648,30 @@ let commandUnit = {symbol: "ደ", type: 7, health: 1, metalRequired: 0, powerReq
     attackRange: 80, movementRange: 12, damage: 6, name:"commandUnit", attackCooldown: 1}
 let tank = {symbol: "Ⱝ", type: 8, health: 10, metalRequired: 10, powerRequired: 14,
     maxMetalSpend: 5, maxPowerSpend: 7, terrain1: "land", attackRange: 7, movementRange: 5,
-    damage: 7, name: "tank", attackCooldown: 1}
+    damage: 7, name: "tank", attackCooldown: 1, combatRating: 20}
 let labDroid = {symbol: "Ѫ", type: 9, health: 14, metalRequired: 12, powerRequired: 18,
     maxMetalSpend: 4, maxPowerSpend: 6, terrain1: "land", terrain2: "metal",
-    attackRange: 9, movementRange: 6, damage: 9, name: "labDroid", attackCooldown: 1}
+    attackRange: 9, movementRange: 6, damage: 9, name: "labDroid", attackCooldown: 1, combatRating: 30}
 let missileCarrier = {symbol: "ᛣ ", type: 10, health: 8, metalRequired: 36, powerRequired: 60,
     maxMetalSpend: 12, maxPowerSpend: 20, terrain1: "land", attackRange: 18, movementRange: 6, damage: 12,
-    name: "missileCarrier", attackCooldown: 2}
+    name: "missileCarrier", attackCooldown: 2, combatRating: 45}
 let detonatingSphere = {symbol: "ᵹ", type: 11, health: 80, metalRequired: 44, powerRequired: 84,
     maxMetalSpend: 11, maxPowerSpend: 21, terrain1: "land", attackRange: 1, movementRange: 1, damage: 28,
-    name:"detonatingSphere", attackCooldown: 1}
+    name:"detonatingSphere", attackCooldown: 1, combatRating: 85}
 let destroyer = {symbol: "₣", type: 12, health: 16, metalRequired: 16, powerRequired: 22,
     maxMetalSpend: 8, maxPowerSpend: 11, terrain1: "shallowSea", terrain2: "deepSea",
-    attackRange: 8, movementRange: 7, damage: 10, name: "destroyer", attackCooldown: 1}
+    attackRange: 8, movementRange: 7, damage: 10, name: "destroyer", attackCooldown: 1, combatRating: 35}
 let cruiser = {symbol: "₸", type: 13, health: 20, metalRequired: 24, powerRequired: 39,
     maxMetalSpend: 8, maxPowerSpend: 13, terrain1: "shallowSea", terrain2: "deepSea",
-    attackRange: 20, movementRange: 6, damage: 12, name: "cruiser", attackCooldown: 1}
+    attackRange: 20, movementRange: 6, damage: 12, name: "cruiser", attackCooldown: 1, combatRating: 60}
 let battleship = {symbol: "₮", type: 14, health: 32, metalRequired: 48, powerRequired: 72,
     maxMetalSpend: 12, maxPowerSpend: 18, terrain1: "shallowSea", terrain2: "deepSea",
-    attackRange: 16, movementRange: 5, damage: 22, name: "battleship", attackCooldown: 2}
+    attackRange: 16, movementRange: 5, damage: 22, name: "battleship", attackCooldown: 2, combatRating: 95}
 // Declares 8 unit types and the general data specific to each type    
+
+let priorities = {metalExtractor: 0, powerPlant: 0, landUnit: 0, navalUnit: 0, possibleME: 0}
+let playerStats = {metalExtractors: 0, powerPlants: 0, landCR: 0, navalCR: 0}
+let computerStats = {metalExtractors: 0, powerPlants: 0, landCR: 0, navalCR: 0, units: 0}
 
 function display(){
 // Executed when the Game web page is loaded
@@ -694,6 +699,9 @@ function display(){
 // Sets these values for use in "colourSelector"
             colourSelector(0, true)
 // Executes colourSelector to determine the colour of each div, based of its terrainLetter
+            if(checked=='m'){
+                priorities.possibleME++
+            }
             container.appendChild(div)
 // Adds the div to the parent div to be displayed in a grid
         }
@@ -908,18 +916,10 @@ function searchBuildings(check){
 }
 
 function calculatePercentage(uniqueMetal, uniquePower, generalMetal, generalPower){
-    console.log("Metal "+uniqueMetal)
-    console.log("Metal general "+generalMetal)
-    console.log("Power "+uniquePower)
-    console.log("Power general "+generalPower)
     let metal = generalMetal-uniqueMetal
     let power = generalPower-uniquePower
-    console.log("Metal "+metal)
-    console.log("Power "+power)
     let metalPercentage = (metal/generalMetal).toFixed(4)
     let powerPercentage = (power/generalPower).toFixed(4)
-    console.log("Metal Percentage "+metalPercentage)
-    console.log("Power Percentage "+powerPercentage)
     if(metalPercentage<powerPercentage){
         percentage = (metalPercentage*100).toFixed(2)
     }
@@ -1328,11 +1328,25 @@ function kill(recipient, i){
 // If the building is currently constructing a unit, the unit is also killed
         if(playerTurn==1){
             sessionStorage.p1BuildingsDestroyed = parseInt(sessionStorage.p1BuildingsDestroyed)+1
+            if(buildings[i].name=="metalExtractor"&&sessionStorage.computerEnemy=="true"){
+                computerStats.metalExtractors = computerStats.metalExtractors-1
+            }
+            else if(buildings[i].name=="powerPlant"&&sessionStorage.computerEnemy=="true"){
+                computerStats.powerPlants = computerStats.powerPlants-1
+            }
+// If a metal extractor or power plant is destroyed by the player, the computer's stats decrease
         }
         else if(playerTurn==2){
             sessionStorage.p2BuildingsDestroyed = parseInt(sessionStorage.p2BuildingsDestroyed)+1
+            if(buildings[i].name=="metalExtractor"&&sessionStorage.computerEnemy=="true"){
+                playerStats.metalExtractors = playerStats.metalExtractors-1
+            }
+            else if(buildings[i].name=="powerPlant"&&sessionStorage.computerEnemy=="true"){
+                playerStats.powerPlants = playerStats.powerPlants-1
+            }
+// If a metal extractor or power plant is destroyed by the computer, the player's stats decrease
         }
-// Increases the number of buildings the players have killed
+// Increases the number of buildings the players/computer have killed
         buildings[i].player = 0
         buildings[i].queuedUnit = 0
         buildings[i].square = 0
@@ -1362,10 +1376,32 @@ function kill(recipient, i){
         }
         else{
             if(playerTurn==1){
-                sessionStorage.p1UnitsDestroyed =parseInt(sessionStorage.p1UnitsDestroyed)+1
+                sessionStorage.p1UnitsDestroyed = parseInt(sessionStorage.p1UnitsDestroyed)+1
+                if(sessionStorage.computerEnemy=="true"){
+// Checks to see if the player is against a computer
+                    selectedUnit(units[i].name, 2)
+                    if(chosenUnit.terrain1=="land"){
+                        computerStats.landCR = computerStats.landCR-chosenUnit.combatRating
+                    }
+                    else{
+                        computerStats.navalCR = computerStats.navalCR-chosenUnit.combatRating
+                    }
+                }
+// If a unit is destroyed by the player, the computer's stats decrease
             }
             else if(playerTurn==2){
                 sessionStorage.p2UnitsDestroyed = parseInt(sessionStorage.p2UnitsDestroyed)+1
+                if(sessionStorage.computerEnemy=="true"){
+// Checks to see if the player is against a computer
+                    selectedUnit(units[i].name, 2)
+                    if(chosenUnit.terrain1=="land"){
+                        playerStats.landCR = playerStats.landCR-chosenUnit.combatRating
+                    }
+                    else{
+                        playerStats.navalCR = playerStats.navalCR-chosenUnit.combatRating
+                    }
+                }
+// If a unit is destroyed by the computer, the player's stats decrease
             }
             console.log(sessionStorage.p1UnitsDestroyed)
 // Increases the number of units the players have destroyed
@@ -1880,7 +1916,7 @@ function spendEconomy(){
     }
     findEconomy()
     updateResources()
-// The economy is then worked out again
+// The economy is then worked out again and is displayed
 }
 
 function mapMaker(){
@@ -1910,7 +1946,7 @@ function colourSelector(id, replace){
 
 // If it's someone's turn, the function finds the x and y values for the divs
 // This is automatically done by a different function upon page load
-    let checked = map[mapY][mapX].terrainLetter
+    checked = map[mapY][mapX].terrainLetter
 // Finds the "terrainLetter" for each div to know what to assign
     if(checked=='w'){
         if(replace){
@@ -2116,14 +2152,21 @@ function nextTurn(){
     let buttons = document.getElementsByClassName("buttons")
     if(turnTotal%2==0){
 // This checks to see if it's player 2's turn, or if nobody has started their turn yet
+        console.log(playerStats)
         player1Turn++
         console.log("Player 1 Turn "+player1Turn)
         playerTurn = 1
-        document.getElementById("playerTurn").style.color = sessionStorage.playerColour
-        document.getElementById("playerTurn").innerHTML = "Player 1's Turn"
         for(i=0;i<buttons.length;i++){
             buttons[i].style.color = sessionStorage.playerColour
         }
+        document.getElementById("playerTurn").style.color = sessionStorage.playerColour
+        document.getElementById("playerTurn").innerHTML = "Player 1"
+        findEconomy()
+// Executes "findEconomy" to see the total income and expenditure of the player
+        spendEconomy()
+// Executes "spendEconomy" to spend their earned resources evenly across their
+// buildings under construction
+
 // Makes the turn player 1's and resets some data, the buttons also change to match the player's colour
     }
     else if(turnTotal%2==1){
@@ -2131,29 +2174,101 @@ function nextTurn(){
         player2Turn++
         console.log("Player 2 Turn "+player2Turn)
         playerTurn = 2
-        document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
-        document.getElementById("playerTurn").innerHTML = "Player 2's Turn"
         for(i=0;i<buttons.length;i++){
             buttons[i].style.color = sessionStorage.enemyColour
         }
-// Does the same as above but for player 2
-    }
-    findEconomy()
+        document.getElementById("playerTurn").style.color = sessionStorage.enemyColour
+        if(sessionStorage.computerEnemy=="true"){
+// Checks to see if the player is against the computer
+            document.getElementById("playerTurn").innerHTML = "Computer"
+            computerTurn()
+            console.log(computerStats)
+            console.log(priorities)
+
+        }
+// If the computer is taking their turn, then it displays "Computer" instead of "Player 2"
+// Also, the function computerTurn is executed
+        else{
+            document.getElementById("playerTurn").innerHTML = "Player 2"
+            findEconomy()
 // Executes "findEconomy" to see the total income and expenditure of the player
-    updateResources()
-// Executes "updateResources" to display what the player is earning and spending
-    spendEconomy()
+            spendEconomy()
 // Executes "spendEconomy" to spend their earned resources evenly across their
 // buildings under construction
+        }
+// Does the same as above but for player 2
+    }
     turnTotal++
 // Increases the turn total to allow for the player's turn to change next time this
 // function executes
 }
 
+function computerTurn(){
+    findEconomy()
+    spendEconomy()
+    economyPriorities()
+    unitPriorities()
+// The computer starts with finding and spending their economy, just like the player would but after that,
+// the function economyPriorities runs to see if the computer needs to build more resource generators
+}
+function economyPriorities(){
+    if(playerStats.metalExtractors*metalExtractor.metalIncome+parseInt(sessionStorage.playerMetal)>
+        computerStats.metalExtractors*metalExtractor.metalIncome+parseInt(sessionStorage.enemyMetal)&&
+        (playerStats.metalExtractors+computerStats.metalExtractors<priorities.possibleME)){
+        console.log("Needs more metal")
+        priorities.metalExtractor = priorities.metalExtractor+4
+    }
+// If the computer earns less metal than the player, the priority for metal extractors increases by 4
+    else if(playerStats.metalExtractors*metalExtractor.metalIncome+parseInt(sessionStorage.playerMetal)<
+        computerStats.metalExtractors*metalExtractor.metalIncome+parseInt(sessionStorage.enemyMetal)&&
+        (playerStats.metalExtractors+computerStats.metalExtractors==priorities.possibleME)){
+        priorities.metalExtractor = 0
+    }
+// If the computer earns more metal than the player and there are no more available spots to build metal extractors,
+// the priority drops to 0
+// As there are only a few spots where metal extractors can be built, it doesn't drop to 0 unless all conditions are met
+    if(playerStats.powerPlants*powerPlant.powerIncome+parseInt(sessionStorage.playerPower)>
+        computerStats.powerPlants*powerPlant.powerIncome+parseInt(sessionStorage.enemyPower)){
+        console.log("Needs more power")
+        priorities.powerPlant = priorities.powerPlant+3
+    }
+// If the computer earns less power than the player, the priority for power plants increases by 3
+    else if(playerStats.powerPlants*powerPlant.powerIncome+parseInt(sessionStorage.playerPower)<
+        computerStats.powerPlants*powerPlant.powerIncome+parseInt(sessionStorage.enemyPower)){
+        priorities.powerPlant = 0
+    }
+// If the computer earns more power than the player, the priority for power plants drops to 0
+
+}
+function unitPriorities(){
+    if(playerStats.landCR>computerStats.landCR&&computerStats.units<((units.length/2)-1)){
+        priorities.landUnit = priorities.landUnit+2
+        console.log("Needs more land units")
+    }
+// If the player has a greater land combat rating and the computer can still build more units,
+// the computer's land unit priority increases by 2
+    else if(playerStats.landCR<computerStats.landCR&&computerStats.units==((units.length/2)-1)){
+        priorities.landUnit = 0
+    }
+// If the player has a lower land combat rating and the computer can't build more units,
+// the computer's land unit priority drops to 0
+    if(playerStats.navalCR>computerStats.navalCR&&computerStats.units<((units.length/2)-1)){
+        priorities.navalUnit = priorities.navalUnit+2
+        console.log("Needs more naval units")
+    }
+// If the player has a greater naval combat rating and the computer can still build more units,
+// the computer's naval unit priority increases by 2
+    else if(playerStats.navalCR<computerStats.navalCR&&computerStats.units==((units.length/2)-1)){
+        priorities.navalUnit = 0
+    }
+// If the player has a lower naval combat rating and the computer can't build more units,
+// the computer's naval unit priority drops to 0
+}
+
 function selectingConstruction(unit){
 // Is called by the buttons at the top left of the screen if they have been written to
     if(unit<7){
-        if(selectedUnit!=commandUnit){
+        if(selectedUnit!=commandUnit&&chosenBuilding==0){
             alert("You must select your command unit before starting construction of a building")
         }
         else if(playerTurn==0){
@@ -2314,9 +2429,27 @@ function firstEmptyBuilding(){
 // The building is then displayed on the map in the clicked div
             if(playerTurn==1){
                 div.style.color = sessionStorage.playerColour
+                if(chosenBuilding.name=="metalExtractor"&&sessionStorage.computerEnemy=="true"){
+                    playerStats.metalExtractors = playerStats.metalExtractors+1
+                }
+                else if(chosenBuilding.name=="powerPlant"&&sessionStorage.computerEnemy=="true"){
+                    playerStats.powerPlants = playerStats.powerPlants+1
+                }
+// If the player is against the computer and the player builds a resource generator, its stats increases
             }
             else{
                 div.style.color = sessionStorage.enemyColour
+                if(chosenBuilding.name=="metalExtractor"&&sessionStorage.computerEnemy=="true"){
+                    computerStats.metalExtractors = computerStats.metalExtractors+1
+                    priorities.metalExtractor = priorities.metalExtractor - 12
+                    console.log(computerStats.metalExtractors)
+// If the computer builds a metal extractor, its stats increases and the priority for metal extractors decreases
+                }
+                else if(chosenBuilding.name=="powerPlant"&&sessionStorage.computerEnemy=="true"){
+                    computerStats.powerPlants = computerStats.powerPlants+1
+                    priorities.powerPlant = priorities.powerPlant - 12
+                }
+// If the computer builds a power plant, its stats increases and the priority for power plants decreases
             }
 // The correct colour for the building is then selected
             break
@@ -2340,6 +2473,30 @@ function firstEmptyUnit(){
             units[i].alreadyMoved = false
             units[i].name = chosenUnit.name
             units[i].queuedFactory = globalI
+            console.log(chosenUnit.combatRating)
+            if(sessionStorage.computerEnemy=="true"){
+// Checks to see if the player is against a computer
+                if(playerTurn==1){
+                    if(chosenUnit.terrain1=="land"){
+                        playerStats.landCR = playerStats.landCR+chosenUnit.combatRating
+                    }
+                    else{
+                        playerStats.navalCR = playerStats.navalCR+chosenUnit.combatRating
+                    }
+                }
+// If it's the player's turn and they build a land or naval unit, the appropriate combat rating increases
+                else if(playerTurn==2){
+                    if(chosenUnit.terrain1=="land"){
+                        computerStats.landCR = computerStats.landCR+chosenUnit.combatRating
+                        priorities.landUnit = priorities.landUnit - 8
+                    }
+                    else{
+                        computerStats.navalCR = computerStats.navalCR+chosenUnit.combatRating
+                        priorities.navalUnit = priorities.navalUnit - 8
+                    }
+                }
+// If it's the computer's turn and they build a land or naval unit, the appropriate combat rating increases
+            }
             break
         }
     }
