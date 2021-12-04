@@ -1715,7 +1715,7 @@ function unitConstruction(option){
         if(canBuild){
             firstEmptyUnit()
 // If the player can queue another one, the first empty slot in the array is filled
-            console.log("Unit has "+chosenUnit.name+" been queued")
+            console.log("Unit "+chosenUnit.name+" has been queued")
             findEconomy()
             updateResources()
 // The economy is then recalculated and displayed
